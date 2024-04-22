@@ -1,26 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 10:38:21 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 17:11:45 by jeshin           ###   ########.fr       */
+/*   Created: 2024/04/08 17:24:19 by jeshin            #+#    #+#             */
+/*   Updated: 2024/04/22 15:22:53 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "../include/minishell.h"
 
-size_t	ft_strlen(const char *str)
+int	_pwd(void)
 {
-	int	i;
+	char	*bkup;
+	char	*buf;
+	int		size;
 
-	i = 0;
-	while (*str)
+	bkup = 0;
+	size = 42;
+	while (TRUE)
 	{
-		i++;
-		str++;
-	}
-	return (i);
+		buf = malloc(sizeof(char) * size);
+		bkup = getcwd(buf, size);
+		free(buf);
+		if (bkup != 0)
+			break ;
+		if (size > 1024 && bkup == 0)
+		{
+			perror("pwd error");
+			exit(EXIT_FAILURE);
+		}
+		size *= 2;
+	}	
+	ft_putstr(bkup);
+	write(1, "\n", 1);
+	return (EXIT_SUCCESS);
 }

@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 10:38:21 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 17:11:45 by jeshin           ###   ########.fr       */
+/*   Created: 2023/10/10 21:16:08 by jeshin            #+#    #+#             */
+/*   Updated: 2023/10/19 10:31:08 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "libft.h"
 
-size_t	ft_strlen(const char *str)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	int	i;
+	char			*ret;
+	unsigned int	i;
 
+	if (!s)
+		return (0);
 	i = 0;
-	while (*str)
+	ret = (char *)malloc(sizeof(char) * ft_strlen(s) + 1);
+	if (!ret)
+		return (0);
+	while (s[i])
 	{
+		ret[i] = f(i, s[i]);
 		i++;
-		str++;
 	}
-	return (i);
+	ret[i] = 0;
+	return (ret);
 }

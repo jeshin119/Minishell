@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_putaddr_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 10:38:21 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 17:11:45 by jeshin           ###   ########.fr       */
+/*   Created: 2023/12/07 17:15:40 by jeshin            #+#    #+#             */
+/*   Updated: 2023/12/09 18:33:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "libft.h"
 
-size_t	ft_strlen(const char *str)
+void	ft_putaddr_fd(void *addr, int fd)
 {
-	int	i;
+	unsigned long int			l;
 
-	i = 0;
-	while (*str)
-	{
-		i++;
-		str++;
-	}
-	return (i);
+	l = (unsigned long int)addr;
+	write(fd, "0x", 2);
+	ft_puthex_fd(l, fd, 0);
+}
+
+void	ft_putaddr_cnt(void *addr, int *num)
+{
+	unsigned long int			l;
+
+	l = (unsigned long int)addr;
+	write(1, "0x", 2);
+	*num += 2;
+	ft_puthex_cnt(l, 0, num);
 }

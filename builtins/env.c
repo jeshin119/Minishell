@@ -1,26 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 10:38:21 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 17:11:45 by jeshin           ###   ########.fr       */
+/*   Created: 2024/04/16 18:10:25 by jeshin            #+#    #+#             */
+/*   Updated: 2024/04/22 17:33:09 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "../include/minishell.h"
 
-size_t	ft_strlen(const char *str)
+static void	mke_my_env(char **e, t_dq *env)
 {
-	int	i;
+	char	**tmp;
 
-	i = 0;
-	while (*str)
+	init_dq(env);
+	while (*e)
 	{
-		i++;
-		str++;
+		tmp = ft_split(*e, '=');
+		push_back_dq(env, tmp[0], tmp[1]);
+		free(tmp);
+		e++;
 	}
-	return (i);
+}
+
+void	_env(t_dq *env)
+{
+	t_node	*here;
+
+	here = env->head;
+	while (here)
+	{
+		ft_putstr(here->name);
+		write(1, "=", 1);
+		ft_putstr(here->val);
+		write(1, "\n", 1);
+		here = here->next;
+	}
 }

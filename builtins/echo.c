@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 10:38:21 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 17:11:45 by jeshin           ###   ########.fr       */
+/*   Created: 2024/04/04 13:13:55 by jeshin            #+#    #+#             */
+/*   Updated: 2024/04/22 15:23:00 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "../include/minishell.h"
 
-size_t	ft_strlen(const char *str)
+int	_echo(char *opt, char *str)
 {
-	int	i;
+	int	line_filp;
 
-	i = 0;
-	while (*str)
+	line_filp = 1;
+	if (opt != 0 && ft_strncmp(opt, "-n", 3) == 0)
+		line_filp = 0;
+	if (line_filp)
 	{
-		i++;
-		str++;
+		write(1, str, ft_strlen(str));
+		write(1, "\n", 1);
+		return (0);
 	}
-	return (i);
+	write(1, str, ft_strlen(str));
+	return (0);
 }
