@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 12:38:46 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:06:28 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	preorder_travel(t_tree *now, t_list *tk_list);
 int		pipe_chk(t_list *tk_list);
 int		meta_chk(char *s, int i, int meta_value);
 int		right_rd_chk(t_list *tk_list);
+int		quote_closed_chk(char *s, int i);
 int		get_double_direct(int direct);
 t_tree	*make_tree(t_tree *now, t_list *tk_list, t_node *env_list);
 t_tree	*malloc_tree_node(t_tree *now, t_list *tk_list, int direct);

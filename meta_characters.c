@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:09:46 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/21 11:38:41 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:06:27 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,12 @@ int	meta_chk(char *s, int i, int meta_value)
 		return (RIGHT);
 	else if (s[i] == '<')
 		return (LEFT);
-	else if (s[i] == '\"')
+	else if (s[i] == '\"' && quote_closed_chk(s, i))
 		return (D_QUOTE);
-	else if (s[i] == '\'')
+	else if (s[i] == '\'' && quote_closed_chk(s, i))
 		return (S_QUOTE);
 	else if (s[i] == '\\')
 		return (BACK_SLASH);
-	else if (s[i] == '\n' && s[i + 1] == 0)
-		return (END_LINE);
 	return (0);
 }
 

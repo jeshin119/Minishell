@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:06:07 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 12:21:12 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:01:42 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,31 @@ int	right_rd_chk(t_list *tk_list)
 		if (tk_list -> ctrl_token == RIGHT || tk_list -> ctrl_token == D_RIGHT)
 			return (1);
 		tk_list = tk_list -> next;
+	}
+	return (0);
+}
+
+int	quote_closed_chk(char *s, int i)
+{
+	if (s[i] == '\"')
+	{
+		i++;
+		while (s[i])
+		{
+			if (s[i] == '\"')
+				return (1);
+			i++;
+		}
+	}
+	else if (s[i] == '\'')
+	{
+		i++;
+		while (s[i])
+		{
+			if (s[i] == '\'')
+				return (1);
+			i++;
+		}
 	}
 	return (0);
 }
