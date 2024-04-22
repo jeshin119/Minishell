@@ -6,11 +6,12 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 15:15:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 15:30:34 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/22 19:20:39 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
+#include "../include/minishell.h"
 
 static int	care_here_doc(int ac, char **av, t_ags *ags)
 {
@@ -79,6 +80,23 @@ static int	make_pipe_tab(t_ags *ags)
 			return (-1);
 	}
 	return (0);
+}
+
+int	care_pipes(t_tree *tre)
+{
+	int **pipe_fd_tab = (int **)malloc(sizeof(int *) * (tre->pipe));
+	if (pipe_fd_tab == 0)
+		return (EXIT_FAILURE);
+	int i = -1;
+	while (++i < tre->pipe)
+	{
+		pipe_fd_tab[i] = (int *)malloc(sizeof(int) * 2);
+		if (pipe_fd_tab[i] == 0)
+			return (EXIT_FAILURE);
+		if (pipe(pipe_fd_tab[i]))
+			return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }
 
 int	init_ags(t_ags *ags, int ac, char **av)

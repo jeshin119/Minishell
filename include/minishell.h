@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 16:27:54 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/22 18:47:27 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # include <readline/history.h>
 # include "../libft/libft.h"
 # include "my_deque.h"
+# include "pipex_bonus.h"
 
 typedef struct s_tree
 {
@@ -58,6 +59,14 @@ typedef struct s_tree
 	struct s_tree	*prev;
 }	t_tree;
 
+//signal 처리 구조체 
+typedef struct s_sig
+{
+	struct sigaction sa_int;
+	struct sigaction sa_quit;
+}	t_sig;
+
+//parse
 void	meta_split(char *s, t_list **tk_list, int *i);
 void	env_replace(char *s, t_list **tk_list, t_node *env_list, int *i);
 void	syntax_error_exit(t_list *tk_list);
@@ -77,13 +86,7 @@ t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*reassembly(t_tree *now, t_list *tk_list);
 t_list	*tokenize(char *cmd_line);
 t_list	*token_split(t_list *tk_list, char *s);
-
-/// below jeshin //////////
-typedef struct s_sh
-{
-	struct sigaction sa_int;
-	struct sigaction sa_quit;
-}	t_sh;
+t_tree	*parse(char *line, t_dq *env);
 
 //builtins
 int		_echo(char *opt, char *str);

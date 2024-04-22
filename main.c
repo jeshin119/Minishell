@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   jeshin.c                                           :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 12:56:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/17 17:39:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/22 18:59:50 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "include/minishell.h"
 
 void check_leak()
 {
@@ -56,53 +56,7 @@ int set_signal(struct sigaction *sa_int, struct sigaction *sa_quit) // ctrl+c인
 	return (EXIT_SUCCESS);
 }
 
-// int	exec_bulitin(char *cmd,char *option)
-// {
-// 	if (cmd == 0)
-// 		return (EXIT_FAILURE);
-// 	if (!ft_strncmp(cmd, "echo", 5))
-// 		_echo();
-// 	else if(!ft_strncmp(cmd, "cd", 3))
-// 		_cd();
-// 	else if(!ft_strncmp(cmd, "pwd", 4))
-// 		_pwd();
-// 	else if(!ft_strncmp(cmd, "export", 7))
-// 		_export();
-// 	else if(!ft_strncmp(cmd, "unset", 6))
-// 		_unset();
-// 	else if(!ft_strncmp(cmd, "env", 4))
-// 		_env();
-// 	else if(!ft_strncmp(cmd, "exit", 5))
-// 		_exit_();
-// 	else
-// 		return (EXIT_FAILURE);
-// 	return (EXIT_SUCCESS);
-// }
-
-// int	go_exec(int ac, char *av[], char *env[])
-// {
-// 	//순회하면서 커맨드 실행
-// 	//bulit in commands
-// 	if (exec_bulitin())
-// 	//not bulit in commands
-// 	t_ags	ags;
-// 	int		status;
-// 	int		i;
-
-// 	init_ags(&ags, ac, av);
-// 	while (++(ags.idx) < ags.n_cmd)
-// 		go_child(ags, env);
-// 	close_all_pipe(&ags);
-// 	i = -1;
-// 	while (++i < ags.n_cmd)
-// 		waitpid(-1, &status, 0);
-// 	close(ags.in_f_fd);
-// 	close(ags.out_f_fd);
-// 	free_all(&ags);
-// 	return (0);
-// }
-
-void	put_exit_when_eof(void)
+static void	put_exit_when_eof(void)
 {
 	write(1,"\033[1A",4);
 	write(1,"\033[10C",5);
@@ -110,17 +64,31 @@ void	put_exit_when_eof(void)
 	rl_clear_history();
 	exit(EXIT_SUCCESS);
 }
+static void	mke_my_env(char **e, t_dq *env)
+{
+	char	**tmp;
+
+	init_dq(env);
+	while (*e)
+	{
+		tmp = ft_split(*e, '=');
+		push_back_dq(env, tmp[0], tmp[1]);
+		free(tmp);
+		e++;
+	}
+}
 
 int main(int ac, char **av, char **envp){
-	t_sh sh;
+	t_sig sig;
 	char *buf;
-
-	if (set_signal(&(sh.sa_int),&(sh.sa_quit))) //시그널 처리
+	t_dq *env;
+	t_tree	*tre;
+	t_list	*tk;
+	if (set_signal(&(sig.sa_int),&(sig.sa_quit))) //시그널 처리
 		return (EXIT_FAILURE);
-
 	// bash-3.2$에서 -이후 숫자가 bash버전임. 버전가져와야함.안가져와도 되나? ㅋㅋ
 	// int version = get_bash_version(envp);
-
+	mke_my_env(envp, env);
 	while(TRUE)
 	{
 		buf = readline("bash-3.2$ ");
@@ -128,10 +96,9 @@ int main(int ac, char **av, char **envp){
 			put_exit_when_eof();
 		if (ft_strlen(buf)) //노드 헤드가 있다면 history에 추가 
 			add_history(buf);// 방향키로 이전에 입력한 커맨드 불러올 수 있음.
-		// parse(); 
-		// const int SIZE=3;
-		// char *tmp[3] = {"echo","-n",NULL};
-		go_exec(ac,av,envp);
+		tk = tokenize(buf); //사용할 때 이렇게 사용하면 되는지?
+		tre = make_tree(tre,tk,env);
+		go_exec(tre,env);
 		free(buf);
 	}
 	return (EXIT_SUCCESS);

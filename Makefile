@@ -7,8 +7,11 @@ INCLUDE = ./include
 
 
 LIBFT = ./libft/libft.a
-SRC_DIRS = parse builtins pipex
-SRC = $(wildcard $(addsuffix /*.c , $(SRC_DIRS)))
+SRC_DIRS = parse\
+			 builtins\
+			 pipex
+SRC = $(wildcard $(addsuffix /*.c , $(SRC_DIRS)))\
+		 main.c
 OBJ = $(SRC:.c=.o)
 
 all : $(NAME)
