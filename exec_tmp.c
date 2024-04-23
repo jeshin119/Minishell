@@ -6,12 +6,31 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/23 09:32:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/23 12:46:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
-//temporary//
+
+int	my_calloc(void *tab,int bytes, int size)
+{
+	int	i;
+	tab = malloc(sizeof (bytes) * size); //순회할 때 필요한 방문배열을만듦.
+	if (tab == 0)
+		return (EXIT_FAILURE);
+	i = -1;
+	while(++i < size) // visted 배열 값 0으로 초기화
+		tab[i] = 0;
+	return (EXIT_SUCCESS);
+}
+int	my_malloc(void *tab, int bytes, int size)
+{
+	tab = malloc(sizeof (int) * size); //순회할 때 필요한 방문배열을만듦.
+	if (tab == 0)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
+
 int	exec_builtins(char *cmd, char **opt, t_dq *env)
 {
 	if (cmd == 0)
@@ -69,14 +88,13 @@ int get_pipe_num_from_tre(t_tree *tre)
 
 int	**open_pipes(int num)
 {
-	int **pipe_fd_tab = (int **)malloc(sizeof(int *) * num);
-	if (pipe_fd_tab == 0)
+	int **pipe_fd_tab;
+	if (my_malloc(pipe_fd_tab,4,num))
 		return (EXIT_FAILURE);
 	int i = -1;
 	while (++i < num)
 	{
-		pipe_fd_tab[i] = (int *)malloc(sizeof(int) * 2);
-		if (pipe_fd_tab[i] == 0)
+		if (my_malloc(pipe_fd_tab[i], 4, 2))
 			return (EXIT_FAILURE);
 		if (pipe(pipe_fd_tab[i]))
 			return (EXIT_FAILURE);
@@ -84,16 +102,23 @@ int	**open_pipes(int num)
 	return (EXIT_SUCCESS);
 }
 
-int	traverse_n_exec(t_tree *tre, t_list *tk, t_dq *env)
+//일단 순서가 파이프 다열고 자식들 커맨드 수만ㄷ큼 만들고 파이프 연결하고 기존 파이프 다 닫고 명령실행.
+void	traverse_n_exec(t_tree *tre, t_list *tk_lst, t_dq *env,int *visited) //
 {
-	if (tre == 0 || tre->end_flag)
-		return (EXIT_SUCCESS);
-	while (tre->end_flag == 0)
+	if (visited[tre->idx])
+		return ;
+	if (tre->next_left && tre->next_right == 0) // 왼쪽이 있는데 오른쪽 없으면 왼쪽만들어감.
+		traverse_n_exec(tre->next_left, tk_lst, env, visited); 
+	if (tre->next_left && tre->next_right)//왼쪽 오른쪽 자식 둘다 있으면 왼쪽 들어가고 오른쪽 들어감.
 	{
-		
-
+		traverse_n_exec(tre->next_left, tk_lst, env, visited);
+		traverse_n_exec(tre->next_right, tk_lst, env, visited);
 	}
-	if (exec_bulitin()){ //bulitin부터 실행하고 
+	visited[tre->idx] = 1;
+	if (tre->pipe) // pipe면 
+		return ;
+	
+	if (exec_bulitin(tk_lst,)){ //bulitin부터 실행하고 
 		if (exec_not_builtin()) //bultin아니면 파일에서 실행하고
 			return (EXIT_FAILURE); //그것도 아니면 뭔가 이상.
 	}
@@ -121,18 +146,23 @@ void	go_child(t_ags ags, char **envp)
 	}
 }
 
+//cat <<hi | sleep 3 | ls : heredoc 에 작성한 글 출력안되노..slep3 하고 ls하고 끝남.
+//cat <<hi | sleep 3 | wc- l : 결과 : 0
 int	go_exec(t_tree *tre, t_list *tk, t_dq *env)
 {
 	int	**pipe_tab;
 	int	pipe_num;
+	int *visited;
 	int	i;
 
 	if (tre == 0 || tre->end_flag)
-		return (EXIT_SUCCESS); //tre 에 아무것도 들어오지 않았을 때 echo $? : 0임. 
-	pipe_num = get_pipe_num_from_tre;
+		return (EXIT_SUCCESS); //return success ? : tre 에 아무것도 들어오지 않았을 때 echo $? : 0임. 
+	pipe_num = get_pipe_num_from_tre; // 파이프 수 구하기.
 	pipe_tab = open_pipes(pipe_num); // 파이프 수만큼 파이프를 열어놓음.
 	if (pipe_tab) // 오픈 파이프 에러처리.
 		return (EXIT_FAILURE);
-	traverse_n_exec(tre->next_left,tk,env); // 순회하면서 자식을 만들고 명령실행
+	if (calloc(visited , pipe_num))
+		return (EXIT_FAILURE);
+	traverse_n_exec(tre->next_left,tk,env,visited); // 순회하면서 자식을 만들고 명령실행
 	return (EXIT_SUCCESS);
 }

@@ -5,3 +5,7 @@
 4. 순회할때 참고할만한 그림.
 5. 트리 순회 어케함?
 6. tk_idx_set, tk_list, chked는 뭐지?
+7. direct는 뭐지?
+
+tree -> pipe; --> tree -> ctrl_token == PIPE, LEFT, RIGHT, HERE_DOC
+

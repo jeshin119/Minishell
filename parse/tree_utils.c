@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 19:24:29 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/23 12:22:51 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,20 +106,20 @@ void	print_token(t_tree *now, t_list *tk_list, int direct)
 	print_token_info(now, direct);
 }
 
-void	preorder_travel(t_tree *now, t_list *tk_list)
+void	preorder_travel(t_tree *now, t_list *tk_list) // tree안에 list포인터가있는데 매개변수로 또 받아야하는지?
 {
-	while (!now -> end_flag)
+	while (!now -> end_flag) //끝일때까지 반복하는데 // 트리의 왼쪽과 오른쪽 없으면 0으로 초기화 되어있는지?
 	{
-		while (now -> next_left)
-		{
+		while (now -> next_left) //왼쪽으로 계속이동
+		{						// 근디 애초에 pipe가 왼쪽에 한덩어리만 있는거 아닌가?
 			print_token(now, tk_list, LEFT);
 			now = now -> next_left;
 		}
-		while (now -> prev && !now -> pipe)
+		while (now -> prev && !now -> pipe)  // 파이프가 아닐떄까지 올라갈건데
 		{
-			while (now -> next_right)
+			while (now -> next_right)  //오른쪽이 있으면? 루트의 왼쪽 첫번쨰 자식의 오른쪽 노드가 있나?
 			{
-				print_token(now, tk_list, RIGHT);
+				print_token(now, tk_list, RIGHT); // right가 뭐지?
 				now = now -> next_right;
 			}
 			if (now -> end_flag)
@@ -135,3 +135,15 @@ void	preorder_travel(t_tree *now, t_list *tk_list)
 	}
 	print_token(now, tk_list, 0);
 }
+
+// void preOrder(int here){ 
+// 	if (visited[here]) 
+// 		return ;
+// 	visited[here]=true;
+// 	if (adj[here].size() == 1)
+// 		postOrder(adj[here][0]);
+// 	if (adj[here].size() == 2){
+// 		postOrder(adj[here][0]);
+// 		postOrder(adj[here][1]);
+// 	}
+// }  
