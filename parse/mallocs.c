@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:00:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 15:20:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/23 12:31:32 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,23 @@ static void	attach_node(t_tree *now, t_tree *next, int direct)
 	{
 		if (now -> next_right)
 			now -> next_left = next;
+		else if (!now -> next_left && !now -> next_right) // 양쪽 모두에 자식이 없을때 왼쪽으로 붙히기
+			now -> next_left = next;
 		else
 			now -> next_right = next;
 		next -> prev = now;
 	}
 }
 
-static void	ini_tree_node(t_tree *next, t_list *tk_list)
+static void	ini_tree_node(t_tree *next, t_list *tk_list_arg) // tk_list_arg = 매개변수로 들어온 토큰 리스트
 {
-	if (tk_list -> ctrl_token == PIPE)
-		next -> pipe = 1;
+	if (tk_list_arg -> ctrl_token)
+		next -> ctrl_token = tk_list_arg -> ctrl_token; // 토큰 리스트에서 트리 노드로 컨트롤 토큰 정보 복사
 	else
-		next -> pipe = 0;
+		next -> ctrl_token = 0;
+	while (tk_list_arg -> prev) // 토큰 리스트 0번째로 이동
+		tk_list_arg = tk_list_arg -> prev;
+	next -> tk_list = tk_list_arg; // next -> tk_list = 트리 노드 멤버변수(토큰 리스트 포인터)에 0번째 토큰리스트 주소 대입
 	next -> chked = OFF;
 	next -> end_flag = OFF;
 	next -> tk_idx_set = 0;

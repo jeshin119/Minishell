@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 19:24:29 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/23 12:27:41 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_tree	*go_to_pipe(t_tree *now)
 		return (0);
 	while (now -> prev)
 	{
-		if (now -> pipe)
+		if (now -> ctrl_token == PIPE)
 			return (now);
 		now = now -> prev;
 	}
@@ -31,7 +31,7 @@ t_tree	*go_to_subroot(t_tree *now)
 		return (0);
 	while (now -> prev)
 	{
-		if (now -> prev -> pipe)
+		if (now -> prev -> ctrl_token == PIPE)
 			return (now);
 		now = now -> prev;
 	}
@@ -72,7 +72,7 @@ void	print_token_info(t_tree *now, int direct)
 		now_direct = right;
 	if (now -> end_flag)
 		now_direct = out;
-	if (now -> pipe)
+	if (now -> ctrl_token == PIPE)
 	{
 		printf("| -> %d  %s  end_flag = %d\n", now -> idx, now_direct, now -> end_flag);
 		return ;
@@ -87,7 +87,7 @@ void	print_token(t_tree *now, t_list *tk_list, int direct)
 
 	i = 0;
 	head = tk_list;
-	if (now -> pipe)
+	if (now -> ctrl_token == PIPE)
 	{
 		print_token_info(now, direct);
 		return ;
@@ -115,7 +115,7 @@ void	preorder_travel(t_tree *now, t_list *tk_list)
 			print_token(now, tk_list, LEFT);
 			now = now -> next_left;
 		}
-		while (now -> prev && !now -> pipe)
+		while (now -> prev && now -> ctrl_token != PIPE)
 		{
 			while (now -> next_right)
 			{

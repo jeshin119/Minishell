@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 18:47:27 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/23 12:25:23 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_tree
 	t_list			*tk_list;
 	int				idx;
 	int				chked;
-	int				pipe;
+	int				ctrl_token;
 	int				end_flag;
 	int				*tk_idx_set;
 	struct s_tree	*next_left;
