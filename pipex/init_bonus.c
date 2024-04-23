@@ -6,11 +6,12 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 15:15:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/23 08:51:45 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/23 09:47:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
+#include "../include/minishell.h"
 #include "../include/minishell.h"
 
 static int	care_here_doc(int ac, char **av, t_ags *ags)
