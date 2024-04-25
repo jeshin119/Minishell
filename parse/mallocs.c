@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:00:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/24 13:25:51 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/25 16:17:07 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 t_tree	*malloc_cmd_node(t_tree *now, t_list *tk_list, int cmd_cnt)
 {
+	int i;
+
+	i = 0;
 	if (cmd_cnt > 0)
 	{
 		if (now && !now -> next_left)
@@ -23,6 +26,11 @@ t_tree	*malloc_cmd_node(t_tree *now, t_list *tk_list, int cmd_cnt)
 		now -> tk_idx_set = (int *)malloc(sizeof(int) * (cmd_cnt + 1));
 		if (!now -> tk_idx_set)
 			exit(1);
+		while (i < cmd_cnt)
+		{
+			(now -> tk_idx_set)[i] = 0;
+			i++;
+		}
 		(now -> tk_idx_set)[cmd_cnt] = NONE;
 	}
 	return (now);

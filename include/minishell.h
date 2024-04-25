@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/24 11:59:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/25 15:02:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,32 @@ typedef struct s_tree
 	struct s_tree	*prev;
 }	t_tree;
 
+
+//subtree정보 구조체
+typedef struct s_subtree
+{
+	int					infile_fd;
+	int					outfile_fd;
+	char				*cmd;
+	char				**opt;
+	struct s_subtree	*next;
+	struct s_subtree	*prev;
+} t_subtree;
+
+typedef struct s_sbt_lst
+{
+	t_subtree *head;
+	t_subtree *tail;
+}	t_sbt_lst;
+
+//maintree정보 구조체
+typedef struct s_tree_info
+{
+	struct s_sbt_lst *sbt_lst;
+	int **pipe_tab;
+	int pipe_num;
+}	t_tree_info;
+
 //signal 처리 구조체 
 typedef struct s_sig
 {
@@ -88,6 +114,7 @@ t_list	*tokenize(char *cmd_line);
 t_list	*token_split(t_list *tk_list, char *s);
 t_tree	*parse(char *line, t_dq *env);
 
+
 //builtins
 int		_echo(char *opt, char *str);
 int		_cd(char *path, t_dq *env);
@@ -99,13 +126,25 @@ void	__exit(void);
 
 //pipe.c
 int get_pipe_num_from_tree(t_tree *tre);
-int	**open_pipes(int num);
+int open_pipes(int num, int ***pipe_fd_tab);
 
-//open_fd.c
+//open_fds.c
+int care_redirection(t_tree *tree);
 int	open_heredoc_n_return(t_tree *tree);
 int	open_infile_n_return(t_tree *tree);
 int	open_outfile_n_return(t_tree *tree);
 int	open_appending_n_return(t_tree *tree);
+
+//tree_info.c
+int init_tree_info(t_tree *tree, t_tree_info *tr_info);
+
+//link_fds.c
+int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl);
+void t2(t_tree *tree,t_sbt_lst *sbt_lst);
+void t1(t_tree *tree, t_sbt_lst *sbt_lst);
+
+//open_fds.c
+int care_redirection(t_tree *tree);
 
 //handle_signal.c
 void	handle_int();
@@ -114,6 +153,7 @@ void	put_exit_when_eof(void);
 
 //utils.c
 char 	*get_nth_token_from_lst(t_tree *tree, int nth);
+char 	**get_opt_from_lst(t_tree *tree);
 void	make_my_env(char **e, t_dq *env);
 void	my_dup2(int rd, int wr);
 #endif

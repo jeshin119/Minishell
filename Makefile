@@ -11,7 +11,14 @@ SRC_DIRS = parse\
 			 builtins\
 			 pipex
 SRC = $(wildcard $(addsuffix /*.c , $(SRC_DIRS)))\
-		 main.c
+		 main.c\
+		 pipe.c\
+		 tree_info.c\
+		 link_fds.c\
+		 utils.c\
+		 open_fds.c\
+		 handle_signal.c
+
 OBJ = $(SRC:.c=.o)
 
 all : $(NAME)
@@ -25,8 +32,8 @@ $(NAME) : $(OBJ) $(LIBFT)
 %.o : %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-debug : $(LIBFT) $(OBJ)
-	@$(CC) $(CFLAGS) -lreadline $(DBGFLGS) -o $(NAME)
+d : $(LIBFT) $(SRC)
+	$(CC) $(CFLAGS) -lreadline $(DBGFLGS)  $(LIBFT) $(SRC) -o $(NAME)
 
 $(LIBFT) : 
 	@$(MAKE) -C ./libft

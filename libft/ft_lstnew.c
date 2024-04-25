@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 11:39:04 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/14 18:17:36 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:31:13 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,17 @@ t_list	*ft_lstnew(t_list *now)
 	if (now)
 		now -> next = new;
 	idx_s++;
+	return (new);
+}
+
+t_lst	*lstnew(void *content)
+{
+	t_lst	*new;
+
+	new = (t_lst *)malloc(sizeof(t_lst));
+	if (!new)
+		return (0);
+	new->content = content;
+	new->next = 0;
 	return (new);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_tmp.c                                         :+:      :+:    :+:   */
+/*   exec_tree.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/24 11:37:04 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/24 17:19:55 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,26 +74,6 @@ void ex(t_tree *tre)
 // sleep 2|echo hi|wc -l| cat<<end 라고 제대로 입력해도 입력먼저받고 wc -l결과는 출력안됨.
 //echo hi|wc -l|sleep 3 도 마찬가지. 3초쉬고 그냥 끝남.
 //결론 : 먼저 히어독 받고. 먼저 연결하고 그담에 실행한다. 
-char *get_nth_token_from_lst(t_tree *tree, int nth)
-{
-	char	*ret;
-	t_list	*here;
-	int		i;
-	//아 tree의 멤버변수인 tk_lst를 처음부터 하지말걸 그랬나? 반복문 낭비가 조금 있는디
-	if (tree == 0 || tree->tk_list == 0)
-		return (EXIT_FAILURE);
-	i = -1;
-	here = tree->tk_list;
-	ret = here->token;
-	while (here && ++i < nth)
-	{
-		ret = here->token;
-		here=here->next;
-	}
-	if (here == 0)
-		return (EXIT_FAILURE);
-	return (ret);
-}
 
 //pipex에서는 어케했지? 자식 뿌리고 자식에서 파이프연결하고 명령어 실행하고. 부모는 모든파이프 닫고 자식하나하나 기다리고
 //여기선 어케하면되지? 트리 순회하면서 다 연결? 트리순회하다가 파이프만나면 파이프 왼쪽 자식만들고 파이프오른쪽 자식만들고 

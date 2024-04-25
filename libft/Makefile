@@ -54,6 +54,7 @@ BONUS_FILES = ft_lstadd_back.c\
 				ft_lstlast.c\
 				ft_lstnew.c\
 				ft_lstsize.c\
+				ft_lstdelone.c
 
 SRCS = $(SRCS_FILES)
 SRCS_BONUS = $(BONUS_FILES)

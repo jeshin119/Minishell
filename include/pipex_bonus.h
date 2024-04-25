@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 15:21:15 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 18:46:52 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/24 15:47:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,6 @@ typedef struct s_ags
 	int		is_here_doc;
 }		t_ags;
 
-typedef struct s_lst
-{
-	void			*content;
-	struct s_lst	*next;
-}					t_lst;
-
 //utils_bonus.c
 void	exit_with_errmsg(char *msg);
 void	free_tab(char	***tab);
@@ -72,9 +66,4 @@ void	go_child(t_ags ags, char **envp);
 //main_bonus..c
 int	go_pipex(int argc, char *argv[], char *envp[]);
 
-//lst.c
-void	lstadd_back(t_lst **lst, t_lst *new);
-t_lst	*lstnew(void *content);
-void	lstclear(t_lst **lst, void (*del)(void *));
-int		lstsize(t_lst *lst);
 #endif

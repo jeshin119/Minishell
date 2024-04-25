@@ -6,11 +6,11 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/24 11:59:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/25 16:43:26 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "include/minishell.h"
 
 void	exit_with_errmsg(char *msg)
 {
@@ -74,7 +74,7 @@ char *get_nth_token_from_lst(t_tree *tree, int nth)
 	char	*ret;
 	t_list	*here;
 	int		i;
-	//아 tree의 멤버변수인 tk_lst를 처음부터 하지말걸 그랬나? 반복문 낭비가 조금 있는디
+
 	if (tree == 0 || tree->tk_list == 0)
 		return (NULL);
 	i = -1;
@@ -82,12 +82,38 @@ char *get_nth_token_from_lst(t_tree *tree, int nth)
 	ret = here->token;
 	while (here && ++i < nth)
 	{
-		ret = here->token;
 		here=here->next;
+		ret = here->token;
 	}
 	if (here == 0)
 		return (NULL);
 	return (ret);
+}
+
+char **get_opt_from_lst(t_tree *tree)
+{
+	t_list *start;
+	int	size;
+	int	i;
+	int	j;
+
+	if (tree == 0 || tree->tk_list == 0)
+		return (NULL);
+	size = -1;
+	while((tree->tk_idx_set)[++size] >= 0);
+	if (size == 1)
+		return (NULL);
+	char **opt = (char **)malloc(sizeof(char *) * (size + 1));
+	opt[size] = 0;
+	i = -1;
+	start = tree->tk_list;
+	while (++i < tree->tk_idx_set[0] && start){
+		start=start->next;
+	}
+	j = -1;
+	while (++j < size)
+		opt[j]=get_nth_token_from_lst(tree , i++);
+	return (opt);
 }
 
 void	make_my_env(char **e, t_dq *env)

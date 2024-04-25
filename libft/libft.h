@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 10:58:47 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 17:32:21 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/24 15:40:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ typedef struct s_list
 	struct s_list	*next;
 	struct s_list	*prev;
 }	t_list;
+
+typedef struct s_lst
+{
+	void			*content;
+	struct s_lst	*next;
+}	t_lst;
 
 int			ft_isalpha(int c);
 int			ft_isdigit(int c);
@@ -77,14 +83,20 @@ void		ft_puthex_fd(long int n, int fd, int upper);
 void		ft_puthex_cnt(unsigned long int n, int upper, int *num);
 void		ft_putaddr_fd(void *addr, int fd);
 void		ft_putaddr_cnt(void *addr, int *num);
+//t_list
 t_list		*ft_lstnew(t_list *now);
 void		ft_lstadd_front(t_list **lst, t_list *new);
 int			ft_lstsize(t_list *lst);
 t_list		*ft_lstlast(t_list *lst);
 void		ft_lstadd_back(t_list **lst, t_list *new);
 void		ft_lstdelone(t_list *lst, void (*del)(void *));
-void		ft_lstiter(t_list *lst, void (*f)(void *));
-t_list		*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+//t_lst
+t_lst		*lstnew(void *content);
+void		lstadd_front(t_lst **lst, t_lst *new);
+int			lstsize(t_lst *lst);
+t_lst		*lstlast(t_lst *lst);
+void		lstadd_back(t_lst **lst, t_lst *new);
+void		lstdelone(t_lst *lst, void (*del)(void *));
 char		*get_next_line(int fd);
 
 #endif
