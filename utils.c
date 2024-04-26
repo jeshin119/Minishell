@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/25 16:43:26 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/26 17:47:19 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,42 +18,14 @@ void	exit_with_errmsg(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-void	free_tab(char	***tab)
+void	free_tab(char	**tab)
 {
 	int	i;
 
 	i = -1;
-	while ((*tab)[++i])
-		free((*tab)[i]);
-	free(*tab);
-}
-
-void	free_all(t_ags	*ags)
-{
-	int	i;
-
-	i = -1;
-	while (++i < ags->n_cmd -1)
-		free(ags->pipe_fd_tab[i]);
-	free(ags->pipe_fd_tab);
-	i = -1;
-	while (ags->opts_tab[++i] != 0)
-	{
-		free_tab(&ags->opts_tab[i]);
-	}
-	free(ags->opts_tab);
-	if (ags->is_here_doc)
-		unlink(".here_doc_tmp_f");
-}
-
-void	init_str_agr(t_str_ags *chunk)
-{
-	chunk->dq = 0;
-	chunk->sq = 0;
-	chunk->i = 0;
-	chunk->pos = 0;
-	chunk->have_lst_made = 0;
-	chunk->tmp_s = 0;
+	while (tab[++i])
+		free(tab[i]);
+	free(tab);
 }
 
 int	get_mid_substr(char *s, char **ret, int i, int pos)
@@ -71,6 +43,7 @@ int	get_mid_substr(char *s, char **ret, int i, int pos)
 
 char *get_nth_token_from_lst(t_tree *tree, int nth)
 {
+	char	*tmp;
 	char	*ret;
 	t_list	*here;
 	int		i;
@@ -79,14 +52,15 @@ char *get_nth_token_from_lst(t_tree *tree, int nth)
 		return (NULL);
 	i = -1;
 	here = tree->tk_list;
-	ret = here->token;
+	tmp = here->token;
 	while (here && ++i < nth)
 	{
 		here=here->next;
-		ret = here->token;
+		tmp = here->token;
 	}
 	if (here == 0)
 		return (NULL);
+	ret = ft_strdup(tmp);
 	return (ret);
 }
 

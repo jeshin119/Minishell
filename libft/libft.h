@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 10:58:47 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/24 15:40:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/26 17:56:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void		*ft_calloc(size_t count, size_t size);
 char		*ft_strdup(const char *s1);
 char		*ft_substr(char const *s, int start, int len);
 char		*ft_strjoin(char *s1, char *s2);
+char		*ft_strjoin_no_free(char *s1, char *s2);
 char		*ft_strtrim(char const *s1, char const *set);
 char		**ft_split(char const *s, char c);
 char		*ft_itoa(int n);

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/25 15:02:15 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/26 18:08:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@
 # include <termcap.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <errno.h>
 # include "../libft/libft.h"
 # include "my_deque.h"
-# include "pipex_bonus.h"
 
 typedef struct s_tree
 {
@@ -59,25 +59,29 @@ typedef struct s_tree
 	struct s_tree	*prev;
 }	t_tree;
 
-
-//subtree정보 구조체
+//서브트리 구조체 
 typedef struct s_subtree
 {
 	int					infile_fd;
 	int					outfile_fd;
+	int					is_heredoc;
+	int					is_appending;
+	char				*infile;
+	char				*outfile;
 	char				*cmd;
 	char				**opt;
 	struct s_subtree	*next;
 	struct s_subtree	*prev;
 } t_subtree;
 
+//서브트리 리스트구조체
 typedef struct s_sbt_lst
 {
 	t_subtree *head;
 	t_subtree *tail;
 }	t_sbt_lst;
 
-//maintree정보 구조체
+//트리정보 구조체 
 typedef struct s_tree_info
 {
 	struct s_sbt_lst *sbt_lst;
@@ -85,7 +89,7 @@ typedef struct s_tree_info
 	int pipe_num;
 }	t_tree_info;
 
-//signal 처리 구조체 
+//시그널처리
 typedef struct s_sig
 {
 	struct sigaction sa_int;
@@ -125,26 +129,21 @@ void	_env(t_dq *env);
 void	__exit(void);
 
 //pipe.c
-int get_pipe_num_from_tree(t_tree *tre);
-int open_pipes(int num, int ***pipe_fd_tab);
-
-//open_fds.c
-int care_redirection(t_tree *tree);
-int	open_heredoc_n_return(t_tree *tree);
-int	open_infile_n_return(t_tree *tree);
-int	open_outfile_n_return(t_tree *tree);
-int	open_appending_n_return(t_tree *tree);
+int 	get_pipe_num_from_tree(t_tree *tre);
+int 	open_pipes(int num, int ***pipe_fd_tab);
 
 //tree_info.c
-int init_tree_info(t_tree *tree, t_tree_info *tr_info);
+int	 init_tree_info(t_tree *tree, t_tree_info *tr_info);
+void	reset_tree_info(t_tree_info *info);
+//subtree.c
+void	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl);
 
-//link_fds.c
-int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl);
-void t2(t_tree *tree,t_sbt_lst *sbt_lst);
-void t1(t_tree *tree, t_sbt_lst *sbt_lst);
+//subtree_utils.c
+void	prt_sbtl(t_tree_info *trif);
+void	free_subtree(t_subtree *sbtr);
 
-//open_fds.c
-int care_redirection(t_tree *tree);
+//open_file.c
+int		get_fd(t_tree *tree);
 
 //handle_signal.c
 void	handle_int();
@@ -156,4 +155,5 @@ char 	*get_nth_token_from_lst(t_tree *tree, int nth);
 char 	**get_opt_from_lst(t_tree *tree);
 void	make_my_env(char **e, t_dq *env);
 void	my_dup2(int rd, int wr);
+void	free_tab(char	**tab);
 #endif

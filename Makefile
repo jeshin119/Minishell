@@ -8,15 +8,15 @@ INCLUDE = ./include
 
 LIBFT = ./libft/libft.a
 SRC_DIRS = parse\
-			 builtins\
-			 pipex
+			 builtins
 SRC = $(wildcard $(addsuffix /*.c , $(SRC_DIRS)))\
 		 main.c\
 		 pipe.c\
 		 tree_info.c\
-		 link_fds.c\
+		 subtree.c\
+		 subtree_utils.c\
 		 utils.c\
-		 open_fds.c\
+		 open_file.c\
 		 handle_signal.c
 
 OBJ = $(SRC:.c=.o)
