@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/26 18:08:25 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 17:43:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,42 +118,54 @@ t_list	*tokenize(char *cmd_line);
 t_list	*token_split(t_list *tk_list, char *s);
 t_tree	*parse(char *line, t_dq *env);
 
-
-//builtins
-int		_echo(char *opt, char *str);
-int		_cd(char *path, t_dq *env);
-int		_pwd(void);
-int		_export(char *name, char *val, t_dq *env);
-void	_unset(t_dq *env, char *remove);
-void	_env(t_dq *env);
-void	__exit(void);
+//tree_info.c
+int		init_tree_info(t_tree *tree, t_tree_info *tr_info);
+void	reset_tree_info(t_tree_info *info);
 
 //pipe.c
 int 	get_pipe_num_from_tree(t_tree *tre);
 int 	open_pipes(int num, int ***pipe_fd_tab);
+void	close_all_pipe(int size, int **pipe_tab);
 
-//tree_info.c
-int	 init_tree_info(t_tree *tree, t_tree_info *tr_info);
-void	reset_tree_info(t_tree_info *info);
+
 //subtree.c
 void	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl);
 
-//subtree_utils.c
-void	prt_sbtl(t_tree_info *trif);
-void	free_subtree(t_subtree *sbtr);
-
 //open_file.c
-int		get_fd(t_tree *tree);
+int	get_infile_fd(t_subtree *subtree);
+int	get_outfile_fd(t_subtree *subtree);
+
+//exec.c
+void 	exec_subtree(t_tree *tree , t_tree_info *tree_info,t_dq *env);
 
 //handle_signal.c
 void	handle_int();
 int		set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
-void	put_exit_when_eof(void);
+void	exit_when_eof(void);
+
+//path.c
+char	*get_path(char *cmd, t_dq *env);
+
+//env.c
+void	make_my_env(char **e, t_dq *env);
+char	 **get_envtab(t_dq *env);
 
 //utils.c
 char 	*get_nth_token_from_lst(t_tree *tree, int nth);
 char 	**get_opt_from_lst(t_tree *tree);
-void	make_my_env(char **e, t_dq *env);
 void	my_dup2(int rd, int wr);
 void	free_tab(char	**tab);
+void	perr_n_exit(const char *err);
+
+//buf.c
+char	*check_buf(char *buf);
+
+//builtins
+void	_echo(t_subtree *t_subtree);
+void	_cd(char *path, t_dq *env);
+void	_pwd(void);
+void	_export(char *name, char *val, t_dq *env);
+void	_unset(t_dq *env, char *remove);
+void	_env(t_dq *env);
+void	_exit_(void);
 #endif

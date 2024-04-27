@@ -6,25 +6,29 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:13:55 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 15:23:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 18:53:14 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	_echo(char *opt, char *str)
+void	_echo(t_subtree *subtree)
 {
-	int	line_filp;
+	int		i;
 
-	line_filp = 1;
-	if (opt != 0 && ft_strncmp(opt, "-n", 3) == 0)
-		line_filp = 0;
-	if (line_filp)
-	{
-		write(1, str, ft_strlen(str));
+	i = -1;
+	while ((subtree->opt)[++i])
+		;
+	if (i == 1)
+		ft_putstr("\n");
+	else if (i == 2 && ft_strncmp((subtree->opt)[1], "-n", 3) == 0)
+		;
+	else if (i == 2 && ft_strncmp((subtree->opt)[1], "-n", 3))
+	{	
+		ft_putstr(subtree->opt[1]);
 		write(1, "\n", 1);
-		return (0);
 	}
-	write(1, str, ft_strlen(str));
-	return (0);
+	else if (i == 3 && ft_strncmp((subtree->opt)[1], "-n", 3) == 0)
+		ft_putstr(subtree->opt[2]);
+	exit(EXIT_SUCCESS);
 }

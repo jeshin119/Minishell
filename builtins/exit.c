@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 17:31:11 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 15:22:58 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/04/27 13:21:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	__exit(void)
+void	_exit_(void)
 {
 	ft_putstr("exit\n");
 	exit(EXIT_SUCCESS);

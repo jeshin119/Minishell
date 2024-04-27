@@ -6,25 +6,32 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 15:15:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/26 16:28:10 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 09:32:41y jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 
-static int	open_heredoc_n_return(t_tree *tree)
+static int	open_heredoc_n_return(t_subtree *subtree)
 {
 	char	*buf;
 	char	*limiter;
 	int		size_of_limiter;
 	int		heredoc_fd;
 
-	if (tree == 0 || tree->tk_idx_set == 0)
+	if (subtree == 0)
 		return (EXIT_FAILURE);
 	heredoc_fd = open(".here_doc_tmp_f", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd < 0)
-		exit (EXIT_FAILURE); //errcde!
-	limiter = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	{
+		ft_putstr_fd("bash: ",2);
+		// ft_putstr_fd(subtree->,2);
+		// ft_putstr_fd(": ",2);
+		perror(NULL);
+		exit(EXIT_FAILURE); // exit code!
+		// exit(ENOENT);
+	}
+	limiter = subtree->infile;
 	if (limiter == 0)
 		return (EXIT_FAILURE);
 	size_of_limiter = ft_strlen(limiter);
@@ -34,76 +41,103 @@ static int	open_heredoc_n_return(t_tree *tree)
 		if (ft_strncmp(buf, limiter, size_of_limiter + 1) == 0)
 			break ;
 		if (write(heredoc_fd, buf, ft_strlen(buf)) < 0)
-			exit (EXIT_FAILURE); // exitcode!
+			exit (EXIT_FAILURE);
 		free(buf);
 	}
 	return (heredoc_fd);
 }
 
-static int	open_infile_n_return(t_tree *tree)
+static int	open_infile_n_return(t_subtree *subtree)
 {
 	char	*infile;
 	int		infile_fd;
 
-	if (tree == 0 || tree->tk_idx_set == 0)
+	if (subtree == 0)
 		return (EXIT_FAILURE);
-	infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	infile = subtree->infile;
 	if (infile == 0)
 		return (EXIT_FAILURE);
 	infile_fd = open(infile, O_RDONLY);
 	if (infile_fd < 0)
 	{
-		perror("infile error : file not found");
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(subtree->infile,2);
+		ft_putstr_fd(": ",2);
+		perror(NULL);
 		exit(EXIT_FAILURE); // exit code!
+		// exit(ENOENT);
 	}
 	return (infile_fd);
 }
 
-static int	open_outfile_n_return(t_tree *tree)
+static int	open_outfile_n_return(t_subtree *subtree)
 {
 	char	*outfile;
 	int		outfile_fd;
 
-	if (tree == 0 || tree->tk_idx_set == 0)
+	if (subtree == 0)
 		return (EXIT_FAILURE);
-	outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	outfile = subtree->outfile;
 	if (outfile == 0)
 		return (EXIT_FAILURE);
-	outfile_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	outfile_fd = open(outfile, O_WRONLY);
 	if (outfile_fd < 0)
-		exit(EXIT_FAILURE); // exit cod!
+	{
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(subtree->outfile, 2);
+		ft_putstr_fd(": ",2);
+		perror(NULL);
+		exit(EXIT_FAILURE); // exit code!
+		// exit(ENOENT);
+	}
 	return (outfile_fd);
 }
 
-static int	open_appending_n_return(t_tree *tree)
+static int	open_appending_n_return(t_subtree *subtree)
 {
 	char	*appending;
 	int		appending_fd;
 
-	if (tree == 0 || tree->tk_idx_set == 0)
+	if (subtree == 0)
 		return (EXIT_FAILURE);
-	appending = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	appending = subtree->outfile;
 	if (appending == 0)
 		return (EXIT_FAILURE);
 	appending_fd = open(appending, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (appending_fd < 0)
+	{
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(subtree->outfile, 2);
+		ft_putstr_fd(": ",2);
+		perror(NULL);
 		exit(EXIT_FAILURE); // exit code!
+		// exit(ENOENT);
+	}
 	return (appending_fd);
 }
 
-int	get_fd(t_tree *tree)
+int	get_infile_fd(t_subtree *subtree)
 {
-	if (tree == 0)
-		return (EXIT_FAILURE);
-	if (tree->ctrl_token == PIPE)
-		return (EXIT_SUCCESS);
-	if (tree->ctrl_token == HERE_DOC)
-		return (open_heredoc_n_return(tree));
-	if (tree->ctrl_token == LEFT)
-		return (open_infile_n_return(tree));
-	if (tree->ctrl_token == RIGHT)
-		return (open_outfile_n_return(tree));
-	if (tree->ctrl_token == D_RIGHT)
-		return (open_appending_n_return(tree));
-	return (EXIT_FAILURE);
+	if (subtree == 0)
+		return (STDIN_FILENO);
+	if (subtree->infile == NULL && subtree->outfile == NULL)
+		return (STDIN_FILENO);
+	if (subtree->is_heredoc == ON)
+		return (open_heredoc_n_return(subtree));
+	if (subtree->is_heredoc == OFF && subtree->infile != NULL)
+		return (open_infile_n_return(subtree));
+	return (STDIN_FILENO);
+}
+
+int	get_outfile_fd(t_subtree *subtree)
+{
+	if (subtree == 0)
+		return (STDOUT_FILENO);
+	if (subtree->infile == NULL && subtree->outfile == NULL)
+		return (STDOUT_FILENO);
+	if (subtree->is_appending == ON)
+		return (open_appending_n_return(subtree));
+	if (subtree->is_appending == OFF && subtree->outfile != NULL)
+		return (open_outfile_n_return(subtree));
+	return (STDOUT_FILENO);
 }

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 17:01:00 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 16:28:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 15:57:06 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ void	_unset(t_dq *env, char *remove)
 		}
 		start = start->next;
 	}
+	exit(EXIT_SUCCESS);
 }

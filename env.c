@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/16 18:10:25 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/01 15:56:51 by jeshin           ###   ########.fr       */
+/*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
+/*   Updated: 2024/04/27 13:37:02 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "./include/minishell.h"
 
-static void	mke_my_env(char **e, t_dq *env)
+void	make_my_env(char **e, t_dq *env)
 {
 	char	**tmp;
 
@@ -26,18 +26,27 @@ static void	mke_my_env(char **e, t_dq *env)
 	}
 }
 
-void	_env(t_dq *env)
+char **get_envtab(t_dq *env)
 {
-	t_node	*here;
-
-	here = env->head;
-	while (here)
+	char **tab;
+	t_node *start;
+	char *tmp;
+	start = env->head;
+	tab = (char **)malloc(sizeof(char *)*(env->size + 1));
+	int i = -1;
+	while (start && i < env->size)
 	{
-		ft_putstr(here->name);
-		write(1, "=", 1);
-		ft_putstr(here->val);
-		write(1, "\n", 1);
-		here = here->next;
+		if (start->name == 0 || start->val == 0)
+		{
+			start= start->next;
+			i++;
+			continue;
+		}
+		tmp = ft_strjoin_no_free(start->name,"=");
+		tab[++i]=ft_strjoin_no_free(tmp,start->val);
+		free(tmp);
+		start=start->next;
 	}
-	exit(EXIT_SUCCESS);
+	tab[env->size]=0;
+	return (tab);
 }

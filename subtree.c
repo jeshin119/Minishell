@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:33:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/26 17:00:02 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 13:27:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,25 @@ static void	init_subtree(t_subtree **subtree)
 static void	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
 {
 	t_sbt_lst *lst;
+	t_subtree *here;
 
 	lst = *sbtr_lst;
-	if (lst->head == 0){
+	if (lst->head == 0)
+	{
 		lst->head = new;
 		lst->tail = new;
 		new->next = 0;
 		new->prev = 0;
 	}
-	else{
-		t_subtree *here = lst->head;
-		while (here->next){
-			here=here->next;
-		}
+	else
+	{
+		here = lst->head;
+		while (here->next)
+			here = here->next;
 		here->next = new;
 		new->prev = here;
 		new->next = 0;
+		lst->tail = new;
 	}
 }
 
@@ -123,6 +126,9 @@ void	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl)
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left == 0 && tree->next_right == 0)
 	{
+		// char *tmp = readline(NULL);
+		// if (ft_strlen(tmp))
+		// 	add_history()
 		;//cat < qeustion.txt | 이후에 입력을 새로 받음. 새로 wc -l 와 같이 명령주면 합쳐서 실행해야함.
 	}
 }

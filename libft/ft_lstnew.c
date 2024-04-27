@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 11:39:04 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/24 15:31:13 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 11:29:31 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ t_list	*ft_lstnew(t_list *now)
 	static int	idx_s;
 	t_list		*new;
 
+	if (!now)
+		idx_s = 0;
 	new = (t_list *)malloc(sizeof(t_list));
 	if (!new)
 		exit(1);

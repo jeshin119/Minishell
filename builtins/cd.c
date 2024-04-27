@@ -6,19 +6,19 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:31:50 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 15:23:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 15:54:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	take_cd_error(char *path)
+static void	take_cd_error(char *path)
 {
 	ft_putstr("bash: cd: ");
 	ft_putstr(path);
 	ft_putstr(": ");
-	perror("");
-	return (EXIT_FAILURE);
+	perror(NULL);
+	exit(EXIT_FAILURE);
 }
 
 static char	*find_home_path(t_dq *env)
@@ -35,19 +35,19 @@ static char	*find_home_path(t_dq *env)
 	return (home);
 }
 
-int	_cd(char *path,	t_dq *env)
+void	_cd(char *path,	t_dq *env)
 {
 	char	*home;
 	char	*new;
 
 	if (*path == 0)
-		return (EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	home = find_home_path(env);
 	if (path == 0 || !ft_strncmp(path, "-", 2) || \
 	!ft_strncmp(path, "--", 3) || !ft_strncmp(path, "~", 2))
 	{
 		if (chdir(home) == -1)
-			exit(take_cd_error(path));
+			take_cd_error(path);
 	}
 	if (!ft_strncmp(path, "~/", 2))
 	{
@@ -57,7 +57,7 @@ int	_cd(char *path,	t_dq *env)
 	else
 	{
 		if (chdir(path) == -1)
-			exit(take_cd_error(path));
+			take_cd_error(path);
 	}
-	return (EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
 }

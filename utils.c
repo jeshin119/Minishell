@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/26 17:47:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 17:02:49 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ char **get_opt_from_lst(t_tree *tree)
 		return (NULL);
 	size = -1;
 	while((tree->tk_idx_set)[++size] >= 0);
-	if (size == 1)
-		return (NULL);
 	char **opt = (char **)malloc(sizeof(char *) * (size + 1));
 	opt[size] = 0;
 	i = -1;
@@ -90,24 +88,20 @@ char **get_opt_from_lst(t_tree *tree)
 	return (opt);
 }
 
-void	make_my_env(char **e, t_dq *env)
+void	my_dup2(int rd, int wr)
 {
-	char	**tmp;
-
-	init_dq(env);
-	while (*e)
-	{
-		tmp = ft_split(*e, '=');
-		push_back_dq(env, tmp[0], tmp[1]);
-		free(tmp);
-		e++;
+	if (rd != STDIN_FILENO){
+		if (dup2(rd, 0) < 0)
+			perror("dup2 error");
+	}
+	if (wr != STDOUT_FILENO){
+		if (dup2(wr, 1) < 0)
+			perror("dup2 error");
 	}
 }
 
-void	my_dup2(int rd, int wr)
+void	perr_n_exit(const char *err)
 {
-	if (dup2(rd, 0) < 0)
-		perror("dup2 error");
-	if (dup2(wr, 1) < 0)
-		perror("dup2 error");
+	perror(err);
+	exit(EXIT_FAILURE);
 }

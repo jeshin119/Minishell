@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:00:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/25 16:17:07 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 11:29:53 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ t_tree	*malloc_tree_node(t_tree *now, t_list *tk_list, int direct)
 	static int	idx_s;
 	t_tree		*next;
 
+	if (!now)
+		idx_s = 0;
 	next = (t_tree *)malloc(sizeof(t_tree));
 	if (!next)
 		exit(1);

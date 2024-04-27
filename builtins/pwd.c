@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:24:19 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/22 15:22:53 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 15:57:29 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	_pwd(void)
+void	_pwd(void)
 {
 	char	*bkup;
 	char	*buf;
@@ -29,12 +29,12 @@ int	_pwd(void)
 			break ;
 		if (size > 1024 && bkup == 0)
 		{
-			perror("pwd error");
+			perror(NULL);
 			exit(EXIT_FAILURE);
 		}
 		size *= 2;
 	}	
 	ft_putstr(bkup);
 	write(1, "\n", 1);
-	return (EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
 }

@@ -89,14 +89,14 @@ static int put_elem_in_ascii_order(t_dq *env)
 	return (EXIT_SUCCESS);
 }
 
-int	_export(char *name, char *val, t_dq *env)
+void	_export(char *name, char *val, t_dq *env)
 {
 	int	*order;
 
 	if (name == 0 || *name == 0)
 		put_elem_in_ascii_order(env);
 	push_back_dq(env, name, val);
-	return (EXIT_SUCCESS);
+	exit (EXIT_SUCCESS);
 }
 
 //test//

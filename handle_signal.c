@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/26 16:38:03 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 10:35:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit) // ctrl+c인
 	return (EXIT_SUCCESS);
 }
 
-void	put_exit_when_eof(void)
+void	exit_when_eof(void)
 {
 	write(1, "\033[1A", 4);
 	write(1, "\033[10C", 5);

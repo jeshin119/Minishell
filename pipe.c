@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:50:19 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/26 15:27:12 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/01 17:03:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,16 @@ int	open_pipes(int num,	int ***pipe_fd_tab)
 			return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
+}
+
+void	close_all_pipe(int size, int **pipe_tab)
+{
+	int	i;
+
+	i = -1;
+	while (++i < size)
+	{
+		close(pipe_tab[i][0]);
+		close(pipe_tab[i][1]);
+	}
 }
