@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/01 18:53:21 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/02 16:57:00 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,15 @@ static char	*get_extra_buf(char *buf)
 		buf = tmp2;
 	}
 	return (buf);
+}
+
+static void	exit_when_eof(void)
+{
+	write(1, "\033[1A", 4);
+	write(1, "\033[10C", 5);
+	write(1, "exit\n", 5);
+	rl_clear_history();
+	exit(EXIT_SUCCESS);
 }
 
 char	*check_buf(char *buf)

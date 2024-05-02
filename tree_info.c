@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/01 17:01:38 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/02 16:55:49 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	free_subtree(t_subtree *sbtr)
 {
-	int i;
+	int	i;
 
 	if (sbtr->cmd)
 	{
@@ -23,10 +23,8 @@ static void	free_subtree(t_subtree *sbtr)
 	}
 	if (sbtr->opt)
 	{
-		i = -1;
-		while((sbtr->opt)[++i])
-			free((sbtr->opt)[i]);
-		free(sbtr->opt);
+		free_tab(sbtr->opt);
+		sbtr->opt = 0;
 	}
 	if (sbtr->infile)
 	{
@@ -40,22 +38,6 @@ static void	free_subtree(t_subtree *sbtr)
 	}
 	if (sbtr->is_heredoc)
 		unlink(".here_doc_tmp_f");
-}
-
-int	init_tree_info(t_tree *tree, t_tree_info *tree_info)
-{
-	tree_info->sbt_lst = (t_sbt_lst *)malloc(sizeof(t_sbt_lst));
-	if (tree_info->sbt_lst == 0)
-	{
-		perror(NULL);
-		exit(EXIT_FAILURE);
-	}
-	tree_info->pipe_num = get_pipe_num_from_tree(tree);
-	if (open_pipes(tree_info->pipe_num, &(tree_info->pipe_tab)))
-		return (EXIT_FAILURE);
-	tree_info->sbt_lst->head = 0;
-	tree_info->sbt_lst->tail = 0;
-	return (EXIT_SUCCESS);
 }
 
 void	reset_tree_info(t_tree_info *info)
@@ -83,4 +65,18 @@ void	reset_tree_info(t_tree_info *info)
 		free_subtree(start);
 		start = start->next;
 	}
+}
+
+void	init_tree_info(t_tree *tree, t_tree_info *tree_info)
+{
+	tree_info->sbt_lst = (t_sbt_lst *)malloc(sizeof(t_sbt_lst));
+	if (tree_info->sbt_lst == 0)
+	{
+		perror("malloc: ");
+		exit(EXIT_FAILURE);
+	}
+	tree_info->pipe_num = get_pipe_num_from_tree(tree);
+	open_pipes(tree_info->pipe_num, &(tree_info->pipe_tab));
+	tree_info->sbt_lst->head = 0;
+	tree_info->sbt_lst->tail = 0;
 }

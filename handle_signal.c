@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/01 10:35:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/02 16:49:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 
-void	handle_int() // interrupt 시그널 핸들. ctrl+c가 들어왔을 때 처리하는 것
+static void	handle_int() // interrupt 시그널 핸들. ctrl+c가 들어왔을 때 처리하는 것
 {
 	struct termios term;
 
@@ -25,11 +25,11 @@ void	handle_int() // interrupt 시그널 핸들. ctrl+c가 들어왔을 때 처�
 		perror("rl_on_new_line error");
 		exit(EXIT_FAILURE);
 	}
-	rl_replace_line("",1);//현재 입력으로 받아 놓은 문자열의 값을 초기화시킴
+	rl_replace_line("", 1);//현재 입력으로 받아 놓은 문자열의 값을 초기화시킴
 	rl_redisplay(); //다시 readline실행
 }
 
-int	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit) // ctrl+c인 interrupt와 ctrl+d인 quit을 핸들링하는 함수
+void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit) // ctrl+c인 interrupt와 ctrl+d인 quit을 핸들링하는 함수
 {
 	sigemptyset(&(sa_int->sa_mask)); // sa_int구조체의 mask값을 empty시켜 초기화.
 	sa_int->sa_flags = 0; // 마스킹한 값에 대해 추가적으로 어떤 기능을 하지 않을 것이므로 flag=0으로 초기화
@@ -43,21 +43,11 @@ int	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit) // ctrl+c인
 	if (sigaction(SIGINT, sa_int, NULL) == -1)
 	{
 		perror("sigaction error");
-		return (EXIT_FAILURE);
+		exit (EXIT_FAILURE);
 	}
 	if (sigaction(SIGQUIT, sa_quit, NULL) == -1)
 	{
 		perror("sigaction error");
-		return (EXIT_FAILURE);
+		exit (EXIT_FAILURE);
 	}
-	return (EXIT_SUCCESS);
-}
-
-void	exit_when_eof(void)
-{
-	write(1, "\033[1A", 4);
-	write(1, "\033[10C", 5);
-	write(1, "exit\n", 5);
-	rl_clear_history();
-	exit(EXIT_SUCCESS);
 }
