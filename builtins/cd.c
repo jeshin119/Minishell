@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:31:50 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/01 15:54:43 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/03 10:24:14 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static char	*find_home_path(t_dq *env)
 	return (home);
 }
 
-void	_cd(char *path,	t_dq *env)
+int	_cd(char *path,	t_dq *env)
 {
 	char	*home;
 	char	*new;
@@ -59,5 +59,5 @@ void	_cd(char *path,	t_dq *env)
 		if (chdir(path) == -1)
 			take_cd_error(path);
 	}
-	exit(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }

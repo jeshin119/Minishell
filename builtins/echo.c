@@ -6,29 +6,69 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:13:55 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/01 18:53:14 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/03 10:23:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	_echo(t_subtree *subtree)
+int	is_all_n(char *s)
 {
-	int		i;
+	int	i;
 
+	if (s == 0)
+		return (FALSE);
+	if (ft_strncmp(s, "-n", 3) == 0)
+		return (TRUE);
 	i = -1;
-	while ((subtree->opt)[++i])
-		;
-	if (i == 1)
-		ft_putstr("\n");
-	else if (i == 2 && ft_strncmp((subtree->opt)[1], "-n", 3) == 0)
-		;
-	else if (i == 2 && ft_strncmp((subtree->opt)[1], "-n", 3))
-	{	
-		ft_putstr(subtree->opt[1]);
-		write(1, "\n", 1);
+	if (s[++i] != '-')
+		return (FALSE);
+	while (s[++i])
+	{
+		if (s[i] != 'n')
+			return (FALSE);
 	}
-	else if (i == 3 && ft_strncmp((subtree->opt)[1], "-n", 3) == 0)
-		ft_putstr(subtree->opt[2]);
-	exit(EXIT_SUCCESS);
+	return (TRUE);
+}
+
+int	check_flg(char *str, int *flg, int *has_str)
+{
+	if (*has_str == 0)
+	{
+		if (is_all_n(str))
+		{
+			*flg = 1;
+			return (EXIT_FAILURE);
+		}
+		else
+			*has_str = 1;
+	}
+	return (EXIT_SUCCESS);
+}
+
+int	_echo(t_subtree *subtree)
+{
+	int	i;
+	int	flg;
+	int	has_str;
+
+	i = 0;
+	if ((subtree->opt)[i + 1] == 0)
+	{
+		write(1, "\n", 1);
+		return (EXIT_SUCCESS);
+	}
+	has_str = 0;
+	flg = 0;
+	while ((subtree->opt)[++i])
+	{
+		if (check_flg((subtree->opt)[i], &flg, &has_str))
+			continue ;
+		ft_putstr((subtree->opt[i]));
+		if ((subtree->opt[i + 1]) != 0)
+			write(1, " ", 1);
+	}
+	if (!flg)
+		write(1, "\n", 1);
+	return (EXIT_SUCCESS);
 }

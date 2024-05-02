@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/02 16:49:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/03 09:59:09 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit) // ctrl+c�
 	//sa_int구조체에 interrupt값을 마스킹하고 핸들링함수를 적용. 여기서 세번째 인자는 이전의 마스킹셋을 담을 수 있는 주소값.
 	if (sigaction(SIGINT, sa_int, NULL) == -1)
 	{
-		perror("sigaction error");
+		perror("sigaction error: ");
 		exit (EXIT_FAILURE);
 	}
 	if (sigaction(SIGQUIT, sa_quit, NULL) == -1)
 	{
-		perror("sigaction error");
+		perror("sigaction error: ");
 		exit (EXIT_FAILURE);
 	}
 }

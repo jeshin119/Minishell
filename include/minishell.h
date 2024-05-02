@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/02 17:16:55 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/03 10:27:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,11 +157,11 @@ void	perr_n_exit(const char *err);
 char	*check_buf(char *buf);
 
 //builtins
-void	_echo(t_subtree *t_subtree);
-void	_cd(char *path, t_dq *env);
-void	_pwd(void);
-void	_export(char *name, char *val, t_dq *env);
-void	_unset(t_dq *env, char *remove);
-void	_env(t_dq *env);
-void	_exit_(void);
+int		_echo(t_subtree *t_subtree);
+int		_cd(char *path, t_dq *env);
+int		_pwd(void);
+int		_export(char *name, char *val, t_dq *env);
+int		_unset(t_dq *env, char *remove);
+int		_env(t_dq *env);
+int		_exit_(void);
 #endif
