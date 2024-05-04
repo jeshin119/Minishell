@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 13:32:10 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/26 17:56:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/04 16:31:07 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ char	*ft_strjoin_no_free(char *s1, char *s2)
 	size_t	s1_len;
 	size_t	s2_len;
 
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
+	s1_len = ft_strlen_js(s1);
+	s2_len = ft_strlen_js(s2);
 	ret = (char *)malloc((s1_len + s2_len) * sizeof(char) + 1);
 	if (ret == 0)
 		return (0);

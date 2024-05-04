@@ -6,19 +6,20 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:31:50 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/03 10:24:14 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/04 12:52:37 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include "limits.h"
 
-static void	take_cd_error(char *path)
+static int	care_cd_error(char *path)
 {
 	ft_putstr("bash: cd: ");
 	ft_putstr(path);
 	ft_putstr(": ");
 	perror(NULL);
-	exit(EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
 
 static char	*find_home_path(t_dq *env)
@@ -26,38 +27,41 @@ static char	*find_home_path(t_dq *env)
 	char	*home;
 	t_node	*start;
 
+	start = env->head;
 	while (start)
 	{
-		if (ft_strncmp(start->name, "HOME=", 5) == 0)
-			home = ft_substr(start->name, 5, ft_strlen(start->name) - 5);
+		if (ft_strncmp(start->name, "HOME", 5) == 0)
+		{
+			home = ft_substr(start->val, 0, ft_strlen(start->val));
+			return (home);
+		}
 		start = start->next;
 	}
-	return (home);
+	return (NULL);
 }
 
 int	_cd(char *path,	t_dq *env)
 {
 	char	*home;
 	char	*new;
+	char	cur[1024];
 
-	if (*path == 0)
-		exit(EXIT_FAILURE);
+	new = 0;
 	home = find_home_path(env);
 	if (path == 0 || !ft_strncmp(path, "-", 2) || \
 	!ft_strncmp(path, "--", 3) || !ft_strncmp(path, "~", 2))
+		path = home;
+	else if (!ft_strncmp(path, "~/", 2))
 	{
-		if (chdir(home) == -1)
-			take_cd_error(path);
+		path++;
+		new = ft_strjoin_no_free(home, path);
+		path = new;
 	}
-	if (!ft_strncmp(path, "~/", 2))
-	{
-		path += 2;
-		new = ft_strjoin(home, path);
-	}
-	else
-	{
-		if (chdir(path) == -1)
-			take_cd_error(path);
-	}
+	if (chdir(path) != 0)
+		return (care_cd_error(path));
+	if (home != NULL)
+		free(home);
+	if (new != NULL)
+		free(new);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/03 10:27:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/07 12:55:45 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
 void	reset_tree_info(t_tree_info *info);
 
 //pipe.c
+void	my_dup2(t_subtree *subtree, int rd, int wr);
 int 	get_pipe_num_from_tree(t_tree *tre);
 void 	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
@@ -137,13 +138,16 @@ int	get_outfile_fd(t_subtree *subtree);
 //exec.c
 void exec_tree(t_tree *tree, t_dq *env);
 
+//exec_subtree.c
+void	exec_subtree(t_tree *tree, t_tree_info *tree_info, t_dq *env);
+
 //handle_signal.c
 void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
 
 //path.c
 char	*get_path(char *cmd, t_dq *env);
 
-//env.c
+//envp.c
 void	make_my_env(char **e, t_dq *env);
 char	 **get_envtab(t_dq *env);
 
@@ -160,8 +164,10 @@ char	*check_buf(char *buf);
 int		_echo(t_subtree *t_subtree);
 int		_cd(char *path, t_dq *env);
 int		_pwd(void);
-int		_export(char *name, char *val, t_dq *env);
-int		_unset(t_dq *env, char *remove);
+int		_export(char **opt, t_dq *env);
+int		_unset(char **opt, t_dq *env);
 int		_env(t_dq *env);
-int		_exit_(void);
+int		_exit_(char **opt);
+int		exec_builtins(t_subtree *subtree, t_dq *env);
+int		is_builtins(t_subtree *subtree);
 #endif

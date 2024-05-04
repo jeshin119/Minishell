@@ -5,22 +5,12 @@ RM = rm -f
 DBGFLGS = -g -fsanitize=address
 INCLUDE = ./include
 
-
 LIBFT = ./libft/libft.a
 SRC_DIRS = parse\
-			 builtins
+			 builtins\
+			 exec
 SRC = $(wildcard $(addsuffix /*.c , $(SRC_DIRS)))\
-		 main.c\
-		 buf.c\
-		 pipe.c\
-		 tree_info.c\
-		 subtree.c\
-		 utils.c\
-		 exec.c\
-		 env.c\
-		 path.c\
-		 open_file.c\
-		 handle_signal.c
+		 main.c
 
 OBJ = $(SRC:.c=.o)
 

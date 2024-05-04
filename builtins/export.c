@@ -1,109 +1,85 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export1.c                                          :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/15 15:45:34 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/15 16:27:47by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/04 14:57:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	mke_my_env(char **e, t_dq *env)
+static int	care_export_error(char *str)
 {
-	char	**tmp;
+	ft_putstr_fd("bash: export: ", 2);
+	ft_putstr_fd("`", 2);
+	if (*str)
+		ft_putstr_fd(str, 2);
+	ft_putstr_fd("': ", 2);
+	ft_putstr_fd("not a vaild identifier\n", 2);
+	return (EXIT_FAILURE);
+}
 
-	init_dq(env);
-	while (*e)
+static int	has_name_err(char *s)
+{
+	int	has_letter;
+
+	has_letter = 0;
+	while (*s)
 	{
-		tmp = ft_split(*e, '=');
-		push_back_dq(env, tmp[0], tmp[1]);
-		free(tmp);
-		e++;
+		if (has_letter == 0 && ft_isdigit(*s))
+			return (TRUE);
+		if (!ft_isalnum(*s) && *s != '_')
+			return (TRUE);
+		if (*s == 32 || (*s >= 9 && *s <= 13))
+			return (TRUE);
+		if (ft_isalpha(*s))
+			has_letter = 1;
+		s++;
 	}
+	return (FALSE);
 }
 
-static void put_elem(t_node *this)
+static int	ep(char *str, t_dq *env)
 {
-	ft_putstr(this->name);
-	write(1,"=\"",2);
-	ft_putstr(this->val);
-	write(1,"\"\n",2);
-}
-
-static int put_elem_in_ascii_order(t_dq *env)
-{
-	t_node	*here;
-	t_node	*cmp;
-	t_node	*put;
-	int		*visited;
+	char	*name;
+	char	*val;
 	int		i;
-	int		is_prted;
-	int		j;
 
-	visited = (int *)malloc(sizeof(int)*env->size);
 	i = -1;
-	while (++i < env->size)
-		visited[i] = 0;
-
-	here = env->head;
-	i = 0;
-
-	while (here)
-	{
-		put = env->head;
-		cmp = env->head;
-		is_prted = 0;
-		j = 0;
-		while (cmp)
-		{
-			if (here == cmp)
-			{
-				cmp = cmp->next;
-				j++;
-				continue;
-			}
-			if (visited[j])
-			{
-				cmp = cmp->next;
-				j++;
-				continue;
-			}
-			if (ft_strncmp(put->name, cmp->name, ft_strlen(put->name)) > 0)
-			{
-				put = cmp;
-				is_prted = j;
-			}
-			cmp = cmp->next;
-			j++;
-		}
-		visited[is_prted] = 1;
-		put_elem(put);
-		here = here->next;
-		i++;
-	}
-	free(visited);
+	while (str[++i] && str[i] != '=')
+		;
+	name = ft_substr(str, 0, i);
+	if (i == ft_strlen(str))
+		val = NULL;
+	else
+		val = ft_substr(str, i + 1, ft_strlen(str));
+	if (ft_strncmp(name, "_", 2) == 0)
+		return (EXIT_SUCCESS);
+	if (has_name_err(name))
+		return (care_export_error(str));
+	push_back_dq(env, name, val);
 	return (EXIT_SUCCESS);
 }
 
-void	_export(char *name, char *val, t_dq *env)
+int	_export(char **opt, t_dq *env)
 {
-	int	*order;
+	int	state;
+	int	i;
 
-	if (name == 0 || *name == 0)
-		put_elem_in_ascii_order(env);
-	push_back_dq(env, name, val);
-	exit (EXIT_SUCCESS);
+	state = 0;
+	if (opt[1] == 0)
+		return (state);
+	i = 0;
+	while (opt[++i])
+	{
+		if (!state)
+			state = ep(opt[i], env);
+		else
+			ep(opt[i], env);
+	}
+	return (state);
 }
-
-//test//
-// int main(int ac,char **av,char **envp){
-// 	t_dq env;
-// 	char *set[5] = {"ctt","bta","atc","atb",NULL};
-// 	mke_my_env(envp, &env);
-// 	_export("a","hihi",&env);
-// 	print_all_dq(&env);
-// }
