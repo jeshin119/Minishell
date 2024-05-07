@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:06:07 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 13:01:42 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/04/24 18:30:48 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ int	quote_closed_chk(char *s, int i)
 		i++;
 		while (s[i])
 		{
-			if (s[i] == '\"')
-				return (1);
+			if (s[i - 1] != '\\' && s[i] == '\"')
+				return (i);
 			i++;
 		}
 	}
@@ -51,8 +51,8 @@ int	quote_closed_chk(char *s, int i)
 		i++;
 		while (s[i])
 		{
-			if (s[i] == '\'')
-				return (1);
+			if (s[i - 1] != '\\' && s[i] == '\'')
+				return (i);
 			i++;
 		}
 	}

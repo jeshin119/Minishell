@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 12:32:20 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/06 11:03:23 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_tree	*go_to_pipe(t_tree *now)
 		return (0);
 	while (now -> prev)
 	{
-		if (now -> pipe)
+		if (now -> ctrl_token == PIPE)
 			return (now);
 		now = now -> prev;
 	}
@@ -31,7 +31,7 @@ t_tree	*go_to_subroot(t_tree *now)
 		return (0);
 	while (now -> prev)
 	{
-		if (now -> prev -> pipe)
+		if (now -> prev -> ctrl_token == PIPE)
 			return (now);
 		now = now -> prev;
 	}
@@ -49,7 +49,20 @@ void	syntax_error_exit(t_list *tk_list)
 		printf("'%s'\n", tk_list -> next -> token);
 	else
 		printf("'newline'\n");
-	exit(1);
+	exit(258);
+}
+
+void	print_env_lset(t_tree *now)
+{
+	int	i;
+
+	i = 0;
+	while ((now -> tk_list -> env_lset)[i]. len != END)
+	{
+		printf("%d  ", (now -> tk_list -> env_lset)[i]. len);
+		i++;
+	}
+	printf("\n");
 }
 
 void	print_token_info(t_tree *now, int direct)
@@ -59,7 +72,9 @@ void	print_token_info(t_tree *now, int direct)
 	char	*right;
 	char	*out;
 	char	*now_direct;
+	int		i;
 
+	i = 0;
 	up = "UP";
 	left = "LEFT";
 	right = "RIGHT";
@@ -72,26 +87,30 @@ void	print_token_info(t_tree *now, int direct)
 		now_direct = right;
 	if (now -> end_flag)
 		now_direct = out;
-	if (now -> pipe)
+	if (now -> ctrl_token == PIPE)
 	{
 		printf("| -> %d  %s  end_flag = %d\n", now -> idx, now_direct, now -> end_flag);
 		return ;
 	}
 	printf("-> %d  %s  end_flag = %d\n", now -> idx, now_direct, now -> end_flag);
+	//print_env_lset(now);
 }	
 
-void	print_token(t_tree *now, t_list *tk_list, int direct)
+void	print_token(t_tree *now, t_list *tk_list, int direct, t_node *env_list)
 {
 	int		i;
 	t_list	*head;
 
 	i = 0;
 	head = tk_list;
-	if (now -> pipe)
+	if (now -> ctrl_token == PIPE)
 	{
 		print_token_info(now, direct);
 		return ;
 	}
+	env_chk(now, env_list);
+	if (now -> ambi_flag)
+		return ;
 	while ((now -> tk_idx_set)[i] >= 0)
 	{
 		tk_list = head;
@@ -106,32 +125,37 @@ void	print_token(t_tree *now, t_list *tk_list, int direct)
 	print_token_info(now, direct);
 }
 
-void	preorder_travel(t_tree *now, t_list *tk_list)
+void	preorder_travel(t_tree *now, t_list *tk_list, t_node *env_list)
 {
 	while (!now -> end_flag)
 	{
-		while (now -> next_left)
+		now -> chked = ON;
+		while (now -> next_left && !now -> next_left -> chked)
 		{
-			print_token(now, tk_list, LEFT);
+			print_token(now, tk_list, LEFT, env_list);
+			now -> chked = ON;
 			now = now -> next_left;
 		}
-		while (now -> prev && !now -> pipe)
+		now -> chked = ON;
+		while (now -> prev && now -> ctrl_token != PIPE)
 		{
-			while (now -> next_right)
+			while (now -> next_right && !now -> next_right -> chked)
 			{
-				print_token(now, tk_list, RIGHT);
+				print_token(now, tk_list, RIGHT, env_list);
+				now -> chked = ON;
 				now = now -> next_right;
 			}
+			now -> chked = ON;
 			if (now -> end_flag)
 				break ;
-			print_token(now, tk_list, UPP);
+			print_token(now, tk_list, UPP, env_list);
 			now = now -> prev;
 		}
 		if (now -> end_flag)
 			break ;
-		print_token(now, tk_list, RIGHT);
+		print_token(now, tk_list, RIGHT, env_list);
 		if (now -> next_right)
 			now = now -> next_right;
 	}
-	print_token(now, tk_list, 0);
+	print_token(now, tk_list, 0, env_list);
 }

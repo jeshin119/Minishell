@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 13:32:10 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/14 14:59:51 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/04/25 14:38:56 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	ret = (char *)malloc((s1_len + s2_len) * sizeof(char) + 1);
-	if (ret == 0)
-		return (0);
+	if (!ret)
+		exit(1);
 	s1_len = 0;
 	while (s1[s1_len])
 	{

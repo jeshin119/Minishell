@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 12:35:46 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/06 13:21:01 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ t_tree	*make_pipe_node(t_tree *now, t_list *tk_list)
 			now = malloc_tree_node(now, tk_list, NO_DR);
 		else
 			now = malloc_tree_node(now, tk_list, RIGHT);
-		tk_list -> alloc = ON;
 	}
 	else
 		syntax_error_exit(tk_list);
@@ -48,14 +47,10 @@ t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct)
 			now -> tk_idx_set = (int *)malloc(sizeof(int) * (2 + 1));
 			if (!now -> tk_idx_set)
 				exit(1);
-			(now -> tk_idx_set)[2] = NONE;
+			(now -> tk_idx_set)[2] = END;
 			(now -> tk_idx_set)[0] = tk_list -> token_idx;
-			tk_list -> alloc = ON;
 			if (tk_list -> next && !tk_list -> next -> ctrl_token)
-			{
 				(now -> tk_idx_set)[1] = tk_list -> next -> token_idx;
-				tk_list -> next -> alloc = ON;
-			}
 			else
 				syntax_error_exit(tk_list);
 		}

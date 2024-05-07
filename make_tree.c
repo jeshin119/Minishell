@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 18:17:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 11:09:50 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/02 21:20:35 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_tree	*reassembly(t_tree *now, t_list *tk_list)
 	return (now);
 }
 
-t_tree	*make_tree(t_tree *now, t_list *tk_list, t_node *env_list)
+t_tree	*make_tree(t_tree *now, t_list *tk_list)
 {
 	while (tk_list)
 	{

@@ -1,41 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_chk.c                                          :+:      :+:    :+:   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/15 12:46:22 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/17 19:43:33 by seunghan         ###   ########.fr       */
+/*   Created: 2024/04/25 12:04:47 by seunghan          #+#    #+#             */
+/*   Updated: 2024/05/02 17:19:59 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	name_len_chk(char *s, int *i)
+int	env_first_ch_chk(char *s, int i)
 {
-	int	name_len;
-	int	j;
+	if (s[i])
+	{
+		if (s[i] < 'A' || (s[i] > 'Z' && s[i] < 'a') || s[i] > 'z')
+		{
+			if (s[i] != '_')
+				return (0);
+		}
+	}
+	return (1);
+}
 
-	j = *i;
-	name_len = 1;
-	if (s[j] < 'A' || (s[j] > 'Z' && s[j] < 'a') || s[j] > 'z')
+t_list	*mv_to_valid_token(t_tree *now, int i)
+{
+	t_list	*tk_list;
+
+	tk_list = now -> tk_list;
+	if (now -> tk_idx_set[i] == END)
+		return (0);
+	while (tk_list && tk_list -> token_idx != now -> tk_idx_set[i])
 	{
-		if (s[j] != '_')
-			return (name_len);
-	}
-	while (s[j])
-	{
-		if ((s[j] >= 'A' && s[j] <= 'Z') || (s[j] >= 'a' && s[j] <= 'z'))
-			name_len++;
-		else if ((s[j] >= '0' && s[j] <= '9') || s[j] == '_')
-			name_len++;
-		else
+		if (tk_list -> token_idx == now -> tk_idx_set[i])
 			break ;
-		j++;
-		(*i)++;
+		tk_list = tk_list -> next;
 	}
-	return (name_len);
+	return (tk_list);
 }
 
 int	name_valid_chk(char *name, char *s, int i)
@@ -72,20 +75,11 @@ t_node	*env_name_chk(char *s, t_node *env_list, int i)
 	return (env_list);
 }
 
-void	env_replace(char *s, t_list **tk_list, t_node *env_list, int *i)
+int	handle_qt(t_env *env_lset_new, int env_len, int e_idx, int meta_value)
 {
-	int	name_len;
-	int	val_len;
-	int	start;
-
-	val_len = 0;
-	start = ++*i;
-	name_len = name_len_chk(s, i);
-	env_list = env_name_chk(s, env_list, start);
-	if (!env_list)
-		return ;
-	while ((env_list -> val)[val_len])
-		val_len++;
-	*tk_list = ft_lstnew(*tk_list);
-	(*tk_list)-> token = ft_substr(env_list -> val, 0, val_len);
+	if (meta_value == S_QUOTE)
+		env_len = 0;
+	else if (meta_value == D_QUOTE)
+		env_lset_new[e_idx]. d_quote = ON;
+	return (env_len);
 }

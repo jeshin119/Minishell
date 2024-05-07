@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 18:03:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 12:38:36 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/02 11:21:05 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	change_to_space(char *s, t_list **tk_list, int meta_value, int i)
 	i++;
 	if (meta_value != BACK_SLASH)
 		meta_split(s, tk_list, &i);
-	if (meta_value >= QUOTES && s[i + 1] != ' ')
+	if (meta_value >= ENV && s[i + 1] != ' ')
 		(*tk_list)-> quote_to_space = ON;
 	s[i] = ' ';
 	i--;
@@ -30,9 +30,11 @@ static t_list	*quote_to_space_chk(t_list *tk_list, char *str)
 	{
 		tk_list = ft_lstnew(tk_list);
 		tk_list -> token = str;
+		env_len_chk(tk_list, str, 0);
 	}
 	else
 	{
+		env_len_chk(tk_list, str, 0);
 		tk_list -> token = ft_strjoin(tk_list -> token, str);
 		tk_list -> quote_to_space = OFF;
 	}
@@ -85,6 +87,7 @@ static int	split_first_word(char *s, t_list **tk_list)
 		}
 		*tk_list = ft_lstnew(*tk_list);
 		(*tk_list)-> token = ft_substr(s, 0, i);
+		env_len_chk(*tk_list, (*tk_list)-> token, 0);
 	}
 	if (meta_value)
 	{

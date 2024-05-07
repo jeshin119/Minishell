@@ -6,11 +6,16 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:17:50 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/21 11:40:46 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/06 13:27:23 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*void	cl()
+{
+	system("leaks a.out");
+}*/
 
 void	mke_my_env(char **e, t_dq *env)
 {
@@ -36,6 +41,8 @@ int	main(int argc, char **argv, char **envp)
 	t_dq	env;
 	t_node	*env_list;
 
+	argc = 0;
+	argv = 0;
 	mke_my_env(envp,&env);
 	//unset(&env,"a");
 	env_list = env.head;
@@ -62,10 +69,20 @@ int	main(int argc, char **argv, char **envp)
 	tk_list = tokenize(cmd_line);
 	/*while (tk_list)
 	{
-		printf("%s---%d\n", tk_list -> token, tk_list -> ctrl_token);
+		i = 0;
+		printf("%s---%d\n", tk_list -> token, tk_list -> token_idx);
+		while (tk_list -> env_lset && (tk_list -> env_lset)[i] != END)
+		{
+			printf("%d-->env  ", (tk_list -> env_lset)[i]);
+			i++;
+		}
 		tk_list = tk_list -> next;
 	}*/
-	now = make_tree(now, tk_list, env_list);
-	preorder_travel(now, tk_list);
+	now = make_tree(now, tk_list);
+	preorder_travel(now, tk_list, env_list);
+	free_all(now, tk_list);
+	free(cmd_line);
+	free(cmd_line_no_m);
+	//atexit(cl);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:09:46 by seunghan          #+#    #+#             */
-/*   Updated: 2024/04/22 13:12:07 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/02 12:10:42 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,37 +26,13 @@ int	meta_chk(char *s, int i, int meta_value)
 		return (RIGHT);
 	else if (s[i] == '<')
 		return (LEFT);
-	else if (s[i] == '\"')
+	else if (s[i] == '\"' && quote_closed_chk(s, i))
 		return (D_QUOTE);
-	else if (s[i] == '\'')
+	else if (s[i] == '\'' && quote_closed_chk(s, i))
 		return (S_QUOTE);
 	else if (s[i] == '\\')
 		return (BACK_SLASH);
 	return (0);
-}
-
-static int	quote_end_chk(char *s, int meta_value, int i)
-{
-	int	end_quote;
-
-	end_quote = 0;
-	while (s[i])
-	{
-		if (meta_value == D_QUOTE)
-		{
-			end_quote = meta_chk(s, i, end_quote);
-			if (end_quote == D_QUOTE)
-				return (i);
-		}
-		else if (meta_value == S_QUOTE)
-		{
-			end_quote = meta_chk(s, i, end_quote);
-			if (end_quote == S_QUOTE)
-				return (i);
-		}
-		i++;
-	}
-	return (i);
 }
 
 static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
@@ -64,21 +40,26 @@ static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
 	int		start;
 	char	*str;
 
-	start = ++(*i);
-	*i = quote_end_chk(s, meta_value, *i);
+	start = (*i) + 1;
+	*i = quote_closed_chk(s, *i);
 	str = ft_substr(s, start, (*i) - start);
 	if (s[start - 2] == ' ' || !(*tk_list) || (*tk_list)-> ctrl_token)
 	{
 		if ((*tk_list) && (*tk_list)-> quote_to_space)
 		{
+			env_len_chk(*tk_list, str, meta_value);
 			(*tk_list)-> token = ft_strjoin((*tk_list)-> token, str);
 			return ;
 		}
 		*tk_list = ft_lstnew(*tk_list);
 		(*tk_list)-> token = str;
+		env_len_chk(*tk_list, str, meta_value);
 	}
 	else
+	{
+		env_len_chk(*tk_list, str, meta_value);
 		(*tk_list)-> token = ft_strjoin((*tk_list)-> token, str);
+	}
 }
 
 void	meta_split(char *s, t_list **tk_list, int *i)
