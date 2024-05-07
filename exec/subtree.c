@@ -6,11 +6,54 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:33:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 11:12:13 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 11:02:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static int	open_write_heredoc(t_subtree *subtree)
+{
+	char	*buf;
+	char	*limiter;
+	int		size_of_limiter;
+	int		heredoc_fd;
+	char	*filename;
+
+	if (subtree == 0)
+		return (EXIT_FAILURE);
+	limiter = subtree->infile;
+	if (limiter == 0)
+		return (EXIT_FAILURE);
+	filename = ft_strjoin_no_free(".here_doc_", limiter);
+	heredoc_fd = open(".here_doc_tmp_f", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (heredoc_fd < 0)
+	{
+		ft_putstr_fd("bash: ",2);
+		// ft_putstr_fd(subtree->,2);
+		// ft_putstr_fd(": ",2);
+		perror(NULL);
+		return (EXIT_FAILURE); // exit code!
+		// exit(ENOENT);
+	}
+	size_of_limiter = ft_strlen(limiter);
+	while (TRUE)
+	{
+		buf = readline("> ");
+		if (buf == 0 || ft_strncmp(buf, limiter, size_of_limiter + 1) == 0)
+			break ;
+		if (write(heredoc_fd, buf, ft_strlen(buf) + 1) < 0)
+			return (EXIT_FAILURE);
+		if (write(heredoc_fd, "\n", 1) < 0)
+			return (EXIT_FAILURE);
+		free(buf);
+	}
+	if (buf != NULL)
+		free(buf);
+	close(heredoc_fd);
+	subtree->infile = filename;
+	return (heredoc_fd);
+}
 
 static int	get_file_name(t_tree *tree, t_subtree *subtree)
 {
@@ -22,6 +65,7 @@ static int	get_file_name(t_tree *tree, t_subtree *subtree)
 	{
 		subtree->is_heredoc = TRUE;
 		subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+		subtree->infile_fd = open_write_heredoc(subtree);
 	}
 	if (tree->ctrl_token == D_RIGHT)
 	{
@@ -52,12 +96,14 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->prev = 0;
 }
 
-static void	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
+static int	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
 {
 	t_sbt_lst *lst;
 	t_subtree *here;
 
 	lst = *sbtr_lst;
+	if (new == 0)
+		return (EXIT_FAILURE);
 	if (lst->head == 0)
 	{
 		lst->head = new;
@@ -75,9 +121,23 @@ static void	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
 		new->next = 0;
 		lst->tail = new;
 	}
+	return (EXIT_SUCCESS);
 }
 
-static t_subtree *create_subtree(t_tree *tree)
+void put_errmsg_syntax_err(t_tree *tree)
+{
+	printf("bash: syntax error near unexpected token ");
+	if (tree->tk_list -> ctrl_token == PIPE)
+		printf("'|'\n");
+	else if (tree->tk_list -> prev && tree->tk_list -> prev -> ctrl_token)
+		printf("'%s'\n", tree->tk_list -> token);
+	else if (tree->tk_list -> next)
+		printf("'%s'\n", tree->tk_list -> next -> token);
+	else
+		printf("'newline'\n");
+}
+
+static t_subtree *create_subtree(t_tree *tree, t_dq *env)
 {
 	t_tree		*left_child;
 	t_tree		*right_child;
@@ -86,10 +146,16 @@ static t_subtree *create_subtree(t_tree *tree)
 	init_subtree(&new);
 	left_child = tree;
 	right_child = tree->next_right;
+	if (tree->exit_code == 258)
+	{
+		put_errmsg_syntax_err(tree);
+		return (NULL);
+	}
 	while (left_child)
 	{
 		if (left_child->ctrl_token == 0)
 		{
+			env_chk(left_child, env->head);
 			new->cmd = get_nth_token_from_lst(left_child, (left_child->tk_idx_set)[0]);
 			new->opt = get_opt_from_lst(left_child);
 			get_file_name(left_child->prev, new);
@@ -101,7 +167,8 @@ static t_subtree *create_subtree(t_tree *tree)
 	{
 		if(right_child->next_right==0 && right_child->next_right == 0)
 		{
-			get_file_name(right_child,new);
+			env_chk(right_child, env->head);
+			get_file_name(right_child, new);
 			break;
 		}
 		right_child = right_child->next_right;
@@ -109,26 +176,19 @@ static t_subtree *create_subtree(t_tree *tree)
 	return (new);
 }
 
-void	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl)
+int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl, t_dq *env)
 {
 	if (tree->ctrl_token != PIPE)
-	{
-		link_subtree_to_lst(&sbtl, create_subtree(tree));
-	}
+		return (link_subtree_to_lst(&sbtl, create_subtree(tree, env)));
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)
-	{
-		link_subtree_to_lst(&sbtl, create_subtree(tree->next_left));
-	}
+		return (link_subtree_to_lst(&sbtl, create_subtree(tree->next_left, env)));
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
-	{
-		link_subtree_to_lst(&sbtl, create_subtree(tree->next_left));
-		make_subtree_lst(tree->next_right,sbtl);
-	}
+		return (link_subtree_to_lst(&sbtl, create_subtree(tree->next_left, env)) & \
+		make_subtree_lst(tree->next_right, sbtl, env));
 	if (tree->ctrl_token == PIPE && tree->next_left == 0 && tree->next_right == 0)
 	{
-		// char *tmp = readline(NULL);
-		// if (ft_strlen(tmp))
-		// 	add_history()
-		;//cat < qeustion.txt | 이후에 입력을 새로 받음. 새로 wc -l 와 같이 명령주면 합쳐서 실행해야함.
+		put_errmsg_syntax_err(tree);
+		return (EXIT_FAILURE);
 	}
+	return (EXIT_FAILURE);
 }

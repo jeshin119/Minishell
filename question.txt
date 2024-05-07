@@ -79,6 +79,27 @@ builtin을 명령이 하나만왔을때 부모에서 실행하는게 아니라 �
 자식상태를 알기어려울 것.
 때문에 빌트인함수에서도 exit함수를 사용해서 에러가발생하거나 정상적으로 종료되도 프로세스가 끝나도록 해야함. 
 
+bash-3.2$ cat <<$h |echo <$pp | cat < asdf | iiiiii
+> qqqqqqqqqq
+> $h
+bash: $pp: ambiguous redirect
+bash: asdf: No such file or directory
+bash: iiiiii: command not found
+bash-3.2$ cat <<$h |echo < | cat < asdf | iiiiii
+bash: syntax error near unexpected token `|'
+> asdf
+
+순서 : syntaxerror->heredoc->->나머지는 파이프 순서대로.
+syntaxerror를 먼저 띄우고 히어독은 무조건 받음.
+bash-3.2$ export b="haha hoho"
+bash-3.2$ cat < $b
+bash: $b: ambiguous redirect
+bash-3.2$ cat < "$b"
+bash: haha hoho: No such file or directory
+
+
+히어독여러개오는거. 
+에러처리.
 ---------------해야할거:
 1. cat <a > b | wc -l했더니 나느 파일 낫파운드 하는데 배쉬는 얘도 파일없다고 하네. 근데 wc-l결과를 띄움.
 //서브트리만드는 과정에서 파일을 오픈하지말고 파일명만 가지고 있따가, 서브트리 리스트 순회할 때 명령실행하기전에 파일오픈하자.

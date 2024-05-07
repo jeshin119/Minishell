@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/07 16:44:13 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/07 19:46:47 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,25 +96,32 @@ void	exec_subtree(t_tree *tree, t_tree_info *tree_info, t_dq *env)
 	}
 }
 
-void	exec_tree(t_tree *tree, t_dq *env)
+int	exec_tree(t_tree *tree, t_dq *env)
 {
 	t_tree_info	tree_info;
 	int			i;
 
 	init_tree_info(tree, &tree_info);
-	make_subtree_lst(tree, tree_info.sbt_lst);
+	if (make_subtree_lst(tree, tree_info.sbt_lst, env))
+		return (EXIT_FAILURE);
 	signal(SIGINT, handle_int_to_put_mark);
 	exec_subtree(tree, &tree_info, env);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);
 	i = -1;
-	while (++i < tree_info.pipe_num + 1){
+	while (++i < tree_info.pipe_num + 1)
+	{
 		waitpid(-1, &g_status, 0);
-		if (WIFEXITED(g_status)){
-			printf("ee child status : %d\n", WEXITSTATUS(g_status));
+		if (WIFEXITED(g_status))
+		{
+			;
+			// printf("ee child status : %d\n", WEXITSTATUS(g_status));
 		}
-		else if (WIFSIGNALED(g_status)){
-			printf("ss child status : %d\n", WTERMSIG(g_status)+128);
+		else if (WIFSIGNALED(g_status))
+		{
+			;
+			// printf("ss child status : %d\n", WTERMSIG(g_status)+128);
 		}
 	}
 	reset_tree_info(&tree_info);
+	return (EXIT_SUCCESS);
 }
