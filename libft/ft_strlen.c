@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 10:38:21 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/01 16:54:06 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/07 15:12:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"libft.h"
 
-int	ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
 	int	i;
 
@@ -21,6 +21,21 @@ int	ft_strlen(const char *str)
 	{
 		i++;
 		str++;
+	}
+	return (i);
+}
+
+size_t	ft_strlen_js(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	if (s == 0)
+		return (0);
+	while (*s)
+	{
+		s++;
+		i++;
 	}
 	return (i);
 }

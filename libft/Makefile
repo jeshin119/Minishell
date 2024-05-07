@@ -1,57 +1,87 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    MAKEFILE                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: seunghan <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/10/11 11:32:36 by seunghan          #+#    #+#              #
-#    Updated: 2024/04/08 15:19:41 by seunghan         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-CFLAGS = -Wall -Wextra -Werror
 NAME = libft.a
-SRCS = ft_strlen.c\
-	   ft_strncmp.c\
-	   ft_strdup.c\
-	   ft_substr.c\
-	   ft_strjoin.c\
-	   ft_strtrim.c\
-	   ft_split.c\
-	   ft_putchar_fd.c\
-	   ft_putstr_fd.c\
-	   ft_putendl_fd.c\
-	   ft_putnbr_fd.c
-BSRC = ft_lstnew.c\
-	   ft_lstsize.c\
-	   ft_lstlast.c\
-OBJECTS = $(SRCS:.c=.o)
-BONUSOB = $(BSRC:.c=.o)
 
-ifdef WITH_BONUS
-	OBJS = $(OBJECTS) $(BONUSOB)
-else
-	OBJS = $(OBJECTS)
-endif
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
 
-all : $(NAME)
+AR = ar
+ARFLAGS = crus
+
+RM = rm -f
+
+SRCS_FILES = ft_isalpha.c\
+				ft_isdigit.c\
+				ft_atoi.c\
+				ft_atol.c\
+				ft_bzero.c\
+				ft_calloc.c\
+				ft_isalnum.c\
+				ft_isalpha.c\
+				ft_isascii.c\
+				ft_isdigit.c\
+				ft_isprint.c\
+				ft_itoa.c\
+				ft_memchr.c\
+				ft_memcmp.c\
+				ft_memcpy.c\
+				ft_memmove.c\
+				ft_memset.c\
+				ft_putchar_fd.c\
+				ft_putendl_fd.c\
+				ft_putnbr_fd.c\
+				ft_putstr_fd.c\
+				ft_putaddr_fd.c\
+				ft_puthex_fd.c\
+				ft_split.c\
+				ft_strchr.c\
+				ft_strdup.c\
+				ft_striteri.c\
+				ft_strjoin.c\
+				ft_strlcat.c\
+				ft_strlcpy.c\
+				ft_strlen.c\
+				ft_strmapi.c\
+				ft_strncmp.c\
+				ft_strnstr.c\
+				ft_strrchr.c\
+				ft_strtrim.c\
+				ft_substr.c\
+				ft_tolower.c\
+				ft_toupper.c\
+				get_next_line.c\
+
+BONUS_FILES = ft_lstadd_back.c\
+				ft_lstadd_front.c\
+				ft_lstlast.c\
+				ft_lstnew.c\
+				ft_lstsize.c\
+				ft_lstdelone.c
+
+SRCS = $(SRCS_FILES)
+SRCS_BONUS = $(BONUS_FILES)
+
+OBJS = $(SRCS:.c=.o)
+	OBJS_BONUS = $(SRCS_BONUS:.c=.o)
+
+all : $(NAME) 
 
 $(NAME) : $(OBJS)
-	ar -rc $@ $^
+	@$(AR) $(ARFLAGS) $(NAME) $(OBJS)
+	@echo "libft.a made"
 
-bonus :
-	make WITH_BONUS=1 all
+bonus : $(OBJS) $(OBJS_BONUS)
+	@$(AR) $(ARFLAGS) $(NAME) $(OBJS) $(OBJS_BONUS)
+	@touch bonus
+	@echo "libft.a bonus made"
 
-.c .o : $(OBJS)
-	cc $(CFLAGS) -o $@ -c $^
+%.o : %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	rm -rf $(OBJECTS) $(BONUSOB)
+	@$(RM) $(OBJS) $(OBJS_BONUS) bonus
 
 fclean : clean
-	rm -rf $(NAME)
+	@$(RM) $(NAME)
 
 re : fclean all
 
-.PHONY : all bonus clean fclean re
+.PHONY = all clean fclean re
