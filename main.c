@@ -36,7 +36,8 @@ int main(int ac, char **av, char **envp)
 			continue;
 		tk_lst = tokenize(line);
 		tree = make_tree(tree, tk_lst);
-		exec_tree(tree, &env);
+		if (exec_tree(tree, &env))
+			continue ;
 		free(line);
 		tree = 0;
 		tk_lst = 0;

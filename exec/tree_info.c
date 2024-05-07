@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 11:12:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 11:57:08 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static void	free_subtree(t_subtree *sbtr)
 		free_tab(sbtr->opt);
 		sbtr->opt = 0;
 	}
+	if (sbtr->is_heredoc)
+		unlink(sbtr->infile);
 	if (sbtr->infile)
 	{
 		free(sbtr->infile);
@@ -36,8 +38,6 @@ static void	free_subtree(t_subtree *sbtr)
 		free(sbtr->outfile);
 		sbtr->outfile = 0;
 	}
-	if (sbtr->is_heredoc)
-		unlink(".here_doc_tmp_f");
 }
 
 void	reset_tree_info(t_tree_info *info)
@@ -75,8 +75,8 @@ void	init_tree_info(t_tree *tree, t_tree_info *tree_info)
 		perror("malloc: ");
 		exit(EXIT_FAILURE);
 	}
-	tree_info->pipe_num = get_pipe_num_from_tree(tree);
-	open_pipes(tree_info->pipe_num, &(tree_info->pipe_tab));
 	tree_info->sbt_lst->head = 0;
 	tree_info->sbt_lst->tail = 0;
+	tree_info->pipe_num = get_pipe_num_from_tree(tree);
+	open_pipes(tree_info->pipe_num, &(tree_info->pipe_tab));
 }

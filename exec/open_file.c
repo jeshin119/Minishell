@@ -129,7 +129,7 @@ int	get_infile_fd(t_subtree *subtree)
 	if (subtree->infile == NULL)
 		return (STDIN_FILENO);
 	if (subtree->is_heredoc == ON)
-		return (open_heredoc_n_return(subtree));
+		return (open_infile_n_return(subtree));
 	if (subtree->is_heredoc == OFF && subtree->infile != NULL)
 		return (open_infile_n_return(subtree));
 	return (STDIN_FILENO);

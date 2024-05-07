@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:36:14 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/07 17:59:09 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_tree	*go_to_subroot(t_tree *now)
 	return (now);
 }
 
-void	syntax_error_exit(t_list *tk_list)
+void	syntax_error_exit(t_tree *now, t_list *tk_list)
 {
 	printf("syntax error near unexpected token ");
 	if (tk_list -> ctrl_token == PIPE)
@@ -49,7 +49,7 @@ void	syntax_error_exit(t_list *tk_list)
 		printf("'%s'\n", tk_list -> next -> token);
 	else
 		printf("'newline'\n");
-	exit(258);
+	now -> exit_code = 258;
 }
 
 void	print_env_lset(t_tree *now)

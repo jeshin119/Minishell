@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 16:43:14 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/07 19:29:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_tree
 	int				ctrl_token;
 	int				ambi_flag;
 	int				end_flag;
+	int				exit_code;
 	int				*tk_idx_set;
 	struct s_tree	*next_left;
 	struct s_tree	*next_right;
@@ -102,7 +103,7 @@ int g_status;
 
 //parse
 void	meta_split(char *s, t_list **tk_list, int *i);
-void	syntax_error_exit(t_list *tk_list);
+void	syntax_error_exit(t_tree *now, t_list *tk_list);
 void	preorder_travel(t_tree *now, t_list *tk_list, t_node *env_list);
 void	env_chk(t_tree *now, t_node *env_list);
 void	env_len_chk(t_list *tk_list, char *token, int meta_value);
@@ -151,14 +152,14 @@ void 	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 
 //subtree.c
-void	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl);
+int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl,t_dq *env);
 
 //open_file.c
 int	get_infile_fd(t_subtree *subtree);
 int	get_outfile_fd(t_subtree *subtree);
 
 //exec.c
-void exec_tree(t_tree *tree, t_dq *env);
+int exec_tree(t_tree *tree, t_dq *env);
 
 //exec_subtree.c
 void	redirection(t_subtree *subtree, int *stdin_copy,int *stdout_copy);

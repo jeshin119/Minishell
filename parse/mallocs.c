@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:00:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:11:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/07 17:58:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ static void	ini_tree_node(t_tree *next, t_list *tk_list_arg)
 	next -> chked = OFF;
 	next -> end_flag = OFF;
 	next -> ambi_flag = OFF;
+	next -> exit_code = 0;
 	next -> tk_idx_set = 0;
 	next -> next_left = 0;
 	next -> next_right = 0;
