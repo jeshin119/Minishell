@@ -3,6 +3,7 @@
 
 int main(int ac,char **av ,char **envp){
 	for(int i=0;i<256;i++){
-		printf("%s : %d\n",strerror(i),i);
+		perror("file");
+		// printf("%s : %d\n",strerror(i),i);
 	}
 }

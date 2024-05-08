@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:33:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 11:53:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 12:51:57 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,7 @@ static int	open_write_heredoc(t_subtree *subtree)
 	filename = ft_strjoin_no_free(".here_doc_", limiter);
 	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd < 0)
-	{
-		ft_putstr_fd("bash: ",2);
-		// ft_putstr_fd(subtree->,2);
-		// ft_putstr_fd(": ",2);
-		perror(NULL);
-		return (EXIT_FAILURE); // exit code!
-		// exit(ENOENT);
-	}
+		perror_n_exit("heredoc");
 	size_of_limiter = ft_strlen(limiter);
 	while (TRUE)
 	{
@@ -178,14 +171,26 @@ static t_subtree *create_subtree(t_tree *tree, t_dq *env)
 
 int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl, t_dq *env)
 {
+	t_subtree	*new;
+
 	if (tree->ctrl_token != PIPE)
-		return (link_subtree_to_lst(&sbtl, create_subtree(tree, env)));
+	{
+		new = create_subtree(tree, env);
+		return (link_subtree_to_lst(&sbtl, new));
+	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)
-		return (link_subtree_to_lst(&sbtl, create_subtree(tree->next_left, env)));
+	{
+		new = create_subtree(tree->next_left, env);
+		return (link_subtree_to_lst(&sbtl, new));
+	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
-		return (link_subtree_to_lst(&sbtl, create_subtree(tree->next_left, env)) & \
+	{
+		new = create_subtree(tree->next_left, env);
+		return (link_subtree_to_lst(&sbtl, new) & \
 		make_subtree_lst(tree->next_right, sbtl, env));
-	if (tree->ctrl_token == PIPE && tree->next_left == 0 && tree->next_right == 0)
+	}
+	if (tree->ctrl_token == PIPE && \
+	tree->next_left == 0 && tree->next_right == 0)
 	{
 		put_errmsg_syntax_err(tree);
 		return (EXIT_FAILURE);

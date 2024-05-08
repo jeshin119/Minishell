@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/07 19:46:47 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 12:53:45 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	exec_builtins(t_subtree *subtree, t_dq *env)
 
 	signal(SIGINT, SIG_DFL);
 	redirection(subtree, &stdin_copy, &stdout_copy);
-	go_builtins(subtree, env);
+	g_status = go_builtins(subtree, env);
 	if (subtree->infile_fd != STDIN_FILENO)
 	{
 		dup2(stdin_copy, STDIN_FILENO);
@@ -43,7 +43,7 @@ static void	exec_builtins(t_subtree *subtree, t_dq *env)
 	}
 }
 
-static void	exec_multi_cmds(t_subtree *subtree, t_tree_info *tree_info, t_dq *env, int i)
+void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 {
 	pid_t		child_pid;
 
@@ -53,13 +53,13 @@ static void	exec_multi_cmds(t_subtree *subtree, t_tree_info *tree_info, t_dq *en
 		signal(SIGINT, SIG_DFL);
 		subtree->infile_fd = get_infile_fd(subtree);
 		subtree->outfile_fd = get_outfile_fd(subtree);
-		if (subtree == tree_info->sbt_lst->head)
-			my_dup2(subtree, subtree->infile_fd, tree_info->pipe_tab[i][1]);
-		else if (subtree == tree_info->sbt_lst->tail)
-			my_dup2(subtree, tree_info->pipe_tab[i - 1][0], subtree->outfile_fd);
+		if (subtree == info->sbt_lst->head)
+			my_dup2(subtree, subtree->infile_fd, info->pipe_tab[i][1]);
+		else if (subtree == info->sbt_lst->tail)
+			my_dup2(subtree, info->pipe_tab[i - 1][0], subtree->outfile_fd);
 		else
-			my_dup2(subtree, tree_info->pipe_tab[i - 1][0], tree_info->pipe_tab[i][1]);
-		close_all_pipe(tree_info->pipe_num, tree_info->pipe_tab);
+			my_dup2(subtree, info->pipe_tab[i - 1][0], info->pipe_tab[i][1]);
+		close_all_pipe(info->pipe_num, info->pipe_tab);
 		if (go_builtins(subtree, env) == EXIT_SUCCESS)
 			exit(EXIT_SUCCESS);
 		else
@@ -112,15 +112,9 @@ int	exec_tree(t_tree *tree, t_dq *env)
 	{
 		waitpid(-1, &g_status, 0);
 		if (WIFEXITED(g_status))
-		{
-			;
-			// printf("ee child status : %d\n", WEXITSTATUS(g_status));
-		}
+			update_prev_status(env, WEXITSTATUS(g_status));
 		else if (WIFSIGNALED(g_status))
-		{
-			;
-			// printf("ss child status : %d\n", WTERMSIG(g_status)+128);
-		}
+			update_prev_status(env, WTERMSIG(g_status) + 128);
 	}
 	reset_tree_info(&tree_info);
 	return (EXIT_SUCCESS);

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:50:19 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/07 10:57:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 12:42:39 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,25 +59,16 @@ void	open_pipes(int num,	int ***pipe_fd_tab)
 		return ;
 	*pipe_fd_tab = (int **)malloc(sizeof(int *) * num);
 	if (*pipe_fd_tab == 0)
-	{
-		perror("malloc: ");
-		exit (EXIT_FAILURE);
-	}
+		perror_n_exit("malloc");
 	tab = *pipe_fd_tab;
 	i = -1;
 	while (++i < num)
 	{
 		tab[i] = (int *)malloc(sizeof (int) * 2);
 		if (tab[i] == 0)
-		{
-			perror("malloc: ");
-			exit (EXIT_FAILURE);
-		}
+			perror_n_exit("malloc");
 		if (pipe(tab[i]))
-		{
-			perror("pipe: ");
-			exit (EXIT_FAILURE);
-		}
+			perror_n_exit("pipe");
 	}
 }
 

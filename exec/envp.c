@@ -1,16 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   envp.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 11:46:03 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 13:09:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static void	add_prev_status_env(t_dq *env)
+{
+	push_back_dq(env, "?", 0);
+}
 
 void	make_my_env(char **e, t_dq *env)
 {
@@ -24,6 +29,7 @@ void	make_my_env(char **e, t_dq *env)
 		free(tmp);
 		e++;
 	}
+	add_prev_status_env(env);
 }
 
 char	**get_envtab(t_dq *env)

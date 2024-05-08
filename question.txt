@@ -100,6 +100,13 @@ bash: haha hoho: No such file or directory
 
 히어독여러개오는거. 
 에러처리.
+-----------------
+5/8
+권한 없는 파일 열기?
+perror(str)주면str: undifinederror가 나옴. 
+이러지말고
+strerror(errno)을 주면 될듯.
+handle int signalhandle.c parmaeter?!
 ---------------해야할거:
 1. cat <a > b | wc -l했더니 나느 파일 낫파운드 하는데 배쉬는 얘도 파일없다고 하네. 근데 wc-l결과를 띄움.
 //서브트리만드는 과정에서 파일을 오픈하지말고 파일명만 가지고 있따가, 서브트리 리스트 순회할 때 명령실행하기전에 파일오픈하자.

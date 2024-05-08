@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:07:49 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/07 11:14:18 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 13:21:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,33 @@
 
 char	*get_path(char *cmd, t_dq *env)
 {
+	t_node	*start;
+	char	*path;
+	char	**tab;
+	char	*tmp;
+	int		i;
+
 	if (cmd == 0)
 		return NULL;
-	t_node *start=env->head;
-	char *path;
-	while(start){
-		if (ft_strncmp(start->name,"PATH",4)==0)
+	start = env->head;
+	while (start)
+	{
+		if (ft_strncmp(start->name, "PATH", 4)==0)
 			break;
 		start=start->next;
 	}
-	
-	char **tab = ft_split(start->val, ':');
-	int i=-1;
-	while(tab[++i]){
-		char *tmp = ft_strjoin_no_free(tab[i],"/");
+	tab = ft_split(start->val, ':');
+	i = -1;
+	while (tab[++i])
+	{
+		tmp = ft_strjoin_no_free(tab[i], "/");
 		free(tab[i]);
 		tab[i] = tmp;
 	}
-	i=-1;
-	while(tab[++i])
+	i = -1;
+	while (tab[++i])
 	{
-		path = ft_strjoin_no_free(tab[i],cmd);
+		path = ft_strjoin_no_free(tab[i], cmd);
 		if (access(path, F_OK | X_OK) == 0)
 		{
 			free_tab(tab);

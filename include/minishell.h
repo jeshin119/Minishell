@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 19:29:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 12:41:34 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,12 +178,12 @@ char	 **get_envtab(t_dq *env);
 //utils.c
 char 	*get_nth_token_from_lst(t_tree *tree, int nth);
 char 	**get_opt_from_lst(t_tree *tree);
-void	free_tab(char	**tab);
-void	perr_n_exit(const char *err);
+void	free_tab(char **tab);
+void	update_prev_status(t_dq *env, int status);
+void	perror_n_exit(const char *str);
 
 //buf.c
 char	*check_buf(char *buf);
-
 
 //builtins
 int		_echo(t_subtree *t_subtree);
