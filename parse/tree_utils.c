@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 17:59:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 13:26:29 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,22 @@ t_tree	*go_to_subroot(t_tree *now)
 	return (now);
 }
 
-void	syntax_error_exit(t_tree *now, t_list *tk_list)
+t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value)
 {
-	printf("syntax error near unexpected token ");
-	if (tk_list -> ctrl_token == PIPE)
-		printf("'|'\n");
-	else if (tk_list -> prev && tk_list -> prev -> ctrl_token)
-		printf("'%s'\n", tk_list -> token);
-	else if (tk_list -> next)
-		printf("'%s'\n", tk_list -> next -> token);
-	else
-		printf("'newline'\n");
+	if (meta_value == PIPE)
+	{
+		if (!now)
+			now = malloc_tree_node(now, tk_list, NO_DR);
+		else
+			now = malloc_tree_node(now, tk_list, RIGHT);
+	}
+	else if (meta_value >= LEFT && meta_value <= D_RIGHT)
+	{
+		if (tk_list -> next)
+			(now -> tk_idx_set)[1] = tk_list -> next -> token_idx;
+	}
 	now -> exit_code = 258;
+	return (now);
 }
 
 void	print_env_lset(t_tree *now)
