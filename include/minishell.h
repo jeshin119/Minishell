@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/08 16:03:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 18:13:10 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,10 +151,15 @@ int 	get_pipe_num_from_tree(t_tree *tre);
 void 	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 //subtree.c
-int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl,t_dq *env);
-//open_file.c
+int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
+//fd.c
+int	open_infile_n_return(t_subtree *subtree);
+int	open_outfile_n_return(t_subtree *subtree);
+int	open_appending_n_return(t_subtree *subtree);
+//file.c
 int	get_infile_fd(t_subtree *subtree);
 int	get_outfile_fd(t_subtree *subtree);
+int	get_file_name(t_tree *tree, t_subtree *subtree);
 //exec.c
 int exec_tree(t_tree *tree, t_dq *env);
 //exec_subtree.c
@@ -174,9 +179,11 @@ void	free_tab(char **tab);
 void	update_prev_status(t_dq *env, int status);
 void	perror_n_exit(const char *str);
 //buf.c
-char	*check_buf(char *buf);
+char	*check_buf(char *buf, t_dq *env);
 //heredoc.c
 int		write_heredoc(t_subtree *subtree);
+//err.c
+void	put_errmsg_syntax_err(t_tree *tree);
 
 //builtins
 int		_echo(t_subtree *t_subtree);

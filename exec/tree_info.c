@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 13:26:57 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 18:09:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,4 @@ void	init_tree_info(t_tree *tree, t_tree_info *tree_info)
 	tree_info->sbt_lst->head = 0;
 	tree_info->sbt_lst->tail = 0;
 	tree_info->pipe_num = get_pipe_num_from_tree(tree);
-	open_pipes(tree_info->pipe_num, &(tree_info->pipe_tab));
 }

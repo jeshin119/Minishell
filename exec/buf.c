@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 17:12:54 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 17:50:39 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static void	exit_when_eof(void)
 	exit(EXIT_SUCCESS);
 }
 
-char	*check_buf(char *buf)
+char	*check_buf(char *buf, t_dq *env)
 {
 	char	*ret;
 
@@ -98,6 +98,12 @@ char	*check_buf(char *buf)
 	if (*buf == 0 || is_all_space(buf))
 	{
 		free(buf);
+		return (NULL);
+	}
+	if (*buf == '|')
+	{
+		printf("bash: syntax error near unexpected token `|'\n");
+		update_prev_status(env, 258);
 		return (NULL);
 	}
 	if (is_ended_with_pipe(buf))

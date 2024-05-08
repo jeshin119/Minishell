@@ -6,44 +6,21 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 14:41:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 17:10:26 by jeshin           ###   ########.fr       */
+
+/*   Updated: 2024/05/08 18:13:19 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	get_file_name(t_tree *tree, t_subtree *subtree)
-{
-	if (tree == 0)
-		return (EXIT_SUCCESS);
-	if (subtree == 0)
-		return (EXIT_FAILURE);
-	if (tree->ctrl_token == PIPE)
-		return (EXIT_SUCCESS);
-	if (tree->ctrl_token == HERE_DOC)
-	{
-		subtree->is_heredoc = TRUE;
-		subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		if (write_heredoc(subtree))
-			return (EXIT_FAILURE);
-	}
-	if (tree->ctrl_token == D_RIGHT)
-	{
-		subtree->is_appending = TRUE;
-		subtree->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	}
-	if (tree->ctrl_token == LEFT)
-		subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	if (tree->ctrl_token == RIGHT)
-		subtree->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	return (EXIT_SUCCESS);
-}
-
 static void	init_subtree(t_subtree **subtree)
 {
 	*subtree = (t_subtree *)malloc(sizeof(t_subtree));
 	if (*subtree == 0)
-		exit(ENOMEM);
+	{
+		perror("malloc: ");
+		exit(EXIT_FAILURE);
+	}
 	(*subtree)->cmd = 0;
 	(*subtree)->opt = 0;
 	(*subtree)->infile = 0;
@@ -54,6 +31,81 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->is_appending = 0;
 	(*subtree)->next = 0;
 	(*subtree)->prev = 0;
+}
+
+void get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
+{
+	if (tree == 0)
+		return ;
+	if (tree->ctrl_token != 0)
+	{
+		get_cmd_opt(tree->next_left, new, env);
+		return ;
+	}
+	env_chk(tree, env->head);
+	new->cmd = get_nth_token_from_lst(tree, (tree->tk_idx_set)[0]);
+	new->opt = get_opt_from_lst(tree);
+}
+
+int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
+{
+	if (tree == 0)
+		return (EXIT_SUCCESS);
+	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
+		return (get_infile(tree->next_left, new, env));
+	env_chk(tree, env->head);
+	if (tree->ctrl_token == HERE_DOC)
+	{
+		new->is_heredoc = TRUE;
+		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+		if (write_heredoc(new))
+			return (EXIT_FAILURE);
+	}
+	if (tree->ctrl_token == LEFT)
+		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	return (EXIT_SUCCESS);
+}
+
+int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env)
+{
+	if (tree == 0)
+		return (EXIT_SUCCESS);
+	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
+		return (get_infile(tree->next_left, new, env));
+	env_chk(tree, env->head);
+	if (tree->ctrl_token == HERE_DOC)
+	{
+		new->is_heredoc = TRUE;
+		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+		if (write_heredoc(new))
+			return (EXIT_FAILURE);
+	}
+	if (tree->ctrl_token == LEFT)
+		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	return (EXIT_SUCCESS);
+}
+
+static t_subtree *create_subtree(t_tree *tree, t_tree_info *info, t_dq *env)
+{
+	t_tree		*left_child;
+	t_tree		*right_child;
+	t_subtree	*new;
+
+	init_subtree(&new);
+	left_child = tree;
+	right_child = tree->next_right;
+	if (tree->exit_code == 258)
+	{
+		put_errmsg_syntax_err(tree);
+		info->pipe_num--;
+		return (NULL);
+	}
+	get_cmd_opt(tree, new, env);
+	if (get_infile(tree, new, env))
+		return (NULL);
+	if (get_outfile(tree, new, env))
+		return (NULL);
+	return (new);
 }
 
 static int	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
@@ -84,85 +136,27 @@ static int	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
 	return (EXIT_SUCCESS);
 }
 
-void put_errmsg_syntax_err(t_tree *tree)
-{
-	printf("bash: syntax error near unexpected token ");
-	if (tree->tk_list -> ctrl_token == PIPE)
-		printf("'|'\n");
-	else if (tree->tk_list -> prev && tree->tk_list -> prev -> ctrl_token)
-		printf("'%s'\n", tree->tk_list -> token);
-	else if (tree->tk_list -> next)
-		printf("'%s'\n", tree->tk_list -> next -> token);
-	else
-		printf("'newline'\n");
-}
-
-static t_subtree *create_subtree(t_tree *tree, t_dq *env)
-{
-	t_tree		*left_child;
-	t_tree		*right_child;
-	t_subtree	*new;
-
-	init_subtree(&new);
-	left_child = tree;
-	right_child = tree->next_right;
-	if (tree->exit_code == 258)
-	{
-		put_errmsg_syntax_err(tree);
-		return (NULL);
-	}
-	while (left_child)
-	{
-		if (left_child->ctrl_token == 0)
-		{
-			env_chk(left_child, env->head);
-			new->cmd = get_nth_token_from_lst(left_child, (left_child->tk_idx_set)[0]);
-			new->opt = get_opt_from_lst(left_child);
-			if (get_file_name(left_child->prev, new))
-				return (NULL);
-			break;
-		}
-		left_child = left_child->next_left;
-	}
-	while (right_child)
-	{
-		if(right_child->next_right==0 && right_child->next_right == 0)
-		{
-			env_chk(right_child, env->head);
-			if (get_file_name(right_child, new))
-				return (NULL);
-			break;
-		}
-		right_child = right_child->next_right;
-	}
-	return (new);
-}
-
-int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl, t_dq *env)
+int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
 {
 	t_subtree	*new;
+	t_sbt_lst	*sbtl;
 
+	sbtl = info->sbt_lst;
 	if (tree->ctrl_token != PIPE)
 	{
-		new = create_subtree(tree, env);
+		new = create_subtree(tree, info ,env);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)
 	{
-		new = create_subtree(tree->next_left, env);
+		new = create_subtree(tree->next_left, info, env);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
 	{
-		new = create_subtree(tree->next_left, env);
-		return (link_subtree_to_lst(&sbtl, new) & \
-		make_subtree_lst(tree->next_right, sbtl, env));
-	}
-	if (tree->ctrl_token == PIPE && \
-	tree->next_left == 0 && tree->next_right == 0)
-	{
-		put_errmsg_syntax_err(tree);
-		return (EXIT_FAILURE);
+		new = create_subtree(tree->next_left, info, env);
+		return (link_subtree_to_lst(&sbtl, new) | \
+		make_subtree_lst(tree->next_right, info, env));
 	}
 	return (EXIT_FAILURE);
 }

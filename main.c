@@ -31,7 +31,7 @@ int main(int ac, char **av, char **envp)
 	{
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		buf = readline("tash-3.2$ ");
-		line = check_buf(buf);
+		line = check_buf(buf, &env);
 		if (line == NULL)
 			continue;
 		tk_lst = tokenize(line);

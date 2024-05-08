@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   open_file.c                                        :+:      :+:    :+:   */
+/*   fd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:15:43 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 15:19:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 18:13:17 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	open_infile_n_return(t_subtree *subtree)
+int	open_infile_n_return(t_subtree *subtree)
 {
 	char	*infile;
 	int		infile_fd;
@@ -34,7 +34,7 @@ static int	open_infile_n_return(t_subtree *subtree)
 	return (infile_fd);
 }
 
-static int	open_outfile_n_return(t_subtree *subtree)
+int	open_outfile_n_return(t_subtree *subtree)
 {
 	char	*outfile;
 	int		outfile_fd;
@@ -56,7 +56,7 @@ static int	open_outfile_n_return(t_subtree *subtree)
 	return (outfile_fd);
 }
 
-static int	open_appending_n_return(t_subtree *subtree)
+int	open_appending_n_return(t_subtree *subtree)
 {
 	char	*appending;
 	int		appending_fd;
@@ -76,30 +76,4 @@ static int	open_appending_n_return(t_subtree *subtree)
 		exit(EXIT_FAILURE);
 	}
 	return (appending_fd);
-}
-
-int	get_infile_fd(t_subtree *subtree)
-{
-	if (subtree == 0)
-		return (STDIN_FILENO);
-	if (subtree->infile == NULL)
-		return (STDIN_FILENO);
-	if (subtree->is_heredoc == ON)
-		return (open_infile_n_return(subtree));
-	if (subtree->is_heredoc == OFF && subtree->infile != NULL)
-		return (open_infile_n_return(subtree));
-	return (STDIN_FILENO);
-}
-
-int	get_outfile_fd(t_subtree *subtree)
-{
-	if (subtree == 0)
-		return (STDOUT_FILENO);
-	if (subtree->outfile == NULL)
-		return (STDOUT_FILENO);
-	if (subtree->is_appending == ON)
-		return (open_appending_n_return(subtree));
-	if (subtree->is_appending == OFF && subtree->outfile != NULL)
-		return (open_outfile_n_return(subtree));
-	return (STDOUT_FILENO);
 }
