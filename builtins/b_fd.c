@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   open_file.c                                        :+:      :+:    :+:   */
+/*   b_fd.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:15:43 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 13:16:14 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 15:44:21 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	open_infile_n_return(t_subtree *subtree)
+static int	b_open_infile_n_return(t_subtree *subtree)
 {
 	char	*infile;
 	int		infile_fd;
@@ -28,12 +28,13 @@ static int	open_infile_n_return(t_subtree *subtree)
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(subtree->infile, 2);
 		ft_putstr_fd(": ", 2);
-		perror_n_exit(NULL);
+		perror(NULL);
+		return (-1);
 	}
 	return (infile_fd);
 }
 
-static int	open_outfile_n_return(t_subtree *subtree)
+static int	b_open_outfile_n_return(t_subtree *subtree)
 {
 	char	*outfile;
 	int		outfile_fd;
@@ -49,12 +50,13 @@ static int	open_outfile_n_return(t_subtree *subtree)
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(subtree->outfile, 2);
 		ft_putstr_fd(": ", 2);
-		perror_n_exit(NULL);
+		perror(NULL);
+		return (-1);
 	}
 	return (outfile_fd);
 }
 
-static int	open_appending_n_return(t_subtree *subtree)
+static int	b_open_appending_n_return(t_subtree *subtree)
 {
 	char	*appending;
 	int		appending_fd;
@@ -71,32 +73,33 @@ static int	open_appending_n_return(t_subtree *subtree)
 		ft_putstr_fd(subtree->outfile, 2);
 		ft_putstr_fd(": ", 2);
 		perror_n_exit(NULL);
+		return (-1);
 	}
 	return (appending_fd);
 }
 
-int	get_infile_fd(t_subtree *subtree)
+int	b_get_infile_fd(t_subtree *subtree)
 {
 	if (subtree == 0)
 		return (STDIN_FILENO);
 	if (subtree->infile == NULL)
 		return (STDIN_FILENO);
 	if (subtree->is_heredoc == ON)
-		return (open_infile_n_return(subtree));
+		return (b_open_infile_n_return(subtree));
 	if (subtree->is_heredoc == OFF && subtree->infile != NULL)
-		return (open_infile_n_return(subtree));
+		return (b_open_infile_n_return(subtree));
 	return (STDIN_FILENO);
 }
 
-int	get_outfile_fd(t_subtree *subtree)
+int	b_get_outfile_fd(t_subtree *subtree)
 {
 	if (subtree == 0)
 		return (STDOUT_FILENO);
 	if (subtree->outfile == NULL)
 		return (STDOUT_FILENO);
 	if (subtree->is_appending == ON)
-		return (open_appending_n_return(subtree));
+		return (b_open_appending_n_return(subtree));
 	if (subtree->is_appending == OFF && subtree->outfile != NULL)
-		return (open_outfile_n_return(subtree));
+		return (b_open_outfile_n_return(subtree));
 	return (STDOUT_FILENO);
 }

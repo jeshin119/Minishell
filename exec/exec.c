@@ -6,21 +6,11 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 13:26:42 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 15:45:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-static void	exec_one_not_builtins(t_subtree *subtree, t_dq *env)
-{
-	char	*path;
-
-	signal(SIGINT, SIG_DFL);
-	path = get_path(subtree->cmd, env);
-	redirection(subtree, 0, 0);
-	execve(path, subtree->opt, get_envtab(env));
-}
 
 static void	exec_builtins(t_subtree *subtree, t_dq *env)
 {
@@ -29,7 +19,11 @@ static void	exec_builtins(t_subtree *subtree, t_dq *env)
 	char	*path;
 
 	signal(SIGINT, SIG_DFL);
-	redirection(subtree, &stdin_copy, &stdout_copy);
+	if (b_redirection(subtree, &stdin_copy, &stdout_copy))
+	{
+		g_status = 1;
+		return ;
+	}
 	g_status = go_builtins(subtree, env);
 	if (subtree->infile_fd != STDIN_FILENO)
 	{
@@ -41,6 +35,16 @@ static void	exec_builtins(t_subtree *subtree, t_dq *env)
 		dup2(stdout_copy, STDOUT_FILENO);
 		close(subtree->outfile_fd);
 	}
+}
+
+static void	exec_one_not_builtins(t_subtree *subtree, t_dq *env)
+{
+	char	*path;
+
+	signal(SIGINT, SIG_DFL);
+	path = get_path(subtree->cmd, env);
+	redirection(subtree, 0, 0);
+	execve(path, subtree->opt, get_envtab(env));
 }
 
 void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
@@ -60,10 +64,13 @@ void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 		else
 			my_dup2(subtree, info->pipe_tab[i - 1][0], info->pipe_tab[i][1]);
 		close_all_pipe(info->pipe_num, info->pipe_tab);
-		if (go_builtins(subtree, env) == EXIT_SUCCESS)
-			exit(EXIT_SUCCESS);
-		else
-			execve(get_path(subtree->cmd, env), subtree->opt, get_envtab(env));
+		if (is_builtins(subtree))
+		{
+			if (go_builtins(subtree, env) == EXIT_SUCCESS)
+				exit(EXIT_SUCCESS);
+			exit(EXIT_FAILURE);
+		}
+		execve(get_path(subtree->cmd, env), subtree->opt, get_envtab(env));
 	}
 }
 

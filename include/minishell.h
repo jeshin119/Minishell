@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/08 13:28:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 15:26:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,47 +141,38 @@ t_node	*env_name_chk(char *s, t_node *env_list, int i);
 t_env	*ini_env_lset(t_env *env_lset_new, int env_cnt);
 t_tree	*parse(char *line, t_dq *env);
 
+//exec
 //tree_info.c
 void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
 void	reset_tree_info(t_tree_info *info);
-
 //pipe.c
 void	my_dup2(t_subtree *subtree, int rd, int wr);
 int 	get_pipe_num_from_tree(t_tree *tre);
 void 	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
-
 //subtree.c
 int	make_subtree_lst(t_tree *tree, t_sbt_lst *sbtl,t_dq *env);
-
 //open_file.c
 int	get_infile_fd(t_subtree *subtree);
 int	get_outfile_fd(t_subtree *subtree);
-
 //exec.c
 int exec_tree(t_tree *tree, t_dq *env);
-
 //exec_subtree.c
 void	redirection(t_subtree *subtree, int *stdin_copy,int *stdout_copy);
-
 //handle_signal.c
 void	handle_int_to_put_mark(int signum);
 void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
-
 //path.c
 char	*get_path(char *cmd, t_dq *env);
-
 //envp.c
 void	make_my_env(char **e, t_dq *env);
 char	 **get_envtab(t_dq *env);
-
 //utils.c
 char 	*get_nth_token_from_lst(t_tree *tree, int nth);
 char 	**get_opt_from_lst(t_tree *tree);
 void	free_tab(char **tab);
 void	update_prev_status(t_dq *env, int status);
 void	perror_n_exit(const char *str);
-
 //buf.c
 char	*check_buf(char *buf);
 
@@ -195,4 +186,7 @@ int		_env(t_dq *env);
 int		_exit_(char **opt);
 int		go_builtins(t_subtree *subtree, t_dq *env);
 int		is_builtins(t_subtree *subtree);
+int		b_redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
+int		b_get_infile_fd(t_subtree *subtree);
+int		b_get_outfile_fd(t_subtree *subtree);
 #endif

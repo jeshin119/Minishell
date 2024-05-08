@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:10:25 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 12:29:15 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 15:47:39 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	_env(t_dq *env)
 	here = env->head;
 	while (here)
 	{
-		if (here->val && ft_strncmp(here->name, "?", 2) == EXIT_FAILURE)
+		if (here->val && ft_strncmp(here->name, "?", 2) != EXIT_SUCCESS)
 		{
 			ft_putstr(here->name);
 			write(1, "=", 1);

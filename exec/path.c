@@ -5,29 +5,26 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/27 13:07:49 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 13:21:01 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/08 15:00:28 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/08 15:00:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	*get_path(char *cmd, t_dq *env)
+static char	**get_path_tab(t_dq *env)
 {
 	t_node	*start;
-	char	*path;
 	char	**tab;
 	char	*tmp;
 	int		i;
 
-	if (cmd == 0)
-		return NULL;
 	start = env->head;
 	while (start)
 	{
-		if (ft_strncmp(start->name, "PATH", 4)==0)
-			break;
-		start=start->next;
+		if (ft_strncmp(start->name, "PATH", 4) == 0)
+			break ;
+		start = start->next;
 	}
 	tab = ft_split(start->val, ':');
 	i = -1;
@@ -37,6 +34,18 @@ char	*get_path(char *cmd, t_dq *env)
 		free(tab[i]);
 		tab[i] = tmp;
 	}
+	return (tab);
+}
+
+char	*get_path(char *cmd, t_dq *env)
+{
+	char	*path;
+	char	**tab;
+	int		i;
+
+	if (cmd == 0)
+		return (NULL);
+	tab = get_path_tab(env);
 	i = -1;
 	while (tab[++i])
 	{
@@ -49,10 +58,9 @@ char	*get_path(char *cmd, t_dq *env)
 		free(path);
 	}
 	free_tab(tab);
-	ft_putstr_fd("bash: ",2);
+	ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": ",2);
-	perror(NULL);
+	ft_putstr_fd(": command not found\n", 2);
 	exit(127);
 	return (NULL);
 }
