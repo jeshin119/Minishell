@@ -6,51 +6,17 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 14:41:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 14:41:28 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 17:10:26 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	open_write_heredoc(t_subtree *subtree)
-{
-	char	*buf;
-	char	*limiter;
-	int		size_of_limiter;
-	int		heredoc_fd;
-	char	*filename;
-
-	if (subtree == 0)
-		return (EXIT_FAILURE);
-	limiter = subtree->infile;
-	if (limiter == 0)
-		return (EXIT_FAILURE);
-	filename = ft_strjoin_no_free(".here_doc_", limiter);
-	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (heredoc_fd < 0)
-		perror_n_exit("heredoc");
-	size_of_limiter = ft_strlen(limiter);
-	while (TRUE)
-	{
-		buf = readline("> ");
-		if (buf == 0 || ft_strncmp(buf, limiter, size_of_limiter + 1) == 0)
-			break ;
-		if (write(heredoc_fd, buf, ft_strlen(buf) + 1) < 0)
-			return (EXIT_FAILURE);
-		if (write(heredoc_fd, "\n", 1) < 0)
-			return (EXIT_FAILURE);
-		free(buf);
-	}
-	if (buf != NULL)
-		free(buf);
-	close(heredoc_fd);
-	subtree->infile = filename;
-	return (heredoc_fd);
-}
-
 static int	get_file_name(t_tree *tree, t_subtree *subtree)
 {
-	if (tree == 0 || subtree == 0)
+	if (tree == 0)
+		return (EXIT_SUCCESS);
+	if (subtree == 0)
 		return (EXIT_FAILURE);
 	if (tree->ctrl_token == PIPE)
 		return (EXIT_SUCCESS);
@@ -58,7 +24,8 @@ static int	get_file_name(t_tree *tree, t_subtree *subtree)
 	{
 		subtree->is_heredoc = TRUE;
 		subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		subtree->infile_fd = open_write_heredoc(subtree);
+		if (write_heredoc(subtree))
+			return (EXIT_FAILURE);
 	}
 	if (tree->ctrl_token == D_RIGHT)
 	{
@@ -151,7 +118,8 @@ static t_subtree *create_subtree(t_tree *tree, t_dq *env)
 			env_chk(left_child, env->head);
 			new->cmd = get_nth_token_from_lst(left_child, (left_child->tk_idx_set)[0]);
 			new->opt = get_opt_from_lst(left_child);
-			get_file_name(left_child->prev, new);
+			if (get_file_name(left_child->prev, new))
+				return (NULL);
 			break;
 		}
 		left_child = left_child->next_left;
@@ -161,7 +129,8 @@ static t_subtree *create_subtree(t_tree *tree, t_dq *env)
 		if(right_child->next_right==0 && right_child->next_right == 0)
 		{
 			env_chk(right_child, env->head);
-			get_file_name(right_child, new);
+			if (get_file_name(right_child, new))
+				return (NULL);
 			break;
 		}
 		right_child = right_child->next_right;

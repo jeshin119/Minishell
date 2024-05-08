@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/08 15:26:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 16:03:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,8 @@ void	update_prev_status(t_dq *env, int status);
 void	perror_n_exit(const char *str);
 //buf.c
 char	*check_buf(char *buf);
+//heredoc.c
+int		write_heredoc(t_subtree *subtree);
 
 //builtins
 int		_echo(t_subtree *t_subtree);

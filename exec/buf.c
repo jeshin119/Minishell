@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 11:11:17 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 17:12:54 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ static char	*get_extra_buf(char *buf)
 	while (is_ended_with_pipe(buf))
 	{
 		tmp1 = readline(">");
+		if (tmp1 == 0)
+			return (0);
 		tmp2 = ft_strjoin_no_free(buf, tmp1);
 		free(tmp1);
 		free(buf);
@@ -100,6 +102,8 @@ char	*check_buf(char *buf)
 	}
 	if (is_ended_with_pipe(buf))
 		buf = get_extra_buf(buf);
+	if (buf == 0)
+		return (NULL);
 	if (ft_strlen(buf))
 		add_history(buf);
 	else
