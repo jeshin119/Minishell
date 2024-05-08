@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 17:59:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 13:08:18 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_tree	*make_pipe_node(t_tree *now, t_list *tk_list)
 			now = malloc_tree_node(now, tk_list, RIGHT);
 	}
 	else
-		syntax_error_exit(now, tk_list);
+		now = syntax_error_malloc(now, tk_list, PIPE);
 	return (now);
 }
 
@@ -52,7 +52,7 @@ t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct)
 			if (tk_list -> next && !tk_list -> next -> ctrl_token)
 				(now -> tk_idx_set)[1] = tk_list -> next -> token_idx;
 			else
-				syntax_error_exit(now, tk_list);
+				now = syntax_error_malloc(now, tk_list, direct);
 		}
 		tk_list = tk_list -> next;
 	}

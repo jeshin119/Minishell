@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 19:29:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/08 13:08:03 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ int g_status;
 
 //parse
 void	meta_split(char *s, t_list **tk_list, int *i);
-void	syntax_error_exit(t_tree *now, t_list *tk_list);
 void	preorder_travel(t_tree *now, t_list *tk_list, t_node *env_list);
 void	env_chk(t_tree *now, t_node *env_list);
 void	env_len_chk(t_list *tk_list, char *token, int meta_value);
@@ -132,6 +131,7 @@ t_tree	*go_to_pipe(t_tree *now);
 t_tree	*make_pipe_node(t_tree *now, t_list *tk_list);
 t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*reassembly(t_tree *now, t_list *tk_list);
+t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value);
 t_tree	*free_sub_tree(t_tree *tree);
 t_list	*tokenize(char *cmd_line);
 t_list	*token_split(t_list *tk_list, char *s);
