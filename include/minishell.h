@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 13:22:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:56:55 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,32 +74,32 @@ typedef struct s_subtree
 	char				**opt;
 	struct s_subtree	*next;
 	struct s_subtree	*prev;
-} t_subtree;
+}	t_subtree;
 
 //서브트리 리스트구조체
 typedef struct s_sbt_lst
 {
-	t_subtree *head;
-	t_subtree *tail;
+	t_subtree	*head;
+	t_subtree	*tail;
 }	t_sbt_lst;
 
 //트리정보 구조체 
 typedef struct s_tree_info
 {
-	struct s_sbt_lst *sbt_lst;
-	int **pipe_tab;
-	int pipe_num;
+	struct s_sbt_lst	*sbt_lst;
+	int					**pipe_tab;
+	int					pipe_num;
 }	t_tree_info;
 
 //시그널처리
 typedef struct s_sig
 {
-	struct sigaction sa_int;
-	struct sigaction sa_quit;
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
 }	t_sig;
 
 //상태 전역 변수
-int g_status;
+int		g_status;
 
 //parse
 void	meta_split(char *s, t_list **tk_list, int *i);
@@ -147,24 +147,24 @@ void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
 void	reset_tree_info(t_tree_info *info);
 //pipe.c
 void	my_dup2(t_subtree *subtree, int rd, int wr);
-int 	get_pipe_num_from_tree(t_tree *tre);
-void 	open_pipes(int num, int ***pipe_fd_tab);
+int		get_pipe_num_from_tree(t_tree *tre);
+void	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 //subtree.c
-int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
+int		make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
 //fd.c
-int	open_infile_n_return(t_subtree *subtree);
-int	open_outfile_n_return(t_subtree *subtree);
-int	open_appending_n_return(t_subtree *subtree);
+int		open_infile_n_return(t_subtree *subtree);
+int		open_outfile_n_return(t_subtree *subtree);
+int		open_appending_n_return(t_subtree *subtree);
 //file.c
-int	get_infile_fd(t_subtree *subtree);
-int	get_outfile_fd(t_subtree *subtree);
-int	get_infile(t_tree *tree, t_subtree *new, t_dq *env);
-int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env);
+int		get_infile_fd(t_subtree *subtree);
+int		get_outfile_fd(t_subtree *subtree);
+int		get_infile(t_tree *tree, t_subtree *new, t_dq *env);
+int		get_outfile(t_tree *tree, t_subtree *new, t_dq *env);
 //exec.c
-int exec_tree(t_tree *tree, t_dq *env);
+int		exec_tree(t_tree *tree, t_dq *env);
 //exec_subtree.c
-void	redirection(t_subtree *subtree, int *stdin_copy,int *stdout_copy);
+void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 //handle_signal.c
 void	handle_int_to_put_mark(int signum);
 void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
@@ -172,10 +172,10 @@ void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
 char	*get_path(char *cmd, t_dq *env);
 //envp.c
 void	make_my_env(char **e, t_dq *env);
-char	 **get_envtab(t_dq *env);
+char	**get_envtab(t_dq *env);
 //utils.c
-char 	*get_nth_token_from_lst(t_tree *tree, int nth);
-char 	**get_opt_from_lst(t_tree *tree);
+char	*get_nth_token_from_lst(t_tree *tree, int nth);
+char	**get_opt_from_lst(t_tree *tree);
 void	free_tab(char **tab);
 void	update_prev_status(t_dq *env, int status);
 void	perror_n_exit(const char *str);

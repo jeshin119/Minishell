@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 17:31:11 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 15:45:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:52:06 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,11 @@ int	_bexit_(char **opt)
 	{
 		ft_putstr_fd("bash: exit: ", 2);
 		ft_putstr_fd(opt[1], 2);
-		ft_putstr_fd(": numeric argument required: \n", 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
 		exit(255);
 	}
+	if (i == 2)
+		exit(ft_atoi(opt[1]));
 	if (i > 2)
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);
@@ -77,9 +79,11 @@ int	_exit_(char **opt)
 	{
 		ft_putstr_fd("bash: exit: ", 2);
 		ft_putstr_fd(opt[1], 2);
-		ft_putstr_fd(": numeric argument required: \n", 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
 		exit(255);
 	}
+	if (i == 2)
+		exit(ft_atoi(opt[1]));
 	if (i > 2)
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);

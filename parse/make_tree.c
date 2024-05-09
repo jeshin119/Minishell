@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 18:17:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/08 13:26:25 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:53:37 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ t_tree	*make_tree(t_tree *now, t_list *tk_list)
 		tk_list = tk_list -> next;
 	}
 	now -> end_flag = ON;
-	while (now -> prev){
+	while (now -> prev)
+	{
 		now = now -> prev;
 	}
 	return (now);

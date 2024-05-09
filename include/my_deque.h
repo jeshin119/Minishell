@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 11:02:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/04/26 16:29:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:57:24 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 
 typedef struct s_node
 {
-	char *name;
-	char *val;
+	char			*name;
+	char			*val;
 	struct s_node	*prev;
 	struct s_node	*next;
 }					t_node;
@@ -37,8 +37,8 @@ typedef struct s_dq
 //my_deque.c
 void	init_dq(t_dq *dq);
 int		is_empty_dq(t_dq *dq);
-void	push_front_dq(t_dq *dq, char* name, char *val);
-void	push_back_dq(t_dq *dq, char* name, char *val);
+void	push_front_dq(t_dq *dq, char *name, char *val);
+void	push_back_dq(t_dq *dq, char *name, char *val);
 void	print_all_dq(t_dq *dq);
 
 //my_deque2.c

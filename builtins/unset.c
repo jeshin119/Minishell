@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 17:01:00 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/07 16:14:02 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:52:47 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	_unset(char **opt, t_dq *env)
 		if (has_name_err(opt[i]))
 		{
 			care_unset_error(opt[i]);
-			continue;
+			continue ;
 		}
 		start = env->head;
 		while (start)
