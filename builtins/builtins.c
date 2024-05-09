@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 11:07:19 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/07 16:31:57 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 13:24:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	go_builtins(t_subtree *subtree, t_dq *env)
+int	go_builtin(t_subtree *subtree, t_dq *env)
 {
 	if (subtree->cmd == 0)
 		return (EXIT_FAILURE);
@@ -29,11 +29,16 @@ int	go_builtins(t_subtree *subtree, t_dq *env)
 	else if (!ft_strncmp(subtree->cmd, "env", 4))
 		return (_env(env));
 	else if (!ft_strncmp(subtree->cmd, "exit", 5))
-		return (_exit_(subtree->opt));
+	{
+		if (subtree->next == 0 && subtree->prev == 0)
+			return (_bexit_(subtree->opt));
+		else
+			return (_exit_(subtree->opt));
+	}
 	return (EXIT_FAILURE);
 }
 
-int	is_builtins(t_subtree *subtree)
+int	is_builtin(t_subtree *subtree)
 {
 	if (subtree->cmd == 0)
 		return (FALSE);

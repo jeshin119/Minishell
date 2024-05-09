@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 09:21:59 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 13:22:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,8 @@ char	*check_buf(char *buf, t_dq *env);
 int		write_heredoc(t_subtree *subtree);
 //err.c
 void	put_errmsg_syntax_err(t_tree *tree);
+//wait.c
+void	wait_childs(t_tree_info *info, t_dq *env);
 
 //builtins
 int		_echo(t_subtree *t_subtree);
@@ -194,8 +196,9 @@ int		_export(char **opt, t_dq *env);
 int		_unset(char **opt, t_dq *env);
 int		_env(t_dq *env);
 int		_exit_(char **opt);
-int		go_builtins(t_subtree *subtree, t_dq *env);
-int		is_builtins(t_subtree *subtree);
+int		_bexit_(char **opt);
+int		go_builtin(t_subtree *subtree, t_dq *env);
+int		is_builtin(t_subtree *subtree);
 int		b_redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 int		b_get_infile_fd(t_subtree *subtree);
 int		b_get_outfile_fd(t_subtree *subtree);

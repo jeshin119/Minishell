@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 09:23:38 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:20:58 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,6 @@ int	write_heredoc(t_subtree *subtree)
 		return (EXIT_FAILURE);
 	close(heredoc_fd);
 	subtree->infile = filename;
+	subtree->is_heredoc = 1;
 	return (EXIT_SUCCESS);
 }

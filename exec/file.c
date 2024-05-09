@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 11:05:33 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 12:41:22 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,16 @@ int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env)
 		return (EXIT_SUCCESS);
 	if (tree->next_right && (tree->next_right)->ctrl_token != 0)
 		return (get_outfile(tree->next_right, new, env));
-	env_chk(tree, env->head);
 	if (tree->ctrl_token == D_RIGHT)
 	{
+		env_chk(tree, env->head);
 		new->is_appending = 1;
 		new->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	}
 	if (tree->ctrl_token == RIGHT)
+	{
+		env_chk(tree, env->head);
 		new->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	}
 	return (EXIT_SUCCESS);
 }

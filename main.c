@@ -27,6 +27,7 @@ int main(int ac, char **av, char **envp)
 	char *buf;
 
 	make_my_env(envp, &env);
+	tree = 0;
 	while (TRUE)
 	{
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
@@ -42,9 +43,9 @@ int main(int ac, char **av, char **envp)
 			tk_lst = 0;
 			continue ;
 		}
+		free(line);
 		tree = 0;
 		tk_lst = 0;
-		free(line);
 	}
 	return (EXIT_SUCCESS);
 }

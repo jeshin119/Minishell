@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 17:28:03 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 13:17:12 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	exec_builtins(t_subtree *subtree, t_dq *env)
+static void	exec_builtin(t_subtree *subtree, t_dq *env)
 {
 	int		stdin_copy;
 	int		stdout_copy;
@@ -24,7 +24,7 @@ static void	exec_builtins(t_subtree *subtree, t_dq *env)
 		g_status = 1;
 		return ;
 	}
-	g_status = go_builtins(subtree, env);
+	g_status = go_builtin(subtree, env);
 	if (subtree->infile_fd != STDIN_FILENO)
 	{
 		dup2(stdin_copy, STDIN_FILENO);
@@ -37,7 +37,7 @@ static void	exec_builtins(t_subtree *subtree, t_dq *env)
 	}
 }
 
-static void	exec_one_not_builtins(t_subtree *subtree, t_dq *env)
+static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 {
 	char	*path;
 
@@ -47,7 +47,7 @@ static void	exec_one_not_builtins(t_subtree *subtree, t_dq *env)
 	execve(path, subtree->opt, get_envtab(env));
 }
 
-void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
+static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 {
 	pid_t		child_pid;
 
@@ -64,9 +64,9 @@ void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 		else
 			my_dup2(subtree, info->pipe_tab[i - 1][0], info->pipe_tab[i][1]);
 		close_all_pipe(info->pipe_num, info->pipe_tab);
-		if (is_builtins(subtree))
+		if (is_builtin(subtree))
 		{
-			if (go_builtins(subtree, env) == EXIT_SUCCESS)
+			if (go_builtin(subtree, env) == EXIT_SUCCESS)
 				exit(EXIT_SUCCESS);
 			exit(EXIT_FAILURE);
 		}
@@ -74,7 +74,7 @@ void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 	}
 }
 
-void	exec_subtree(t_tree *tree, t_tree_info *tree_info, t_dq *env)
+static void	exec_sbtr(t_tree *tree, t_tree_info *tree_info, t_dq *env)
 {
 	pid_t		child_pid;
 	t_subtree	*subtree;
@@ -83,13 +83,13 @@ void	exec_subtree(t_tree *tree, t_tree_info *tree_info, t_dq *env)
 	subtree = tree_info->sbt_lst->head;
 	if (tree_info->pipe_num == 0)
 	{
-		if (is_builtins(subtree))
-			exec_builtins(subtree, env);
+		if (is_builtin(subtree))
+			exec_builtin(subtree, env);
 		else
 		{
 			child_pid = fork();
 			if (child_pid == 0)
-				exec_one_not_builtins(subtree, env);
+				exec_one_not_builtin(subtree, env);
 		}
 	}
 	else
@@ -97,7 +97,7 @@ void	exec_subtree(t_tree *tree, t_tree_info *tree_info, t_dq *env)
 		i = -1;
 		while (++i < tree_info->pipe_num + 1)
 		{
-			exec_multi_cmds(subtree, tree_info, env, i);
+			exec_cmds(subtree, tree_info, env, i);
 			subtree = subtree->next;
 		}
 	}
@@ -106,24 +106,15 @@ void	exec_subtree(t_tree *tree, t_tree_info *tree_info, t_dq *env)
 int	exec_tree(t_tree *tree, t_dq *env)
 {
 	t_tree_info	tree_info;
-	int			i;
 
 	init_tree_info(tree, &tree_info);
 	if (make_subtree_lst(tree, &tree_info, env))
 		return (EXIT_FAILURE);
 	open_pipes(tree_info.pipe_num, &(tree_info.pipe_tab));
 	signal(SIGINT, handle_int_to_put_mark);
-	exec_subtree(tree, &tree_info, env);
+	exec_sbtr(tree, &tree_info, env);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);
-	i = -1;
-	while (++i < tree_info.pipe_num + 1)
-	{
-		waitpid(-1, &g_status, 0);
-		if (WIFEXITED(g_status))
-			update_prev_status(env, WEXITSTATUS(g_status));
-		else if (WIFSIGNALED(g_status))
-			update_prev_status(env, WTERMSIG(g_status) + 128);
-	}
+	wait_childs(&tree_info, env);
 	reset_tree_info(&tree_info);
 	return (EXIT_SUCCESS);
 }
