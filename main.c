@@ -37,10 +37,14 @@ int main(int ac, char **av, char **envp)
 		tk_lst = tokenize(line);
 		tree = make_tree(tree, tk_lst);
 		if (exec_tree(tree, &env))
+		{
+			tree = 0;
+			tk_lst = 0;
 			continue ;
-		free(line);
+		}
 		tree = 0;
 		tk_lst = 0;
+		free(line);
 	}
 	return (EXIT_SUCCESS);
 }

@@ -6,11 +6,26 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:15:43 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 18:13:17 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:08:33 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	is_onefile(char *file)
+{
+	int	i;
+
+	if (file == 0)
+		return (TRUE);
+	i = -1;
+	while (file[++i])
+	{
+		if (ft_isspace(file[i]))
+			return (FALSE);
+	}
+	return (TRUE);
+}
 
 int	open_infile_n_return(t_subtree *subtree)
 {
@@ -22,6 +37,8 @@ int	open_infile_n_return(t_subtree *subtree)
 	infile = subtree->infile;
 	if (infile == 0)
 		return (EXIT_FAILURE);
+	if (is_onefile(infile) == FALSE)
+		exit(EXIT_FAILURE);
 	infile_fd = open(infile, O_RDONLY);
 	if (infile_fd < 0)
 	{
@@ -44,6 +61,8 @@ int	open_outfile_n_return(t_subtree *subtree)
 	outfile = subtree->outfile;
 	if (outfile == 0)
 		return (EXIT_FAILURE);
+	if (is_onefile(outfile) == FALSE)
+		exit(EXIT_FAILURE);
 	outfile_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outfile_fd < 0)
 	{
@@ -66,6 +85,8 @@ int	open_appending_n_return(t_subtree *subtree)
 	appending = subtree->outfile;
 	if (appending == 0)
 		return (EXIT_FAILURE);
+	if (is_onefile(appending) == FALSE)
+		exit(EXIT_FAILURE);
 	appending_fd = open(appending, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (appending_fd < 0)
 	{

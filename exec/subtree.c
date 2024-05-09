@@ -5,9 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/08 14:41:27 by jeshin            #+#    #+#             */
-
-/*   Updated: 2024/05/08 18:13:19 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/09 11:01:13 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +32,7 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->prev = 0;
 }
 
-void get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
+void	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 {
 	if (tree == 0)
 		return ;
@@ -47,53 +46,11 @@ void get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 	new->opt = get_opt_from_lst(tree);
 }
 
-int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
+static t_subtree	*create_subtree(t_tree *tree, t_tree_info *info, t_dq *env)
 {
-	if (tree == 0)
-		return (EXIT_SUCCESS);
-	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
-		return (get_infile(tree->next_left, new, env));
-	env_chk(tree, env->head);
-	if (tree->ctrl_token == HERE_DOC)
-	{
-		new->is_heredoc = TRUE;
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		if (write_heredoc(new))
-			return (EXIT_FAILURE);
-	}
-	if (tree->ctrl_token == LEFT)
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	return (EXIT_SUCCESS);
-}
-
-int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env)
-{
-	if (tree == 0)
-		return (EXIT_SUCCESS);
-	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
-		return (get_infile(tree->next_left, new, env));
-	env_chk(tree, env->head);
-	if (tree->ctrl_token == HERE_DOC)
-	{
-		new->is_heredoc = TRUE;
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		if (write_heredoc(new))
-			return (EXIT_FAILURE);
-	}
-	if (tree->ctrl_token == LEFT)
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	return (EXIT_SUCCESS);
-}
-
-static t_subtree *create_subtree(t_tree *tree, t_tree_info *info, t_dq *env)
-{
-	t_tree		*left_child;
-	t_tree		*right_child;
 	t_subtree	*new;
 
 	init_subtree(&new);
-	left_child = tree;
-	right_child = tree->next_right;
 	if (tree->exit_code == 258)
 	{
 		put_errmsg_syntax_err(tree);
@@ -110,8 +67,8 @@ static t_subtree *create_subtree(t_tree *tree, t_tree_info *info, t_dq *env)
 
 static int	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
 {
-	t_sbt_lst *lst;
-	t_subtree *here;
+	t_sbt_lst	*lst;
+	t_subtree	*here;
 
 	lst = *sbtr_lst;
 	if (new == 0)
@@ -144,7 +101,7 @@ int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
 	sbtl = info->sbt_lst;
 	if (tree->ctrl_token != PIPE)
 	{
-		new = create_subtree(tree, info ,env);
+		new = create_subtree(tree, info, env);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)

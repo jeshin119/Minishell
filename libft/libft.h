@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 20:06:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:12:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 09:47:29 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int			ft_isdigit(int c);
 int			ft_isalnum(int c);
 int			ft_isascii(int c);
 int			ft_isprint(int c);
+int			ft_isspace(int c);
 size_t		ft_strlen(const char *s);
 size_t		ft_strlen_js(const char *s);
 void		*ft_memset(void *b, int c, size_t len);

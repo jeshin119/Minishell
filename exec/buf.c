@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 17:50:39 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 09:48:27 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@ static int	is_ended_with_pipe(char *buf)
 	i = ft_strlen(buf);
 	while (--i)
 	{
-		if (buf[i] == 9 || buf[i] == 10 || buf[i] == 11)
-			continue ;
-		if (buf[i] == 12 || buf[i] == 13 || buf[i] == 32)
+		if (ft_isspace(buf[i]))
 			continue ;
 		if (&(buf[i]) > here)
 			return (FALSE);
@@ -44,17 +42,7 @@ static int	is_all_space(char *buf)
 	i = -1;
 	while (buf[++i])
 	{
-		if (buf[i] == 9)
-			continue ;
-		if (buf[i] == 10)
-			continue ;
-		if (buf[i] == 11)
-			continue ;
-		if (buf[i] == 12)
-			continue ;
-		if (buf[i] == 13)
-			continue ;
-		if (buf[i] == 32)
+		if (ft_isspace(buf[i]))
 			continue ;
 		if (buf[i])
 			return (FALSE);
@@ -71,7 +59,10 @@ static char	*get_extra_buf(char *buf)
 	{
 		tmp1 = readline(">");
 		if (tmp1 == 0)
+		{
+			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
 			return (0);
+		}
 		tmp2 = ft_strjoin_no_free(buf, tmp1);
 		free(tmp1);
 		free(buf);
@@ -102,7 +93,7 @@ char	*check_buf(char *buf, t_dq *env)
 	}
 	if (*buf == '|')
 	{
-		printf("bash: syntax error near unexpected token `|'\n");
+		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
 		update_prev_status(env, 258);
 		return (NULL);
 	}

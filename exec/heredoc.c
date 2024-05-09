@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 16:55:42 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 09:23:38 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void put_all_line(char *filename)
+static void	put_all_line(char *filename)
 {
 	int		fd;
 	char	*line;
@@ -30,7 +30,7 @@ static void put_all_line(char *filename)
 
 static int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 {
-	char	*buf;
+	char			*buf;
 	struct termios	term;
 
 	while (TRUE)

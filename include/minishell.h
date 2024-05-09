@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/08 18:13:10 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 09:21:59 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,8 @@ int	open_appending_n_return(t_subtree *subtree);
 //file.c
 int	get_infile_fd(t_subtree *subtree);
 int	get_outfile_fd(t_subtree *subtree);
-int	get_file_name(t_tree *tree, t_subtree *subtree);
+int	get_infile(t_tree *tree, t_subtree *new, t_dq *env);
+int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env);
 //exec.c
 int exec_tree(t_tree *tree, t_dq *env);
 //exec_subtree.c
