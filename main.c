@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 15:59:35 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 18:19:12 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	check_leak(void)
 {
-	system("leaks a.out");
+	system("leaks minishell");
 }
 
 int	main(int ac, char **av, char **envp)
@@ -33,14 +33,19 @@ int	main(int ac, char **av, char **envp)
 		tk_lst = 0;
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		buf = readline("tash-3.2$ ");
-		line = check_buf(buf, &env);
-		if (line == NULL)
+		if (check_buf(&buf, &env) == EXIT_FAILURE)
 			continue ;
 		tk_lst = tokenize(line);
 		tree = make_tree(tree, tk_lst);
 		if (exec_tree(tree, &env))
+		{
+			free_all(tree, tk_lst);
 			continue ;
+		}
 		free(line);
+		free_all(tree, tk_lst);
+		// system("leaks minishell");
 	}
+	atexit(check_leak);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 15:56:55 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 18:07:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ void	free_tab(char **tab);
 void	update_prev_status(t_dq *env, int status);
 void	perror_n_exit(const char *str);
 //buf.c
-char	*check_buf(char *buf, t_dq *env);
+int		check_buf(char **buf, t_dq *env);
 //heredoc.c
 int		write_heredoc(t_subtree *subtree);
 //err.c

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 16:00:58 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 18:10:22 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ static char	*get_extra_buf(char *buf)
 		tmp1 = readline(">");
 		if (tmp1 == 0)
 		{
+			if (ft_strlen(buf))
+				add_history(buf);
+			write(1, "\033[1A", 4);
+			write(1, "\033[2C", 4);
 			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
 			return (0);
 		}
@@ -80,35 +84,36 @@ static void	exit_when_eof(void)
 	exit(EXIT_SUCCESS);
 }
 
-char	*check_buf(char *buf, t_dq *env)
+int	check_buf(char **buf, t_dq *env)
 {
-	char	*ret;
+	char	*tmp;
 
-	if (buf == 0)
+	if (*buf == 0)
 		exit_when_eof();
-	if (*buf == 0 || is_all_space(buf))
+	if (**buf == 0 || is_all_space(*buf))
 	{
-		free(buf);
-		return (NULL);
+		free(*buf);
+		return (EXIT_FAILURE);
 	}
-	if (*buf == '|')
+	if (**buf == '|')
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
 		update_prev_status(env, 258);
-		return (NULL);
+		return (EXIT_FAILURE);
 	}
-	if (is_ended_with_pipe(buf))
-		buf = get_extra_buf(buf);
-	if (buf == 0)
-		return (NULL);
-	if (ft_strlen(buf))
-		add_history(buf);
+	if (is_ended_with_pipe(*buf))
+		*buf = get_extra_buf(*buf);
+	if (*buf == 0)
+		return (EXIT_FAILURE);
+	if (ft_strlen(*buf))
+		add_history(*buf);
 	else
 	{
-		free(buf);
-		return (NULL);
+		free(*buf);
+		return (EXIT_FAILURE);
 	}
-	ret = ft_strdup(buf);
-	free(buf);
-	return (ret);
+	tmp = ft_strdup(*buf);
+	free(*buf);
+	*buf = tmp;
+	return (EXIT_SUCCESS);
 }

@@ -6,53 +6,61 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 11:20:58 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 17:50:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	put_all_line(char *filename)
+static void	put_bkup(char *filename, int fd, char *bkup)
 {
-	int		fd;
-	char	*line;
-
-	fd = open(filename, O_RDONLY);
-	while (TRUE)
-	{
-		line = get_next_line(fd);
-		if (line == 0)
-			break ;
-		write(1, line, ft_strlen_js(line) + 1);
-	}
+	write(1, "\033[1A", 4);
+	write(1, "\033[2C", 4);
+	close(fd);
+	write(1, bkup, ft_strlen_js(bkup));
 	unlink(filename);
+}
+
+static void	make_bkup(char **bkup, char *buf)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin_no_free(*bkup, buf);
+	*bkup = ft_strjoin_no_free(tmp, "\n");
+	free(tmp);
+}
+
+static void	free_buf_bkup(char *buf, char *bkup)
+{
+	if (buf != NULL)
+		free(buf);
+	if (bkup != NULL)
+		free(bkup);
 }
 
 static int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 {
 	char			*buf;
+	char			*bkup;
 	struct termios	term;
 
+	bkup = 0;
 	while (TRUE)
 	{
 		buf = readline("> ");
 		if (buf == 0)
 		{
-			rl_replace_line("", 1);
-			close(heredoc_fd);
-			put_all_line(filename);
+			put_bkup(filename, heredoc_fd, bkup);
 			return (EXIT_FAILURE);
 		}
 		if (ft_strncmp(buf, limiter, size + 1) == 0)
 			break ;
-		if (write(heredoc_fd, buf, ft_strlen_js(buf) + 1) < 0)
-			return (EXIT_FAILURE);
-		if (write(heredoc_fd, "\n", 1) < 0)
-			return (EXIT_FAILURE);
+		write(heredoc_fd, buf, ft_strlen_js(buf));
+		write(heredoc_fd, "\n", 1);
+		make_bkup(&bkup, buf);
 		free(buf);
 	}
-	if (buf != NULL)
-		free(buf);
+	free_buf_bkup(buf, bkup);
 	return (EXIT_SUCCESS);
 }
 

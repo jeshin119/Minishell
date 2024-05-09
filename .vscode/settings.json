@@ -3,6 +3,7 @@
 		"pipex_bonus.h": "c",
 		"minishell.h": "c",
 		"limits.h": "c",
-		"history.h": "c"
+		"history.h": "c",
+		"chrono": "c"
 	}
 }
