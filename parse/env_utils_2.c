@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 14:19:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:14:25 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 12:43:56 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ char	*get_front_str(char *token, char *s, int i, int *front_len)
 	front = 0;
 	if (*front_len)
 	{
-		if (s[i - (*front_len) - 1] == '$')
-			(*front_len)++;
 		front = (char *)malloc(*front_len + 1);
 		if (!front)
 			exit(1);

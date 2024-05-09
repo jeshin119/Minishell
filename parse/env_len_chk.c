@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:22:02 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 16:23:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/09 12:29:07 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ static void	alloc_env_len(t_env *env_lset_new, char *s, int e_idx, int m_t)
 			if (s[i] == '$')
 				i--;
 		}
-		i++;
+		if (s[i])
+			i++;
 	}
 }
 
@@ -112,7 +113,7 @@ void	env_len_chk(t_list *tk_list, char *token, int meta_value)
 	e_idx = 0;
 	env_cnt = env_count_chk(token, tk_list);
 	if (env_cnt)
-		env_lset_new = (t_env *)malloc(sizeof(t_env) * env_cnt + 1);
+		env_lset_new = (t_env *)malloc(sizeof(t_env) * (env_cnt + 1));
 	else
 		return ;
 	if (!env_lset_new)
