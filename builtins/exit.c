@@ -6,19 +6,44 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 17:31:11 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:44:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 14:48:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	has_opt_err(char *s)
+static int	check_overflow(char *s)
+{
+	long long	ll;
+	long long	prev;
+	char		*set;
+
+	set = "0123456789";
+	ll = 0;
+	if (*s == '-')
+		s++;
+	while (*s)
+	{
+		if (!ft_isdigit(*s))
+			return (EXIT_FAILURE);
+		prev = ll;
+		ll = 10 * ll + (*s - '0');
+		if (prev > ll)
+			return (EXIT_FAILURE);
+		s++;
+	}
+	return (EXIT_SUCCESS);
+}
+
+static int	has_err(char *s)
 {
 	int	has_space;
 	int	has_num;
 
 	has_space = 0;
 	has_num = 0;
+	if (check_overflow(s))
+		return (TRUE);
 	while (*s)
 	{
 		if (!ft_isdigit(*s) && !ft_isspace(*s))
@@ -46,7 +71,7 @@ int	_bexit_(char **opt)
 	printf("exit\n");
 	if (i == 1)
 		exit(EXIT_SUCCESS);
-	if (has_opt_err(opt[1]))
+	if (has_err(opt[1]))
 	{
 		ft_putstr_fd("bash: exit: ", 2);
 		ft_putstr_fd(opt[1], 2);
@@ -73,7 +98,7 @@ int	_exit_(char **opt)
 		;
 	if (i == 1)
 		exit(EXIT_SUCCESS);
-	if (has_opt_err(opt[1]))
+	if (has_err(opt[1]))
 	{
 		ft_putstr_fd("bash: exit: ", 2);
 		ft_putstr_fd(opt[1], 2);

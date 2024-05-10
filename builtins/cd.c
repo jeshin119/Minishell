@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/04 13:31:50 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:44:27 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/10 14:49:05 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/10 14:49:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-#include "limits.h"
 
 static int	care_cd_error(char *path)
 {
@@ -40,6 +39,35 @@ static char	*find_home_path(t_dq *env)
 	return (NULL);
 }
 
+void	update_env_pwd(char *path, t_dq *env)
+{
+	t_node	*go_pwd;
+	t_node	*go_old;
+	char	*pwd;
+
+	go_pwd = env->head;
+	while (go_pwd)
+	{
+		if (!ft_strncmp(go_pwd->name, "PWD", 4))
+		{
+			pwd = go_pwd->val;
+			go_pwd->val = path;
+		}
+		go_pwd = go_pwd->next;
+	}
+	go_old = env->head;
+	while (go_old)
+	{
+		if (!ft_strncmp(go_pwd->name, "OLDPWD", 7))
+		{
+			if (go_old->val)
+				free(go_old->val);
+			go_old->val = pwd;
+		}
+		go_old = go_old->next;
+	}
+}
+
 int	_cd(char *path,	t_dq *env)
 {
 	char	*home;
@@ -57,7 +85,10 @@ int	_cd(char *path,	t_dq *env)
 		path = new;
 	}
 	if (chdir(path) != 0)
+	{
+		update_env_pwd(path, env);
 		return (care_cd_error(path));
+	}
 	if (home != NULL)
 		free(home);
 	if (new != NULL)

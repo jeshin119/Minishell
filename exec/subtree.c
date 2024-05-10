@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 11:01:13 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 15:10:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,18 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->prev = 0;
 }
 
-void	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
+static void	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 {
 	if (tree == 0)
 		return ;
 	if (tree->ctrl_token != 0)
 	{
 		get_cmd_opt(tree->next_left, new, env);
+		return ;
+	}
+	if (tree->exit_code == 258)
+	{
+		put_errmsg_syntax_err(tree);
 		return ;
 	}
 	env_chk(tree, env->head);

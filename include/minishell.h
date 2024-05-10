@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 18:07:15 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 15:21:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ typedef struct s_tree
 	struct s_tree	*prev;
 }	t_tree;
 
-//서브트리 구조체 
 typedef struct s_subtree
 {
 	int					infile_fd;
@@ -76,14 +75,13 @@ typedef struct s_subtree
 	struct s_subtree	*prev;
 }	t_subtree;
 
-//서브트리 리스트구조체
+//subtree list
 typedef struct s_sbt_lst
 {
 	t_subtree	*head;
 	t_subtree	*tail;
 }	t_sbt_lst;
 
-//트리정보 구조체 
 typedef struct s_tree_info
 {
 	struct s_sbt_lst	*sbt_lst;
@@ -91,14 +89,12 @@ typedef struct s_tree_info
 	int					pipe_num;
 }	t_tree_info;
 
-//시그널처리
 typedef struct s_sig
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
 }	t_sig;
 
-//상태 전역 변수
 int		g_status;
 
 //parse
