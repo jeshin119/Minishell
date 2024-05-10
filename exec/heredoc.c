@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 17:50:03 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 10:52:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void	put_bkup(char *filename, int fd, char *bkup)
 	close(fd);
 	write(1, bkup, ft_strlen_js(bkup));
 	unlink(filename);
+	free(bkup);
 }
 
 static void	make_bkup(char **bkup, char *buf)
@@ -26,6 +27,8 @@ static void	make_bkup(char **bkup, char *buf)
 	char	*tmp;
 
 	tmp = ft_strjoin_no_free(*bkup, buf);
+	if (*bkup)
+		free(*bkup);
 	*bkup = ft_strjoin_no_free(tmp, "\n");
 	free(tmp);
 }
@@ -86,6 +89,7 @@ int	write_heredoc(t_subtree *subtree)
 	if (write_line(filename, heredoc_fd, limiter, ft_strlen_js(limiter)))
 		return (EXIT_FAILURE);
 	close(heredoc_fd);
+	free(subtree->infile);
 	subtree->infile = filename;
 	subtree->is_heredoc = 1;
 	return (EXIT_SUCCESS);

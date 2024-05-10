@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 13:17:12 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 11:57:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,16 @@ static void	exec_builtin(t_subtree *subtree, t_dq *env)
 static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 {
 	char	*path;
+	pid_t	child_pid;
 
-	signal(SIGINT, SIG_DFL);
-	path = get_path(subtree->cmd, env);
-	redirection(subtree, 0, 0);
-	execve(path, subtree->opt, get_envtab(env));
+	child_pid = fork();
+	if (child_pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		path = get_path(subtree->cmd, env);
+		redirection(subtree, 0, 0);
+		execve(path, subtree->opt, get_envtab(env));
+	}
 }
 
 static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
@@ -86,11 +91,7 @@ static void	exec_sbtr(t_tree *tree, t_tree_info *tree_info, t_dq *env)
 		if (is_builtin(subtree))
 			exec_builtin(subtree, env);
 		else
-		{
-			child_pid = fork();
-			if (child_pid == 0)
-				exec_one_not_builtin(subtree, env);
-		}
+			exec_one_not_builtin(subtree, env);
 	}
 	else
 	{

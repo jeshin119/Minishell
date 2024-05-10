@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 18:10:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 09:11:58 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ static char	*get_extra_buf(char *buf)
 		tmp1 = readline(">");
 		if (tmp1 == 0)
 		{
+			if (buf)
+				free(buf);
 			if (ft_strlen(buf))
 				add_history(buf);
 			write(1, "\033[1A", 4);
@@ -98,6 +100,7 @@ int	check_buf(char **buf, t_dq *env)
 	if (**buf == '|')
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
+		free(*buf);
 		update_prev_status(env, 258);
 		return (EXIT_FAILURE);
 	}

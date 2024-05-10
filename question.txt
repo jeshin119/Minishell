@@ -120,6 +120,17 @@ cat <<$a ambiguous redirect
 heredoc에서 ctrl+d 시 print all하는것.
 각 라인마지막에 hi\0\nbye\0\nkkk\0와 같이 들어가있다.
 파일권한
+--------------------------
+5/9
+leaks : in make_env at tab
+in heredoc write at infile
+heredoc end of file?
+redirectoin -> infile is or isn't file
+when echo hi > out , leak is in make_tree
+when echo hi >>out , too.
+builtin no leak.
+command not found has leaks.
+
 ---------------해야할거:
 1. cat <a > b | wc -l했더니 나느 파일 낫파운드 하는데 배쉬는 얘도 파일없다고 하네. 근데 wc-l결과를 띄움.
 //서브트리만드는 과정에서 파일을 오픈하지말고 파일명만 가지고 있따가, 서브트리 리스트 순회할 때 명령실행하기전에 파일오픈하자.

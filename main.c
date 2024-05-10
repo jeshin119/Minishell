@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 18:19:12 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:10:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	check_leak(void)
 {
-	system("leaks minishell");
+	system("leaks --list minishell");
 }
 
 int	main(int ac, char **av, char **envp)
@@ -23,7 +23,6 @@ int	main(int ac, char **av, char **envp)
 	t_dq	env;
 	t_tree	*tree;
 	t_list	*tk_lst;
-	char	*line;
 	char	*buf;
 
 	make_my_env(envp, &env);
@@ -35,17 +34,19 @@ int	main(int ac, char **av, char **envp)
 		buf = readline("tash-3.2$ ");
 		if (check_buf(&buf, &env) == EXIT_FAILURE)
 			continue ;
-		tk_lst = tokenize(line);
+		tk_lst = tokenize(buf);
 		tree = make_tree(tree, tk_lst);
-		if (exec_tree(tree, &env))
+		if (exec_tree(tree, &env) || ((g_status >> 8) & 255) == 127)
 		{
+			free(buf);
 			free_all(tree, tk_lst);
+			system("leaks --list minishell");
 			continue ;
 		}
-		free(line);
 		free_all(tree, tk_lst);
-		// system("leaks minishell");
+		free(buf);
+		system("leaks --list minishell");
 	}
-	atexit(check_leak);
+	clear_dq(&env);
 	return (EXIT_SUCCESS);
 }

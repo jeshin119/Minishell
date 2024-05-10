@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 18:09:03 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 10:45:14 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ static void	free_subtree(t_subtree *sbtr)
 		free(sbtr->outfile);
 		sbtr->outfile = 0;
 	}
+	free(sbtr);
+	sbtr = 0;
 }
 
 void	reset_tree_info(t_tree_info *info)
@@ -45,6 +47,7 @@ void	reset_tree_info(t_tree_info *info)
 	int			i;
 	int			**tab;
 	t_subtree	*start;
+	t_subtree	*tmp;
 
 	if (info == 0)
 		return ;
@@ -62,9 +65,12 @@ void	reset_tree_info(t_tree_info *info)
 	start = info->sbt_lst->head;
 	while (start)
 	{
-		free_subtree(start);
+		tmp = start;
 		start = start->next;
+		free_subtree(tmp);
 	}
+	free(info->sbt_lst);
+	info->sbt_lst = 0;
 }
 
 void	init_tree_info(t_tree *tree, t_tree_info *tree_info)

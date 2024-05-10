@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 17:30:13 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 10:24:58 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	add_prev_status_env(t_dq *env)
 {
-	push_back_dq(env, "?", ft_itoa(0));
+	push_back_dq(env, ft_strdup("?"), ft_itoa(0));
 }
 
 void	make_my_env(char **e, t_dq *env)
@@ -25,8 +25,8 @@ void	make_my_env(char **e, t_dq *env)
 	while (*e)
 	{
 		tmp = ft_split(*e, '=');
-		push_back_dq(env, tmp[0], tmp[1]);
-		free(tmp);
+		push_back_dq(env, ft_strdup(tmp[0]), ft_strdup(tmp[1]));
+		free_tab(tmp);
 		e++;
 	}
 	add_prev_status_env(env);
