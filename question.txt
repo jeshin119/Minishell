@@ -130,6 +130,8 @@ when echo hi > out , leak is in make_tree
 when echo hi >>out , too.
 builtin no leak.
 command not found has leaks.
+sleep 2|sleep3 ->echo $? = 127 not 0.
+signal mark.
 
 ---------------해야할거:
 1. cat <a > b | wc -l했더니 나느 파일 낫파운드 하는데 배쉬는 얘도 파일없다고 하네. 근데 wc-l결과를 띄움.

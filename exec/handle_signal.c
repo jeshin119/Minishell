@@ -6,14 +6,15 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 16:54:34 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:52:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	handle_int_to_put_mark(int signum)
+void	handle_int_to_put_mark(int sign)
 {
+	sign = 1;
 	write(1, "^C\n", 3);
 }
 

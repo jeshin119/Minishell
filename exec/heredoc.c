@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 10:52:20 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:46:45 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ static int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 {
 	char			*buf;
 	char			*bkup;
-	struct termios	term;
 
 	bkup = 0;
 	while (TRUE)

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 09:11:58 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:29:47 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,15 +106,7 @@ int	check_buf(char **buf, t_dq *env)
 	}
 	if (is_ended_with_pipe(*buf))
 		*buf = get_extra_buf(*buf);
-	if (*buf == 0)
-		return (EXIT_FAILURE);
-	if (ft_strlen(*buf))
-		add_history(*buf);
-	else
-	{
-		free(*buf);
-		return (EXIT_FAILURE);
-	}
+	add_history(*buf);
 	tmp = ft_strdup(*buf);
 	free(*buf);
 	*buf = tmp;

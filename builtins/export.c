@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 14:57:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:45:19 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	ep(char *str, t_dq *env)
 	while (str[++i] && str[i] != '=')
 		;
 	name = ft_substr(str, 0, i);
-	if (i == ft_strlen(str))
+	if (i == (int)ft_strlen(str))
 		val = NULL;
 	else
 		val = ft_substr(str, i + 1, ft_strlen(str));

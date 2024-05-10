@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 17:31:11 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/09 15:52:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:44:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ static int	has_opt_err(char *s)
 int	_bexit_(char **opt)
 {
 	int	i;
-	int	j;
 
 	i = -1;
 	while (opt[++i])
@@ -68,7 +67,6 @@ int	_bexit_(char **opt)
 int	_exit_(char **opt)
 {
 	int	i;
-	int	j;
 
 	i = -1;
 	while (opt[++i])

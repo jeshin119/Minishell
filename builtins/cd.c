@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:31:50 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 12:52:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:44:27 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ int	_cd(char *path,	t_dq *env)
 {
 	char	*home;
 	char	*new;
-	char	cur[1024];
 
 	new = 0;
 	home = find_home_path(env);

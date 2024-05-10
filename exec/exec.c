@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 11:57:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 12:52:54 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ static void	exec_builtin(t_subtree *subtree, t_dq *env)
 {
 	int		stdin_copy;
 	int		stdout_copy;
-	char	*path;
 
-	signal(SIGINT, SIG_DFL);
 	if (b_redirection(subtree, &stdin_copy, &stdout_copy))
 	{
 		g_status = 1;
@@ -45,7 +43,6 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	child_pid = fork();
 	if (child_pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
 		path = get_path(subtree->cmd, env);
 		redirection(subtree, 0, 0);
 		execve(path, subtree->opt, get_envtab(env));
@@ -59,7 +56,6 @@ static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 	child_pid = fork();
 	if (child_pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
 		subtree->infile_fd = get_infile_fd(subtree);
 		subtree->outfile_fd = get_outfile_fd(subtree);
 		if (subtree == info->sbt_lst->head)
@@ -79,9 +75,8 @@ static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 	}
 }
 
-static void	exec_sbtr(t_tree *tree, t_tree_info *tree_info, t_dq *env)
+static void	exec_sbtr(t_tree_info *tree_info, t_dq *env)
 {
-	pid_t		child_pid;
 	t_subtree	*subtree;
 	int			i;
 
@@ -113,7 +108,7 @@ int	exec_tree(t_tree *tree, t_dq *env)
 		return (EXIT_FAILURE);
 	open_pipes(tree_info.pipe_num, &(tree_info.pipe_tab));
 	signal(SIGINT, handle_int_to_put_mark);
-	exec_sbtr(tree, &tree_info, env);
+	exec_sbtr(&tree_info, env);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);
 	wait_childs(&tree_info, env);
 	reset_tree_info(&tree_info);

@@ -1,7 +1,7 @@
 NAME = minishell
 CC = cc
 RM = rm -f
-# CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 DBGFLGS = -g -fsanitize=address
 INCLUDE = ./include
 
