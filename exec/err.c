@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 15:23:15 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 15:40:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,23 @@ void	put_errmsg_syntax_err(t_tree *tree)
 	}
 	else
 		ft_putstr_fd("'newline'\n", 2);
+}
+
+void	put_errmsg_syntax_err2(t_tree *tree)
+{
+	ft_putstr_fd("bash: syntax error near unexpected token ", 2);
+	if (tree)
+	{
+		ft_putstr_fd("'|'\n", 2);
+
+		ft_putstr_fd("'", 2);
+		ft_putstr_fd(tree->tk_list->token, 2);
+		ft_putstr_fd("'\n", 2);
+
+		ft_putstr_fd("'", 2);
+		ft_putstr_fd(tree->tk_list->next->token, 2);
+		ft_putstr_fd("'\n", 2);
+
+		ft_putstr_fd("'newline'\n", 2);
+	}
 }

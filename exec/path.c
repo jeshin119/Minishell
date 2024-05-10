@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/08 15:00:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:35:19 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/10 16:51:55 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,30 +37,52 @@ static char	**get_path_tab(t_dq *env)
 	return (tab);
 }
 
-char	*get_path(char *cmd, t_dq *env)
+int	is_just_file(char *cmd)
 {
+	if (*cmd == '/')
+		return (TRUE);
+	if (*cmd == '.' || *(cmd + 1) == '/')
+		return (TRUE);
+	if (*cmd == '.' || *(cmd + 1) == '.')
+		return (TRUE);
+	return (FALSE);
+}
+
+int	find_in_path_env(char **cmd, t_dq *env)
+{
+	int		i;
 	char	*path;
 	char	**tab;
-	int		i;
 
-	if (cmd == 0)
-		return (NULL);
 	tab = get_path_tab(env);
 	i = -1;
 	while (tab[++i])
 	{
-		path = ft_strjoin_no_free(tab[i], cmd);
+		path = ft_strjoin_no_free(tab[i], *cmd);
 		if (access(path, F_OK | X_OK) == 0)
 		{
 			free_tab(tab);
-			return (path);
+			free(*cmd);
+			*cmd = path;
+			return (EXIT_SUCCESS);
 		}
 		free(path);
 	}
 	free_tab(tab);
 	ft_putstr_fd("bash: ", 2);
-	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(*cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
 	exit(127);
-	return (NULL);
+	return (EXIT_FAILURE);
+}
+
+int	get_path(char **cmd, t_dq *env)
+{
+	if (cmd == 0 || *cmd == 0)
+		return (EXIT_SUCCESS);
+	if (is_just_file(*cmd))
+		return (EXIT_SUCCESS);
+	else
+		return (find_in_path_env(cmd, env));
+	return (EXIT_FAILURE);
 }

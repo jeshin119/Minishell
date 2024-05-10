@@ -128,11 +128,21 @@ heredoc end of file?
 redirectoin -> infile is or isn't file
 when echo hi > out , leak is in make_tree
 when echo hi >>out , too.
+echo >|cat : segfault.
 builtin no leak.
 command not found has leaks.
-sleep 2|sleep3 ->echo $? = 127 not 0.
-signal mark.
+위에 5/9까지 해결. 
+signal mark. 해결.
 tash-3.2$ /usr/bin/env. it wasn't executed.
+>test 와 같이 파일만 주는 거 안됨. 해결.
+근데 권한없는 파일 읽을 때 에러 안됨. 해결.
+echo hello > $alkdsl. hello가 출력됨. exitcode는 1로. 해결.
+echo >$a 파일을 만듬.
+$a 앞부분만 커맨드낫파운드. 나는 전체 이름추렭됨.
+a = "hi bye"이면 $a는 hi인지 hi bye인지
+
+쭉 보고 테스트케이스 돌리고. 해야할거 : 릭, 세그폴트 말해놨고. 신택스에러처리해야.
+unset path를 했을 때 다 파일로 보고 현재 폴더에서 찾아야함. 
 ---------------해야할거:
 1. cat <a > b | wc -l했더니 나느 파일 낫파운드 하는데 배쉬는 얘도 파일없다고 하네. 근데 wc-l결과를 띄움.
 //서브트리만드는 과정에서 파일을 오픈하지말고 파일명만 가지고 있따가, 서브트리 리스트 순회할 때 명령실행하기전에 파일오픈하자.

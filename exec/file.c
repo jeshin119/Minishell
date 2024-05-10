@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 15:11:24 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 17:14:50 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ int	get_infile_fd(t_subtree *subtree)
 	if (subtree->is_heredoc == ON)
 		return (open(subtree->infile, O_RDONLY));
 	if (subtree->is_heredoc == OFF && subtree->infile != NULL)
+	{
 		return (open_infile_n_return(subtree));
+	}
 	return (STDIN_FILENO);
 }
 
@@ -37,6 +39,18 @@ int	get_outfile_fd(t_subtree *subtree)
 		return (open_outfile_n_return(subtree));
 	return (STDOUT_FILENO);
 }
+
+// static int	more_than_oneelem(char *file)
+// {
+// 	if (file == 0 || *file == 0)
+// 		return (FALSE);
+// 	while (*file)
+// 	{
+// 		if (ft_isspace(*file))
+// 			return (TRUE);
+// 	}
+// 	return (FALSE);
+// }
 
 int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
 {
@@ -75,16 +89,13 @@ int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env)
 		put_errmsg_syntax_err(tree);
 		return (EXIT_FAILURE);
 	}
+	if (tree->ctrl_token != D_RIGHT && tree->ctrl_token != RIGHT)
+		return (EXIT_SUCCESS);
 	if (tree->ctrl_token == D_RIGHT)
-	{
-		env_chk(tree, env->head);
 		new->is_appending = 1;
-		new->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	}
-	if (tree->ctrl_token == RIGHT)
-	{
-		env_chk(tree, env->head);
-		new->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	}
+	env_chk(tree, env->head);
+	new->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	if (new->outfile == NULL)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

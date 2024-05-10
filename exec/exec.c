@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:52:54 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 17:14:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,27 @@ static void	exec_builtin(t_subtree *subtree, t_dq *env)
 
 static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 {
-	char	*path;
+	int		stdin_copy;
+	int		stdout_copy;
 	pid_t	child_pid;
 
 	child_pid = fork();
 	if (child_pid == 0)
 	{
-		path = get_path(subtree->cmd, env);
-		redirection(subtree, 0, 0);
-		execve(path, subtree->opt, get_envtab(env));
+		get_path(&(subtree->cmd), env);
+		redirection(subtree, &stdin_copy, &stdout_copy);
+		execve(subtree->cmd, subtree->opt, get_envtab(env));
+		if (subtree->infile_fd != STDIN_FILENO)
+		{
+			dup2(stdin_copy, STDIN_FILENO);
+			close(subtree->infile_fd);
+		}
+		if (subtree->outfile_fd != STDOUT_FILENO)
+		{
+			dup2(stdout_copy, STDOUT_FILENO);
+			close(subtree->outfile_fd);
+		}
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -71,7 +83,8 @@ static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 				exit(EXIT_SUCCESS);
 			exit(EXIT_FAILURE);
 		}
-		execve(get_path(subtree->cmd, env), subtree->opt, get_envtab(env));
+		get_path(&(subtree->cmd), env);
+		execve(subtree->cmd, subtree->opt, get_envtab(env));
 	}
 }
 

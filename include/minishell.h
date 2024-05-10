@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/10 15:21:20 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/10 16:26:02 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 void	handle_int_to_put_mark(int signum);
 void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
 //path.c
-char	*get_path(char *cmd, t_dq *env);
+int		get_path(char **cmd, t_dq *env);
 //envp.c
 void	make_my_env(char **e, t_dq *env);
 char	**get_envtab(t_dq *env);
