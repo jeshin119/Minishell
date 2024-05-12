@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 17:53:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/12 12:24:39 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value)
 	{
 		if (tk_list -> next)
 			(now -> tk_idx_set)[1] = tk_list -> next -> token_idx;
+		else
+			(now -> tk_idx_set)[1] = END;
 	}
 	now -> exit_code = 258;
 	return (now);

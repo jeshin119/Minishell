@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 12:18:13 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:14:36 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/12 11:49:35 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,20 @@ void	go_to_first(t_tree **tree, t_list **tk_list)
 	{
 		while ((*tree)-> prev)
 			*tree = (*tree)-> prev;
+	}
+}
+
+static void	go_to_bottom(t_tree **tree)
+{
+	if ((*tree)-> next_left)
+	{
+		while ((*tree)-> next_left)
+			*tree = (*tree)-> next_left;
+	}
+	else if ((*tree)-> next_right)
+	{
+		while ((*tree)-> next_right)
+			*tree = (*tree)-> next_right;
 	}
 }
 
@@ -59,8 +73,7 @@ void	free_next_node(t_tree *tree)
 
 t_tree	*free_sub_tree(t_tree *tree)
 {
-	while (tree -> next_left)
-		tree = tree -> next_left;
+	go_to_bottom(&tree);
 	while (tree -> prev && tree -> ctrl_token != PIPE)
 	{
 		free_tk_idx_set(tree);
