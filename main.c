@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 17:22:39 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 11:10:58 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,9 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
-		exec_tree(tree, &env);
+		//exec_tree(tree, &env);
 		free_member(tree, tk_list, buf);
+		check_leak();
 	}
 	clear_dq(&env);
 	return (EXIT_SUCCESS);

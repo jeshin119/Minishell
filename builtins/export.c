@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:45:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 11:03:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,25 @@ static int	has_name_err(char *s)
 	return (FALSE);
 }
 
+static int already_has_name(char *name, char *val, t_dq *env)
+{
+	t_node	*node;
+
+	node = env->head;
+	while (node)
+	{
+		if (ft_strncmp(node->name,name,ft_strlen(name)+1) == 0)
+		{
+			if (node->val)
+				free(node->val);
+			node->val = val;
+			return (EXIT_SUCCESS);
+		}
+		node = node->next;
+	}
+	return (EXIT_FAILURE);
+}
+
 static int	ep(char *str, t_dq *env)
 {
 	char	*name;
@@ -61,25 +80,28 @@ static int	ep(char *str, t_dq *env)
 		return (EXIT_SUCCESS);
 	if (has_name_err(name))
 		return (care_export_error(str));
-	push_back_dq(env, name, val);
+	if (already_has_name(name, val, env) == EXIT_SUCCESS)
+		;
+	else
+		push_back_dq(env, name, val);
 	return (EXIT_SUCCESS);
 }
 
 int	_export(char **opt, t_dq *env)
 {
-	int	state;
+	int	status;
 	int	i;
 
-	state = 0;
+	status = 0;
 	if (opt[1] == 0)
-		return (state);
+		return (status);
 	i = 0;
 	while (opt[++i])
 	{
-		if (!state)
-			state = ep(opt[i], env);
+		if (!status)
+			status = ep(opt[i], env);
 		else
 			ep(opt[i], env);
 	}
-	return (state);
+	return (status);
 }
