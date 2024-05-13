@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:43:26 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 12:01:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ void	reset_tree_info(t_tree_info *info)
 		while (++i < info->pipe_num)
 			free((info->pipe_tab)[i]);
 		free(info->pipe_tab);
-		info->pipe_num = 0;
+		info->pipe_tab = 0;
 	}
-	if (info->sbt_lst == 0 || info->sbt_lst->head == 0)
+	if (info->sbt_lst == 0)
 		return ;
 	start = info->sbt_lst->head;
 	while (start)

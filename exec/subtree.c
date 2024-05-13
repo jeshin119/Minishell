@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 15:10:46 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 11:54:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ static void	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 	if (tree->exit_code == 258)
 	{
 		put_errmsg_syntax_err(tree);
+		g_status = 258;
 		return ;
 	}
 	env_chk(tree, env->head);
@@ -51,7 +52,7 @@ static void	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 	new->opt = get_opt_from_lst(tree);
 }
 
-static t_subtree	*create_subtree(t_tree *tree, t_tree_info *info, t_dq *env)
+static t_subtree	*create_subtree(t_tree *tree, t_dq *env)
 {
 	t_subtree	*new;
 
@@ -59,7 +60,9 @@ static t_subtree	*create_subtree(t_tree *tree, t_tree_info *info, t_dq *env)
 	if (tree->exit_code == 258)
 	{
 		put_errmsg_syntax_err(tree);
-		info->pipe_num--;
+		free(new);
+		new = 0;
+		g_status = 258;
 		return (NULL);
 	}
 	get_cmd_opt(tree, new, env);
@@ -106,17 +109,17 @@ int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
 	sbtl = info->sbt_lst;
 	if (tree->ctrl_token != PIPE)
 	{
-		new = create_subtree(tree, info, env);
+		new = create_subtree(tree, env);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)
 	{
-		new = create_subtree(tree->next_left, info, env);
+		new = create_subtree(tree->next_left, env);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
 	{
-		new = create_subtree(tree->next_left, info, env);
+		new = create_subtree(tree->next_left, env);
 		return (link_subtree_to_lst(&sbtl, new) | \
 		make_subtree_lst(tree->next_right, info, env));
 	}

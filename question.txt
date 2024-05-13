@@ -163,3 +163,5 @@ unset path를 했을 때 다 파일로 보고 현재 폴더에서 찾아야함.
 
 5/13
 export 했을 때 네임이 이미 있는경우 값을 갱신하도록 수정.
+echo <|cat has syntax err in bash but echo >|cat noerror in bash.
+echo > has leaks.

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 11:03:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 11:46:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ static int	has_name_err(char *s)
 	return (FALSE);
 }
 
-static int already_has_name(char *name, char *val, t_dq *env)
+static int	already_has_name(char *name, char *val, t_dq *env)
 {
 	t_node	*node;
 
 	node = env->head;
 	while (node)
 	{
-		if (ft_strncmp(node->name,name,ft_strlen(name)+1) == 0)
+		if (ft_strncmp(node->name, name, ft_strlen(name) + 1) == 0)
 		{
 			if (node->val)
 				free(node->val);

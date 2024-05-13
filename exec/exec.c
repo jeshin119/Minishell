@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 17:14:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 11:55:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,12 @@ int	exec_tree(t_tree *tree, t_dq *env)
 	t_tree_info	tree_info;
 
 	init_tree_info(tree, &tree_info);
-	if (make_subtree_lst(tree, &tree_info, env))
-		return (EXIT_FAILURE);
 	open_pipes(tree_info.pipe_num, &(tree_info.pipe_tab));
+	if (make_subtree_lst(tree, &tree_info, env))
+	{
+		reset_tree_info(&tree_info);
+		return (EXIT_FAILURE);
+	}
 	signal(SIGINT, handle_int_to_put_mark);
 	exec_sbtr(&tree_info, env);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);
