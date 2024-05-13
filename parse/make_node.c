@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/08 13:26:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/12 12:05:58 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,23 +75,33 @@ int	get_cmd_cnt(t_list *tk_list)
 	return (cmd_cnt);
 }
 
+static t_list	*move_rd_filename(t_list *tk_list)
+{
+	if (tk_list -> prev && tk_list -> prev -> ctrl_token)
+	{
+		if (tk_list -> prev -> ctrl_token != PIPE)
+			tk_list = tk_list -> next;
+		if (!tk_list)
+			return (tk_list);
+	}
+	return (tk_list);
+}
+
 t_tree	*make_cmd_node(t_tree *now, t_list *tk_list)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	now = malloc_cmd_node(now, tk_list, get_cmd_cnt(tk_list));
+	if (now && now -> ctrl_token == PIPE)
+		return (now);
 	while (tk_list && tk_list -> ctrl_token != PIPE)
 	{
 		if (!tk_list -> ctrl_token)
 		{
-			if (tk_list -> prev && tk_list -> prev -> ctrl_token)
-			{
-				if (tk_list -> prev -> ctrl_token != PIPE)
-					tk_list = tk_list -> next;
-				if (!tk_list)
-					return (now);
-			}
+			tk_list = move_rd_filename(tk_list);
+			if (!tk_list)
+				return (now);
 			if (!tk_list -> ctrl_token && (now -> tk_idx_set[i] >= 0))
 			{
 				(now -> tk_idx_set)[i] = tk_list -> token_idx;
