@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 14:49:05 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 14:49:15 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 15:14:00 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ static int	care_cd_error(char *path)
 	return (EXIT_FAILURE);
 }
 
-static char	*find_home_path(t_dq *env)
+static char	*find_home_path(void)
 {
 	char	*home;
 	t_node	*start;
 
-	start = env->head;
+	start = g_env.head;
 	while (start)
 	{
 		if (ft_strncmp(start->name, "HOME", 5) == 0)
@@ -39,13 +39,13 @@ static char	*find_home_path(t_dq *env)
 	return (NULL);
 }
 
-void	update_env_pwd(char *path, t_dq *env)
+void	update_env_pwd(char *path)
 {
 	t_node	*go_pwd;
 	t_node	*go_old;
 	char	*pwd;
 
-	go_pwd = env->head;
+	go_pwd = g_env.head;
 	while (go_pwd)
 	{
 		if (!ft_strncmp(go_pwd->name, "PWD", 4))
@@ -55,7 +55,7 @@ void	update_env_pwd(char *path, t_dq *env)
 		}
 		go_pwd = go_pwd->next;
 	}
-	go_old = env->head;
+	go_old = g_env.head;
 	while (go_old)
 	{
 		if (!ft_strncmp(go_pwd->name, "OLDPWD", 7))
@@ -68,13 +68,13 @@ void	update_env_pwd(char *path, t_dq *env)
 	}
 }
 
-int	_cd(char *path,	t_dq *env)
+int	_cd(char *path)
 {
 	char	*home;
 	char	*new;
 
 	new = 0;
-	home = find_home_path(env);
+	home = find_home_path();
 	if (path == 0 || !ft_strncmp(path, "-", 2) || \
 	!ft_strncmp(path, "--", 3) || !ft_strncmp(path, "~", 2))
 		path = home;
@@ -86,7 +86,7 @@ int	_cd(char *path,	t_dq *env)
 	}
 	if (chdir(path) != 0)
 	{
-		update_env_pwd(path, env);
+		update_env_pwd(path);
 		return (care_cd_error(path));
 	}
 	if (home != NULL)

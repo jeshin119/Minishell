@@ -162,6 +162,22 @@ unset path를 했을 때 다 파일로 보고 현재 폴더에서 찾아야함.
 ---------------------------------------------------------
 
 5/13
-export 했을 때 네임이 이미 있는경우 값을 갱신하도록 수정.
+export 했을 때 네임이 이미 있는경우 값을 갱신하도록 수정. 완.
+cat << x < y 완.
+ctrl+c 완.
+tmpfile 완.
+
 echo <|cat has syntax err in bash but echo >|cat noerror in bash.
 echo > has leaks.
+echo <| 
+echo << |
+cat "<< |" 
+export a="hi bye", cat $a
+cat << $a
+cat <<x <|
+cat "<<
+echo hi >|cat
+
+> 다음에 공백이 오면 파일이 없으면 newline
+
+export a="hi bye" 하고 cat $a 하면 hi와 bye를 두개의 파일로 인식. cat "hi bye"하면 하나의 파일로 인식. 

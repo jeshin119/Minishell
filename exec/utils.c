@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/08 17:30:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 14:39:14 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,18 +72,19 @@ char	**get_opt_from_lst(t_tree *tree)
 	return (opt);
 }
 
-void	update_prev_status(t_dq *env, int status)
+void	update_prev_status(int status)
 {
 	t_node	*start;
 
-	start = env->tail;
+	g_env.status = status;
+	start = g_env.tail;
 	while (start)
 	{
 		if (ft_strncmp(start->name, "?", 2) == EXIT_SUCCESS)
 		{
 			if (start->val != 0)
 				free(start->val);
-			start->val = ft_itoa(status);
+			start->val = ft_itoa(g_env.status);
 			break ;
 		}
 		start = start->prev;

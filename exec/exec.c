@@ -6,23 +6,23 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 11:55:15 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 14:38:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	exec_builtin(t_subtree *subtree, t_dq *env)
+static void	exec_builtin(t_subtree *subtree)
 {
 	int		stdin_copy;
 	int		stdout_copy;
 
 	if (b_redirection(subtree, &stdin_copy, &stdout_copy))
 	{
-		g_status = 1;
+		g_env.status = 1;
 		return ;
 	}
-	g_status = go_builtin(subtree, env);
+	g_env.status = go_builtin(subtree);
 	if (subtree->infile_fd != STDIN_FILENO)
 	{
 		dup2(stdin_copy, STDIN_FILENO);
@@ -35,7 +35,7 @@ static void	exec_builtin(t_subtree *subtree, t_dq *env)
 	}
 }
 
-static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
+static void	exec_one_not_builtin(t_subtree *subtree)
 {
 	int		stdin_copy;
 	int		stdout_copy;
@@ -44,9 +44,9 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	child_pid = fork();
 	if (child_pid == 0)
 	{
-		get_path(&(subtree->cmd), env);
+		get_path(&(subtree->cmd));
 		redirection(subtree, &stdin_copy, &stdout_copy);
-		execve(subtree->cmd, subtree->opt, get_envtab(env));
+		execve(subtree->cmd, subtree->opt, get_envtab());
 		if (subtree->infile_fd != STDIN_FILENO)
 		{
 			dup2(stdin_copy, STDIN_FILENO);
@@ -61,7 +61,7 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	}
 }
 
-static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
+static void	exec_cmds(t_subtree *subtree, t_tree_info *info, int i)
 {
 	pid_t		child_pid;
 
@@ -79,16 +79,16 @@ static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 		close_all_pipe(info->pipe_num, info->pipe_tab);
 		if (is_builtin(subtree))
 		{
-			if (go_builtin(subtree, env) == EXIT_SUCCESS)
+			if (go_builtin(subtree) == EXIT_SUCCESS)
 				exit(EXIT_SUCCESS);
 			exit(EXIT_FAILURE);
 		}
-		get_path(&(subtree->cmd), env);
-		execve(subtree->cmd, subtree->opt, get_envtab(env));
+		get_path(&(subtree->cmd));
+		execve(subtree->cmd, subtree->opt, get_envtab());
 	}
 }
 
-static void	exec_sbtr(t_tree_info *tree_info, t_dq *env)
+static void	exec_sbtr(t_tree_info *tree_info)
 {
 	t_subtree	*subtree;
 	int			i;
@@ -97,36 +97,36 @@ static void	exec_sbtr(t_tree_info *tree_info, t_dq *env)
 	if (tree_info->pipe_num == 0)
 	{
 		if (is_builtin(subtree))
-			exec_builtin(subtree, env);
+			exec_builtin(subtree);
 		else
-			exec_one_not_builtin(subtree, env);
+			exec_one_not_builtin(subtree);
 	}
 	else
 	{
 		i = -1;
 		while (++i < tree_info->pipe_num + 1)
 		{
-			exec_cmds(subtree, tree_info, env, i);
+			exec_cmds(subtree, tree_info, i);
 			subtree = subtree->next;
 		}
 	}
 }
 
-int	exec_tree(t_tree *tree, t_dq *env)
+int	exec_tree(t_tree *tree)
 {
 	t_tree_info	tree_info;
 
 	init_tree_info(tree, &tree_info);
 	open_pipes(tree_info.pipe_num, &(tree_info.pipe_tab));
-	if (make_subtree_lst(tree, &tree_info, env))
+	if (make_subtree_lst(tree, &tree_info))
 	{
 		reset_tree_info(&tree_info);
 		return (EXIT_FAILURE);
 	}
 	signal(SIGINT, handle_int_to_put_mark);
-	exec_sbtr(&tree_info, env);
+	exec_sbtr(&tree_info);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);
-	wait_childs(&tree_info, env);
+	wait_childs(&tree_info);
 	reset_tree_info(&tree_info);
 	return (EXIT_SUCCESS);
 }

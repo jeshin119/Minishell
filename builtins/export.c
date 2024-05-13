@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 11:46:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 19:41:56 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ static int	has_name_err(char *s)
 	return (FALSE);
 }
 
-static int	already_has_name(char *name, char *val, t_dq *env)
+static int	already_has_name(char *name, char *val)
 {
 	t_node	*node;
 
-	node = env->head;
+	node = g_env.head;
 	while (node)
 	{
 		if (ft_strncmp(node->name, name, ft_strlen(name) + 1) == 0)
@@ -62,7 +62,7 @@ static int	already_has_name(char *name, char *val, t_dq *env)
 	return (EXIT_FAILURE);
 }
 
-static int	ep(char *str, t_dq *env)
+static int	ep(char *str)
 {
 	char	*name;
 	char	*val;
@@ -80,14 +80,14 @@ static int	ep(char *str, t_dq *env)
 		return (EXIT_SUCCESS);
 	if (has_name_err(name))
 		return (care_export_error(str));
-	if (already_has_name(name, val, env) == EXIT_SUCCESS)
+	if (already_has_name(name, val) == EXIT_SUCCESS)
 		;
 	else
-		push_back_dq(env, name, val);
+		push_back_dq(&g_env, name, val);
 	return (EXIT_SUCCESS);
 }
 
-int	_export(char **opt, t_dq *env)
+int	_export(char **opt)
 {
 	int	status;
 	int	i;
@@ -99,9 +99,9 @@ int	_export(char **opt, t_dq *env)
 	while (opt[++i])
 	{
 		if (!status)
-			status = ep(opt[i], env);
+			status = ep(opt[i]);
 		else
-			ep(opt[i], env);
+			ep(opt[i]);
 	}
 	return (status);
 }

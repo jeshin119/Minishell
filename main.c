@@ -6,30 +6,30 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 11:12:52 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 18:28:18 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 
-void	check_leak(void)
-{
-	system("leaks --list minishell");
-}
+// static void	check_leak(void)
+// {
+// 	system("leaks --list minishell");
+// }
 
-void	init_tree_tk_lst(t_tree **tree, t_list **tk_list)
+static void	init_tree_tk_lst(t_tree **tree, t_list **tk_list)
 {
 	*tree = 0;
 	*tk_list = 0;
 }
 
-void	free_member(t_tree *tree, t_list *tk_list, char *buf)
+static void	free_member(t_tree *tree, t_list *tk_list, char *buf)
 {
 	free(buf);
 	free_all(tree, tk_list);
 }
 
-void	limit_argc(int argc, char **argv)
+static void	limit_argc(int argc, char **argv)
 {
 	if (argc > 1)
 	{
@@ -41,26 +41,28 @@ void	limit_argc(int argc, char **argv)
 int	main(int argc, char **argv, char **envp)
 {
 	t_sig	sig;
-	t_dq	env;
 	t_tree	*tree;
 	t_list	*tk_list;
 	char	*buf;
 
 	limit_argc(argc, argv);
-	make_my_env(envp, &env);
+	make_my_env(envp);
 	while (TRUE)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		buf = readline("tash-3.2$ ");
-		if (check_buf(&buf, &env) == EXIT_FAILURE)
+		if (check_buf(&buf) == EXIT_FAILURE)
+		{
+			// check_leak();
 			continue ;
+		}
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
-		exec_tree(tree, &env);
+		exec_tree(tree);
 		free_member(tree, tk_list, buf);
-		check_leak();
+		// check_leak();
 	}
-	clear_dq(&env);
+	clear_dq(&g_env);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 17:31:11 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 14:48:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 14:46:05 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	_bexit_(char **opt)
 	if (i > 2)
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);
-		g_status = 1;
+		g_env.status = 1;
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_FAILURE);

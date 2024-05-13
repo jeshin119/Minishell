@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 17:14:50 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 15:46:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,48 +52,42 @@ int	get_outfile_fd(t_subtree *subtree)
 // 	return (FALSE);
 // }
 
-int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
+int	get_infile(t_tree *tree, t_subtree *new)
 {
 	if (tree == 0)
 		return (EXIT_SUCCESS);
-	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
-		return (get_infile(tree->next_left, new, env));
 	if (tree->exit_code == 258)
-	{
-		put_errmsg_syntax_err(tree);
-		return (EXIT_FAILURE);
-	}
+		return (258);
 	if (tree->ctrl_token == HERE_DOC)
 	{
-		new->is_heredoc = TRUE;
 		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 		if (write_heredoc(new))
 			return (EXIT_FAILURE);
 	}
+	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
+		return (get_infile(tree->next_left, new));
 	if (tree->ctrl_token == LEFT)
 	{
-		env_chk(tree, env->head);
+		new->is_heredoc = 0;
+		env_chk(tree, g_env.head);
 		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	}
 	return (EXIT_SUCCESS);
 }
 
-int	get_outfile(t_tree *tree, t_subtree *new, t_dq *env)
+int	get_outfile(t_tree *tree, t_subtree *new)
 {
 	if (tree == 0)
 		return (EXIT_SUCCESS);
-	if (tree->next_right && (tree->next_right)->ctrl_token != 0)
-		return (get_outfile(tree->next_right, new, env));
 	if (tree->exit_code == 258)
-	{
-		put_errmsg_syntax_err(tree);
-		return (EXIT_FAILURE);
-	}
+		return (258);
+	if (tree->next_right && (tree->next_right)->ctrl_token != 0)
+		return (get_outfile(tree->next_right, new));
 	if (tree->ctrl_token != D_RIGHT && tree->ctrl_token != RIGHT)
 		return (EXIT_SUCCESS);
 	if (tree->ctrl_token == D_RIGHT)
 		new->is_appending = 1;
-	env_chk(tree, env->head);
+	env_chk(tree, g_env.head);
 	new->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	if (new->outfile == NULL)
 		return (EXIT_FAILURE);

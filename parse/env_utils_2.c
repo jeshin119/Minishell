@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 14:19:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 12:43:56 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:03:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ void	rd_empty_chk(t_tree *now, char *exp_token)
 	{
 		if ((now -> tk_list -> env_lset)[0]. d_quote)
 			return ;
-		printf("%s: ambiguous redirect\n", now -> tk_list -> token);
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(now->tk_list->token, 2);
+		ft_putstr_fd(": ambiguous redirect\n", 2);
 		now -> ambi_flag = ON;
 	}
 }
@@ -88,7 +90,9 @@ void	rd_space_chk(char *env, t_tree *now, int d_quote)
 	{
 		if (env[i] == ' ')
 		{
-			printf("%s: ambiguous redirect\n", now -> tk_list -> token);
+			ft_putstr_fd("bash: ", 2);
+			ft_putstr_fd(now->tk_list->token, 2);
+			ft_putstr_fd(": ambiguous redirect\n", 2);
 			now -> ambi_flag = ON;
 		}
 		i++;

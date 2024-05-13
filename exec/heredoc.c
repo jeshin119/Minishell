@@ -6,90 +6,67 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:46:45 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 16:51:11 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	put_bkup(char *filename, int fd, char *bkup)
+void	free_heredoc(char *buf, char *bkup, char *filename)
+{
+	if (buf != NULL)
+	{
+		free(buf);
+		buf = 0;
+	}
+	if (bkup != NULL)
+	{
+		free(bkup);
+		bkup = 0;
+	}
+	if (filename != NULL)
+	{
+		free(filename);
+		filename = 0;
+	}
+}
+
+int	end_heredoc(char *buf, char *bkup, char *filename, int fd)
 {
 	write(1, "\033[1A", 4);
 	write(1, "\033[2C", 4);
+	if (bkup)
+		write(1, bkup, ft_strlen_js(bkup));
 	close(fd);
-	write(1, bkup, ft_strlen_js(bkup));
 	unlink(filename);
-	free(bkup);
+	free_heredoc(buf, bkup, filename);
+	return (EXIT_FAILURE);
 }
 
-static void	make_bkup(char **bkup, char *buf)
+void	make_bkup(char *buf, char **bkup)
 {
 	char	*tmp;
 
-	tmp = ft_strjoin_no_free(*bkup, buf);
-	if (*bkup)
-		free(*bkup);
-	*bkup = ft_strjoin_no_free(tmp, "\n");
-	free(tmp);
-}
-
-static void	free_buf_bkup(char *buf, char *bkup)
-{
+	tmp = *bkup;
+	*bkup = ft_strjoin_no_free(tmp, buf);
+	if (tmp != NULL)
+		free(tmp);
 	if (buf != NULL)
 		free(buf);
-	if (bkup != NULL)
-		free(bkup);
 }
 
-static int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
+int	is_file_exist(char *filename, char *buf, char *bkup)
 {
-	char			*buf;
-	char			*bkup;
+	int				tmp_fd;
 
-	bkup = 0;
-	while (TRUE)
+	tmp_fd = open(filename, O_RDONLY);
+	if (tmp_fd < 0)
 	{
-		buf = readline("> ");
-		if (buf == 0)
-		{
-			put_bkup(filename, heredoc_fd, bkup);
-			return (EXIT_FAILURE);
-		}
-		if (ft_strncmp(buf, limiter, size + 1) == 0)
-			break ;
-		write(heredoc_fd, buf, ft_strlen_js(buf));
-		write(heredoc_fd, "\n", 1);
-		make_bkup(&bkup, buf);
-		free(buf);
+		ft_putstr_fd("bash: no heredoc file\n", 2);
+		free_heredoc(buf, bkup, filename);
+		return (EXIT_FAILURE);
 	}
-	free_buf_bkup(buf, bkup);
-	return (EXIT_SUCCESS);
-}
-
-int	write_heredoc(t_subtree *subtree)
-{
-	char	*limiter;
-	int		heredoc_fd;
-	char	*filename;
-
-	if (subtree == 0)
-		return (EXIT_FAILURE);
-	limiter = subtree->infile;
-	if (limiter == 0)
-		return (EXIT_FAILURE);
-	filename = ft_strjoin_no_free(".here_doc_", limiter);
-	heredoc_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (heredoc_fd < 0)
-	{
-		perror("heredoc :");
-		g_status = 1;
-		return (-1);
-	}
-	if (write_line(filename, heredoc_fd, limiter, ft_strlen_js(limiter)))
-		return (EXIT_FAILURE);
-	close(heredoc_fd);
-	free(subtree->infile);
-	subtree->infile = filename;
-	subtree->is_heredoc = 1;
+	else
+		close(tmp_fd);
 	return (EXIT_SUCCESS);
 }

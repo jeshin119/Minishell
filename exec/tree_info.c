@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 12:01:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 16:04:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	free_subtree(t_subtree *sbtr)
+void	free_subtree(t_subtree *sbtr)
 {
 	if (sbtr->cmd)
 	{

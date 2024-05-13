@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 11:47:21 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 18:32:34 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,21 @@ void	put_errmsg_syntax_err2(t_tree *tree)
 
 		ft_putstr_fd("'newline'\n", 2);
 	}
+}
+
+int	is_file_err(t_tree *tree, t_subtree *new, int ret)
+{
+	if (ret == 258)
+	{
+		put_errmsg_syntax_err(tree);
+		free_subtree(new);
+		update_prev_status(258);
+		return (EXIT_FAILURE);
+	}
+	if (ret == EXIT_FAILURE)
+	{
+		free_subtree(new);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }

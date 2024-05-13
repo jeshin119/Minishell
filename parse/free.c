@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:14:25 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:14:42 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 13:04:29 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static void	free_left_tree(t_tree *tree)
 {
 	tree = free_sub_tree(tree);
 	free(tree -> next_left);
+	tree -> next_left = 0;
 }
 
 static void	free_right_tree(t_tree *tree)

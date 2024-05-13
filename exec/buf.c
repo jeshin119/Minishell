@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:29:47 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 18:39:34 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,31 +50,29 @@ static int	is_all_space(char *buf)
 	return (TRUE);
 }
 
-static char	*get_extra_buf(char *buf)
+static void	get_extra_buf(char **buf)
 {
 	char	*tmp1;
-	char	*tmp2;
 
-	while (is_ended_with_pipe(buf))
+	while (is_ended_with_pipe(*buf))
 	{
-		tmp1 = readline(">");
+		tmp1 = readline("> ");
 		if (tmp1 == 0)
 		{
-			if (buf)
-				free(buf);
-			if (ft_strlen(buf))
-				add_history(buf);
+			if (ft_strlen(*buf))
+				add_history(*buf);
+			if (*buf)
+			{
+				free(*buf);
+				*buf = 0;
+			}
 			write(1, "\033[1A", 4);
 			write(1, "\033[2C", 4);
 			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
-			return (0);
+			return ;
 		}
-		tmp2 = ft_strjoin_no_free(buf, tmp1);
-		free(tmp1);
-		free(buf);
-		buf = tmp2;
+		*buf = ft_strjoin(*buf, tmp1);
 	}
-	return (buf);
 }
 
 static void	exit_when_eof(void)
@@ -86,7 +84,7 @@ static void	exit_when_eof(void)
 	exit(EXIT_SUCCESS);
 }
 
-int	check_buf(char **buf, t_dq *env)
+int	check_buf(char **buf)
 {
 	char	*tmp;
 
@@ -97,15 +95,17 @@ int	check_buf(char **buf, t_dq *env)
 		free(*buf);
 		return (EXIT_FAILURE);
 	}
-	if (**buf == '|')
+	if (check_syntax_err(*buf) || **buf == '|')
 	{
-		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
+		ft_putstr_fd("--------------bash: syntax error near unexpected token `|'\n", 2);
 		free(*buf);
-		update_prev_status(env, 258);
+		update_prev_status(258);
 		return (EXIT_FAILURE);
 	}
 	if (is_ended_with_pipe(*buf))
-		*buf = get_extra_buf(*buf);
+		get_extra_buf(buf);
+	if (*buf == 0)
+		return (EXIT_FAILURE);
 	add_history(*buf);
 	tmp = ft_strdup(*buf);
 	free(*buf);

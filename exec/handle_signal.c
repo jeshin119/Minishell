@@ -6,23 +6,24 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 12:52:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/13 14:35:11 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	handle_int_to_put_mark(int sign)
+void	handle_int_to_put_mark(int signum)
 {
-	sign = 1;
+	signum = 1;
 	write(1, "^C\n", 3);
 }
 
-static void	handle_int(int n)
+static void	handle_int(int sign)
 {
 	struct termios	term;
 
-	n = 1;
+	sign = 1;
+	update_prev_status(sign);
 	tcgetattr(STDIN_FILENO, &term);
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
