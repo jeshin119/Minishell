@@ -6,16 +6,18 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 18:28:18 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 18:32:34 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 
-// static void	check_leak(void)
-// {
-// 	system("leaks --list minishell");
-// }
+static void	check_leak(void)
+{
+	printf("***********************\n");
+	system("leaks --list minishell");
+	printf("***********************\n");
+}
 
 static void	init_tree_tk_lst(t_tree **tree, t_list **tk_list)
 {
@@ -43,26 +45,28 @@ int	main(int argc, char **argv, char **envp)
 	t_sig	sig;
 	t_tree	*tree;
 	t_list	*tk_list;
+	t_dq	env;
 	char	*buf;
 
 	limit_argc(argc, argv);
-	make_my_env(envp);
+	make_my_env(envp, &env);
 	while (TRUE)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		buf = readline("tash-3.2$ ");
-		if (check_buf(&buf) == EXIT_FAILURE)
+		if (check_buf(&buf, &env) == EXIT_FAILURE)
 		{
-			// check_leak();
+			check_leak();
 			continue ;
 		}
+		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
-		exec_tree(tree);
+		exec_tree(tree, &env);
 		free_member(tree, tk_list, buf);
-		// check_leak();
+		check_leak();
 	}
-	clear_dq(&g_env);
+	clear_dq(&env);
 	return (EXIT_SUCCESS);
 }

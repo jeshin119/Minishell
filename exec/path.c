@@ -6,20 +6,20 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 14:58:48 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 12:46:00 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static char	**get_path_tab(void)
+static char	**get_path_tab(t_dq *env)
 {
 	t_node	*start;
 	char	**tab;
 	char	*tmp;
 	int		i;
 
-	start = g_env.head;
+	start = env->head;
 	while (start)
 	{
 		if (ft_strncmp(start->name, "PATH", 4) == 0)
@@ -48,13 +48,13 @@ int	is_just_file(char *cmd)
 	return (FALSE);
 }
 
-int	find_in_path_env(char **cmd)
+static int	find_in_path_env(char **cmd, t_dq *env)
 {
 	int		i;
 	char	*path;
 	char	**tab;
 
-	tab = get_path_tab();
+	tab = get_path_tab(env);
 	i = -1;
 	while (tab[++i])
 	{
@@ -76,13 +76,13 @@ int	find_in_path_env(char **cmd)
 	return (EXIT_FAILURE);
 }
 
-int	get_path(char **cmd)
+int	get_path(char **cmd, t_dq *env)
 {
 	if (cmd == 0 || *cmd == 0)
 		return (EXIT_SUCCESS);
 	if (is_just_file(*cmd))
 		return (EXIT_SUCCESS);
 	else
-		return (find_in_path_env(cmd));
+		return (find_in_path_env(cmd, env));
 	return (EXIT_FAILURE);
 }

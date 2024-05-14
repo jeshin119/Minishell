@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/13 17:59:47 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 16:38:37 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ typedef struct s_sig
 	struct sigaction	sa_quit;
 }	t_sig;
 
-t_dq	g_env;
+int	g_status;
 //parse
 void	meta_split(char *s, t_list **tk_list, int *i);
 void	preorder_travel(t_tree *now, t_list *tk_list, t_node *env_list);
@@ -147,7 +147,7 @@ int		get_pipe_num_from_tree(t_tree *tre);
 void	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 //subtree.c
-int		make_subtree_lst(t_tree *tree, t_tree_info *info);
+int		make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
 //fd.c
 int		open_infile_n_return(t_subtree *subtree);
 int		open_outfile_n_return(t_subtree *subtree);
@@ -155,29 +155,31 @@ int		open_appending_n_return(t_subtree *subtree);
 //file.c
 int		get_infile_fd(t_subtree *subtree);
 int		get_outfile_fd(t_subtree *subtree);
-int		get_infile(t_tree *tree, t_subtree *new);
-int		get_outfile(t_tree *tree, t_subtree *new);
+int		get_infile(t_tree *tree, t_subtree *new, t_dq *env);
+int		get_outfile(t_tree *tree, t_subtree *new, t_dq *env);
 //exec.c
-int		exec_tree(t_tree *tree);
+int		exec_tree(t_tree *tree, t_dq *env);
 //exec_subtree.c
 void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 //handle_signal.c
 void	handle_int_to_put_mark(int signum);
+void	handle_int(int signum);
 void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
+void	handle_sigint_to_rl_restart(int signum);
 //path.c
-int		get_path(char **cmd);
+int		get_path(char **cmd, t_dq *env);
 //envp.c
-void	make_my_env(char **e);
-char	**get_envtab(void);
+void	make_my_env(char **e, t_dq *env);
+char	**get_envtab(t_dq *env);
 //utils.c
 char	*get_nth_token_from_lst(t_tree *tree, int nth);
 char	**get_opt_from_lst(t_tree *tree);
 void	free_tab(char **tab);
-void	update_prev_status(int status);
+void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
 //buf.c
-int		check_buf(char **buf);
-//buf2.c
+int		check_buf(char **buf, t_dq *env);
+//syntax.c
 int		check_syntax_err(char *s);
 //heredoc.c
 void	free_heredoc(char *buf, char *bkup, char *filename);
@@ -189,20 +191,19 @@ int		write_line(char *filename, int heredoc_fd, char *limiter, int size);
 int		write_heredoc(t_subtree *subtree);
 //err.c
 void	put_errmsg_syntax_err(t_tree *tree);
-int		is_file_err(t_tree *tree, t_subtree *new, int ret);
+int		is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret);
 //wait.c
-void	wait_childs(t_tree_info *info);
-
+void	wait_childs(t_tree_info *info, t_dq *env);
 //builtins
 int		_echo(t_subtree *t_subtree);
-int		_cd(char *path);
+int		_cd(char *path, t_dq *env);
 int		_pwd(void);
-int		_export(char **opt);
-int		_unset(char **opt);
-int		_env(void);
+int		_export(char **opt, t_dq *env);
+int		_unset(char **opt, t_dq *env);
+int		_env(t_dq *env);
 int		_exit_(char **opt);
-int		_bexit_(char **opt);
-int		go_builtin(t_subtree *subtree);
+int		_bexit_(char **opt, t_dq *env);
+int		go_builtin(t_subtree *subtree, t_dq *env);
 int		is_builtin(t_subtree *subtree);
 int		b_redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 int		b_get_infile_fd(t_subtree *subtree);

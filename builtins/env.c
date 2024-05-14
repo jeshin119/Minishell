@@ -6,17 +6,17 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:10:25 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 14:42:38 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 12:08:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	_env(void)
+int	_env(t_dq *env)
 {
 	t_node	*here;
 
-	here = g_env.head;
+	here = env->head;
 	while (here)
 	{
 		if (here->val && ft_strncmp(here->name, "?", 2) != EXIT_SUCCESS)

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 17:01:00 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 14:49:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 16:07:08 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,17 @@ static void	free_node(t_node *this)
 	free(this);
 }
 
-static void	organize_node(t_node *this)
+static void	organize_node(t_node *this, t_dq *env)
 {
-	if (this == g_env.tail)
+	if (this == env->tail)
 	{
 		this->prev->next = 0;
-		g_env.tail = this->prev;
+		env->tail = this->prev;
 	}
-	else if (this == g_env.head)
+	else if (this == env->head)
 	{
 		this->next->prev = 0;
-		g_env.head = this->next;
+		env->head = this->next;
 	}
 	else
 	{
@@ -71,7 +71,7 @@ static void	organize_node(t_node *this)
 	}
 }
 
-int	_unset(char **opt)
+int	_unset(char **opt, t_dq *env)
 {
 	t_node	*start;
 	int		i;
@@ -84,12 +84,12 @@ int	_unset(char **opt)
 			care_unset_error(opt[i]);
 			continue ;
 		}
-		start = g_env.head;
+		start = env->head;
 		while (start)
 		{
 			if (ft_strncmp(start->name, opt[i], ft_strlen(opt[i]) + 1) == 0)
 			{
-				organize_node(start);
+				organize_node(start, env);
 				free_node(start);
 			}
 			start = start->next;

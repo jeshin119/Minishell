@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:24:19 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/04 12:49:48 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 19:02:33 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	_pwd(void)
 	while (TRUE)
 	{
 		buf = malloc(sizeof(char) * size);
-		bkup = getcwd(buf, size);
+		bkup = ft_strdup(getcwd(buf, size));
 		free(buf);
 		if (bkup != 0)
 			break ;
@@ -36,5 +36,6 @@ int	_pwd(void)
 	}	
 	ft_putstr(bkup);
 	write(1, "\n", 1);
+	free(bkup);
 	return (EXIT_SUCCESS);
 }

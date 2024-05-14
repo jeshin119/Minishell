@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 11:02:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 14:25:35 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 12:10:31 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_dq
 	t_node	*head;
 	t_node	*tail;
 	int		size;
-	int		status;
 }			t_dq;
 
 //my_deque.c

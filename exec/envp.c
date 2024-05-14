@@ -6,22 +6,22 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 14:43:21 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 17:20:39 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	add_prev_status_env(void)
+static void	add_prev_status_env(t_dq *env)
 {
-	push_back_dq(&g_env, ft_strdup("?"), ft_itoa(0));
+	push_back_dq(env, ft_strdup("?"), ft_itoa(0));
 }
 
-static void	reset_oldpwd_env(void)
+static void	reset_oldpwd_env(t_dq *env)
 {
 	t_node	*start;
 
-	start = g_env.head;
+	start = env->head;
 	while (start)
 	{
 		if (!ft_strncmp(start->name, "OLDPWD", 7))
@@ -35,33 +35,33 @@ static void	reset_oldpwd_env(void)
 	}
 }
 
-void	make_my_env(char **e)
+void	make_my_env(char **e, t_dq *env)
 {
 	char	**tmp;
 
-	init_dq(&g_env);
+	init_dq(env);
 	while (*e)
 	{
 		tmp = ft_split(*e, '=');
-		push_back_dq(&g_env, ft_strdup(tmp[0]), ft_strdup(tmp[1]));
+		push_back_dq(env, ft_strdup(tmp[0]), ft_strdup(tmp[1]));
 		free_tab(tmp);
 		e++;
 	}
-	add_prev_status_env();
-	reset_oldpwd_env();
+	add_prev_status_env(env);
+	reset_oldpwd_env(env);
 }
 
-char	**get_envtab(void)
+char	**get_envtab(t_dq *env)
 {
 	char	**tab;
 	t_node	*start;
 	char	*tmp;
 	int		i;
 
-	start = g_env.head;
-	tab = (char **)malloc(sizeof(char *) * (g_env.size + 1));
+	start = env->head;
+	tab = (char **)malloc(sizeof(char *) * (env->size + 1));
 	i = -1;
-	while (start && i < g_env.size)
+	while (start && i < env->size)
 	{
 		if (start->name == 0 || start->val == 0)
 		{
@@ -74,6 +74,6 @@ char	**get_envtab(void)
 		free(tmp);
 		start = start->next;
 	}
-	tab[g_env.size] = 0;
+	tab[env->size] = 0;
 	return (tab);
 }

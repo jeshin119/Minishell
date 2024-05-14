@@ -1,35 +1,56 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buf2.c                                             :+:      :+:    :+:   */
+/*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:23:34 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 19:17:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 18:51:35 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	check_behind(int i, char *s)
+static int	put_err_msg(char *s, int idx)
+{
+	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+	if (s[idx])
+		write(2, &s[idx], 1);
+	else
+		write(2, "newline", 7);
+	ft_putstr_fd("'\n", 2);
+	free(s);
+	g_status = 258;
+	return (EXIT_FAILURE);
+}
+
+static void	init(char *s, int i, int *deli, int *depth)
 {
 	int		k;
-	int		depth;
-	int 	deli;
 	char	*set;
 
-	depth = 0;
 	set = "<|>";
 	k = -1;
 	while (set[++k])
 	{
 		if (set[k] == s[i])
-			deli = k;
+			*deli = k;
 	}
-	printf("deli : %c\n",set[deli]);
+	*depth = 0;
+}
+
+static int	check_behind(int i, char *s)
+{
+	int		k;
+	int		depth;
+	int		deli;
+	char	*set;
+
+	set = "<|>";
 	k = i;
-	while (s[++k] && (size_t)k < ft_strlen(s))
+	init (s, i, &deli, &depth);
+	while (s[++k])
 	{
 		if (ft_isspace(s[k]))
 			continue ;
@@ -40,14 +61,17 @@ static int	check_behind(int i, char *s)
 			return (k);
 		depth++;
 	}
+	if (depth == 0)
+		return (k);
 	return (EXIT_SUCCESS);
 }
 
-static int check(char *s, int i, int *status)
+static int	check(char *s, int i, int *status)
 {
-	int ret;
+	int	ret;
+
 	ret = 0;
-	if (s[i] == '<' || s[i] == '>' || s[i] == '|')
+	if (s[i] == '<' || s[i] == '>')
 	{
 		ret = check_behind(i, s);
 		if (ret)
@@ -66,6 +90,10 @@ int	check_syntax_err(char *s)
 	int	dq;
 	int	status;
 
+	sq = FALSE;
+	dq = FALSE;
+	if (*s == '|')
+		return (EXIT_FAILURE);
 	if (s == 0)
 		return (EXIT_SUCCESS);
 	i = -1;
@@ -78,13 +106,8 @@ int	check_syntax_err(char *s)
 		if (sq == FALSE && dq == FALSE)
 		{
 			if (check(s, i, &status))
-				return (status);
+				return (put_err_msg(s, status));
 		}
 	}
 	return (EXIT_SUCCESS);
 }
-
-// int main(){
-// 	char *s = "echo <> |";
-// 	printf("%d",check_syntax_err(s));
-// }

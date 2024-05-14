@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 18:39:34 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 18:51:56 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ static int	is_ended_with_pipe(char *buf)
 	return (TRUE);
 }
 
-static int	is_all_space(char *buf)
+static int	is_empty(char *buf)
 {
 	int		i;
 
-	if (buf == 0)
-		return (FALSE);
+	if (*buf == 0)
+		return (TRUE);
 	i = -1;
 	while (buf[++i])
 	{
@@ -50,29 +50,33 @@ static int	is_all_space(char *buf)
 	return (TRUE);
 }
 
-static void	get_extra_buf(char **buf)
+static int	get_extra_buf(char **buf)
 {
-	char	*tmp1;
+	char	*extra;
 
+	signal(SIGINT, handle_sigint_to_rl_restart);
 	while (is_ended_with_pipe(*buf))
 	{
-		tmp1 = readline("> ");
-		if (tmp1 == 0)
+		extra = readline("> ");
+		if (g_status == SIGINT)
 		{
-			if (ft_strlen(*buf))
-				add_history(*buf);
-			if (*buf)
-			{
-				free(*buf);
-				*buf = 0;
-			}
-			write(1, "\033[1A", 4);
-			write(1, "\033[2C", 4);
-			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
-			return ;
+			add_history(*buf);
+			free(*buf);
+			g_status = 1;
+			return (EXIT_FAILURE);
 		}
-		*buf = ft_strjoin(*buf, tmp1);
+		if (extra == 0)
+		{
+			add_history(*buf);
+			free(*buf);
+			g_status = 258;
+			write(1, "\033[1A\033[2C", 8);
+			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
+			return (EXIT_FAILURE);
+		}
+		*buf = ft_strjoin(*buf, extra);
 	}
+	return (EXIT_SUCCESS);
 }
 
 static void	exit_when_eof(void)
@@ -84,28 +88,24 @@ static void	exit_when_eof(void)
 	exit(EXIT_SUCCESS);
 }
 
-int	check_buf(char **buf)
+int	check_buf(char **buf, t_dq *env)
 {
 	char	*tmp;
 
 	if (*buf == 0)
 		exit_when_eof();
-	if (**buf == 0 || is_all_space(*buf))
+	if (is_empty(*buf))
+		return (EXIT_FAILURE);
+	if (check_syntax_err(*buf))
 	{
-		free(*buf);
+		update_prev_status(env);
 		return (EXIT_FAILURE);
 	}
-	if (check_syntax_err(*buf) || **buf == '|')
+	if (get_extra_buf(buf))
 	{
-		ft_putstr_fd("--------------bash: syntax error near unexpected token `|'\n", 2);
-		free(*buf);
-		update_prev_status(258);
+		update_prev_status(env);
 		return (EXIT_FAILURE);
 	}
-	if (is_ended_with_pipe(*buf))
-		get_extra_buf(buf);
-	if (*buf == 0)
-		return (EXIT_FAILURE);
 	add_history(*buf);
 	tmp = ft_strdup(*buf);
 	free(*buf);

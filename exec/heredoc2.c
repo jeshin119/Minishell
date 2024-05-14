@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 16:53:11 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/14 12:48:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	write_heredoc(t_subtree *subtree)
 	if (heredoc_fd < 0)
 	{
 		perror("open :");
-		g_env.status = 1;
+		g_status = 1;
 		return (EXIT_FAILURE);
 	}
 	if (write_line(filename, heredoc_fd, limiter, ft_strlen_js(limiter)))
