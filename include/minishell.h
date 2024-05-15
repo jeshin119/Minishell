@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/15 16:20:21 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:51:19 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,8 @@ int		exec_tree(t_tree *tree, t_dq *env);
 void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 //handle_signal.c
 void	handle_int_to_put_mark(int signum);
-void	handle_int(int signum);
+void	handle_int_to_exit_heredoc(int signum);
+void	handle_int_in_main(int signum);
 void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
 void	handle_sigint_to_rl_restart(int signum);
 //path.c

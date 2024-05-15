@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 17:31:31 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 18:01:39 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,17 @@ void	handle_int_to_put_mark(int signum)
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }
 
-void	handle_int(int signum)
+void	handle_int_to_exit_heredoc(int signum)
+{
+	g_status = signum - 1;
+	write(1,"",1);
+	write(1,"\n",1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
+void	handle_int_in_main(int signum)
 {
 	struct termios	term;
 
@@ -38,7 +48,7 @@ void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit)
 {
 	sigemptyset(&(sa_int->sa_mask));
 	sa_int->sa_flags = 0;
-	sa_int->sa_handler = handle_int;
+	sa_int->sa_handler = handle_int_in_main;
 	sigemptyset(&(sa_quit->sa_mask));
 	sa_quit->sa_flags = 0;
 	sa_quit->sa_handler = SIG_IGN;

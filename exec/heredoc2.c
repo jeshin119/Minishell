@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 12:48:43 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:51:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 	char			*bkup;
 
 	bkup = 0;
+	signal(SIGINT, handle_int_to_exit_heredoc);
 	while (TRUE)
 	{
 		buf = readline("> ");
