@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/15 11:13:27 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 14:59:47 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ typedef struct s_sig
 	struct sigaction	sa_quit;
 }	t_sig;
 
-int	g_status;
+int		g_status;
+
 //parse
 void	meta_split(char *s, t_list **tk_list, int *i);
 void	preorder_travel(t_tree *now, t_list *tk_list, t_node *env_list);
@@ -180,7 +181,7 @@ void	perror_n_exit(const char *str);
 //buf.c
 int		check_buf(char **buf, t_dq *env);
 //syntax.c
-int		check_syntax_err(char *s);
+int		check_syntax_err(char *s, int *heredoc);
 //heredoc.c
 void	free_heredoc(char *buf, char *bkup, char *filename);
 int		end_heredoc(char *buf, char *bkup, char *filename, int fd);
@@ -190,9 +191,10 @@ int		is_file_exist(char *filename, char *buf, char *bkup);
 int		write_line(char *filename, int heredoc_fd, char *limiter, int size);
 int		write_heredoc(t_subtree *subtree);
 //err.c
-void	put_errmsg_syntax_err(t_tree *tree);
+int		put_errmsg_syntax_err(t_tree *tree);
 int		is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret);
-int		put_syntax_err_msg(char *s, int idx);
+int		put_syntax_err_msg(char *s, int idx, int heredoc);
+int		is_directory(char *path);
 //wait.c
 void	wait_childs(t_tree_info *info, t_dq *env);
 //builtins

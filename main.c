@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 11:19:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 13:02:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	main(int argc, char **argv, char **envp)
 		free_member(tree, tk_list, buf);
 		check_leak();
 	}
+	atexit(check_leak);
 	clear_dq(&env);
 	return (EXIT_SUCCESS);
 }

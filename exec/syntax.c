@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:23:34 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 11:18:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 13:13:22 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	is_heredoc(int *i, char *s)
 	return (FALSE);
 }
 
-static int	check(char *s, int i, int *status)
+static int	check(char *s, int i, int *status, int *heredoc)
 {
 	int	ret;
 
@@ -89,7 +89,10 @@ static int	check(char *s, int i, int *status)
 	{
 		ret = check_behind(i, s);
 		if (is_heredoc(&i, s))
-			return (-1);
+		{
+			*heredoc = 1;
+			return (EXIT_FAILURE);
+		}
 		if (ret)
 		{
 			*status = ret;
@@ -99,7 +102,7 @@ static int	check(char *s, int i, int *status)
 	return (EXIT_SUCCESS);
 }
 
-int	check_syntax_err(char *s)
+int	check_syntax_err(char *s, int *heredoc)
 {
 	int	i;
 	int	sq;
@@ -121,10 +124,8 @@ int	check_syntax_err(char *s)
 			dq = !dq;
 		if (sq == FALSE && dq == FALSE)
 		{
-			if (check(s, i, &status) == EXIT_FAILURE)
-				return (put_syntax_err_msg(s, status));
-			else if (check(s, i, &status) == -1)
-				return (EXIT_SUCCESS);
+			if (check(s, i, &status, heredoc))
+				return (put_syntax_err_msg(s, status, *heredoc));
 		}
 	}
 	return (EXIT_SUCCESS);

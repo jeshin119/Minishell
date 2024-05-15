@@ -6,32 +6,49 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 11:16:48 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 15:00:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	put_errmsg_syntax_err(t_tree *tree)
+int	put_errmsg_syntax_err(t_tree *tree)
 {
-	printf("here is put_errmsg in err.c\n");
-	ft_putstr_fd("bash: syntax error near unexpected token ", 2);
-	if (tree->tk_list->ctrl_token == PIPE)
-		ft_putstr_fd("'|'\n", 2);
-	else if (tree->tk_list -> prev && tree->tk_list -> prev -> ctrl_token)
+	int putted;
+
+	if (tree == 0)
+		return (0);
+	putted = 0;
+	if (tree->exit_code != 258)
 	{
-		ft_putstr_fd("'", 2);
-		ft_putstr_fd(tree->tk_list->token, 2);
-		ft_putstr_fd("'\n", 2);
+		putted += put_errmsg_syntax_err(tree->next_left);
+		if (putted)
+			return (1);
+		putted += put_errmsg_syntax_err(tree->next_right);
+		if (putted)
+			return (1);
 	}
-	else if (tree->tk_list -> next)
+	printf("here is put_errmsg in err.c\n");
+	int i=-1;
+	while((tree->tk_idx_set)[++i] != -1)
+		;
+	i--;
+	if (tree->tk_idx_set[i])
 	{
-		ft_putstr_fd("'", 2);
-		ft_putstr_fd(tree->tk_list->next->token, 2);
+		char *tmp = get_nth_token_from_lst(tree, tree->tk_idx_set[i]);
+		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
+		ft_putstr_fd(tmp, 2);
 		ft_putstr_fd("'\n", 2);
+		free(tmp);
+		return (1);
 	}
 	else
-		ft_putstr_fd("'newline'\n", 2);
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
+		ft_putstr_fd("newline'\n", 2);
+		return (1);
+	}
+	return (0);
 }
 
 int	is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret)
@@ -52,8 +69,10 @@ int	is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret)
 	return (EXIT_SUCCESS);
 }
 
-int	put_syntax_err_msg(char *s, int idx)
+int	put_syntax_err_msg(char *s, int idx, int heredoc)
 {
+	if (heredoc)
+		return (EXIT_SUCCESS);
 	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
 	if (s[idx])
 		write(2, &s[idx], 1);
@@ -63,4 +82,19 @@ int	put_syntax_err_msg(char *s, int idx)
 	free(s);
 	g_status = 258;
 	return (EXIT_FAILURE);
+}
+
+int	is_directory(char *path)
+{
+	struct stat	statbuf;
+
+	stat(path, &statbuf);
+	if (S_ISDIR(statbuf.st_mode))
+	{
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": is a directory\n", 2);
+		return (TRUE);
+	}
+	else
+		return (FALSE);
 }

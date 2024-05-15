@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 18:49:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 12:13:31 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	if (child_pid == 0)
 	{
 		get_path(&(subtree->cmd), env);
+		if (is_directory(subtree->cmd))
+			exit(126);
 		redirection(subtree, &stdin_copy, &stdout_copy);
 		execve(subtree->cmd, subtree->opt, get_envtab(env));
 		if (subtree->infile_fd != STDIN_FILENO)
@@ -84,6 +86,8 @@ static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 			exit(EXIT_FAILURE);
 		}
 		get_path(&(subtree->cmd), env);
+		if (is_directory(subtree->cmd))
+			exit(126);
 		execve(subtree->cmd, subtree->opt, get_envtab(env));
 	}
 }

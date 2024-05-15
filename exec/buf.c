@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 11:17:59 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 13:14:48 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,17 +91,19 @@ static void	exit_when_eof(void)
 int	check_buf(char **buf, t_dq *env)
 {
 	char	*tmp;
+	int		heredoc;
 
 	if (*buf == 0)
 		exit_when_eof();
 	if (is_empty(*buf))
 		return (EXIT_FAILURE);
-	if (check_syntax_err(*buf) == EXIT_FAILURE)
+	heredoc = 0;
+	if (check_syntax_err(*buf, &heredoc) == EXIT_FAILURE)
 	{
 		update_prev_status(env);
 		return (EXIT_FAILURE);
 	}
-	if (get_extra_buf(buf))
+	if (!heredoc && get_extra_buf(buf))
 	{
 		update_prev_status(env);
 		return (EXIT_FAILURE);
