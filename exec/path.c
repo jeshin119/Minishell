@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:58:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:21:30 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,34 +39,6 @@ static char	**get_path_tab(t_dq *env)
 	return (tab);
 }
 
-static int	no_such_file_or_dir(char *cmd)
-{
-	struct stat	statbuf;
-	int			i;
-	int			flg;
-
-	i = -1;
-	flg = 0;
-	while (cmd[++i])
-	{
-		if (flg == 0 && ft_isspace(cmd[i]))
-			return (EXIT_SUCCESS);
-		if (cmd[i] == '/')
-		{
-			flg++;
-			break ;
-		}
-	}
-	stat(cmd, &statbuf);
-	if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode))
-	{
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
-}
-
 static int	ret_path(char **cmd, t_dq *env)
 {
 	int		i;
@@ -91,7 +63,7 @@ static int	ret_path(char **cmd, t_dq *env)
 	return (EXIT_FAILURE);
 }
 
-static int	is_directory(char *path)
+static int	check_path(char *path)
 {
 	struct stat	statbuf;
 
@@ -100,21 +72,40 @@ static int	is_directory(char *path)
 	{
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": is a directory\n", 2);
-		return (TRUE);
+		exit(126);
+		return (EXIT_FAILURE);
 	}
-	else
-		return (FALSE);
+	if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode))
+	{
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		exit(127);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }
 
 int	get_path(char **cmd, t_dq *env)
 {
+	int			i;
+	int			absolute_flg;
+
 	if (cmd == 0 || *cmd == 0)
 		return (EXIT_SUCCESS);
-	printf("cmd : %s\n",*cmd);
-	if (is_directory(*cmd))
-		exit(126);
-	if (no_such_file_or_dir(*cmd))
-		exit(127);
+	i = -1;
+	absolute_flg = 0;
+	while ((*cmd)[++i])
+	{
+		if (absolute_flg == 0 && ft_isspace((*cmd)[i]))
+			break;
+		if ((*cmd)[i] == '/')
+		{
+			absolute_flg++;
+			break ;
+		}
+	}
+	if (absolute_flg)
+		return (check_path(*cmd));
 	if (ret_path(cmd, env))
 		return (put_command_not_found(*cmd));
 	return (EXIT_SUCCESS);
