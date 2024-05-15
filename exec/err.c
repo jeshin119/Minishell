@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 15:00:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 16:58:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	put_errmsg_syntax_err(t_tree *tree)
 {
-	int putted;
+	int	putted;
+	int	i;
 
 	if (tree == 0)
 		return (0);
@@ -23,13 +24,13 @@ int	put_errmsg_syntax_err(t_tree *tree)
 	{
 		putted += put_errmsg_syntax_err(tree->next_left);
 		if (putted)
-			return (1);
+			return (EXIT_FAILURE);
 		putted += put_errmsg_syntax_err(tree->next_right);
 		if (putted)
-			return (1);
+			return (EXIT_FAILURE);
 	}
 	printf("here is put_errmsg in err.c\n");
-	int i=-1;
+	i = -1;
 	while((tree->tk_idx_set)[++i] != -1)
 		;
 	i--;
@@ -40,15 +41,15 @@ int	put_errmsg_syntax_err(t_tree *tree)
 		ft_putstr_fd(tmp, 2);
 		ft_putstr_fd("'\n", 2);
 		free(tmp);
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	else
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
 		ft_putstr_fd("newline'\n", 2);
-		return (1);
+		return (EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 int	is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret)
@@ -84,17 +85,11 @@ int	put_syntax_err_msg(char *s, int idx, int heredoc)
 	return (EXIT_FAILURE);
 }
 
-int	is_directory(char *path)
+int	put_command_not_found(char *cmd)
 {
-	struct stat	statbuf;
-
-	stat(path, &statbuf);
-	if (S_ISDIR(statbuf.st_mode))
-	{
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": is a directory\n", 2);
-		return (TRUE);
-	}
-	else
-		return (FALSE);
+	ft_putstr_fd("bash: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
+	exit(127);
+	return (EXIT_FAILURE);
 }

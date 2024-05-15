@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 12:10:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 16:58:09 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	free_tab(char	**tab)
 {
 	int	i;
 
+	if (tab == NULL)
+		return ;
 	i = -1;
 	while (tab[++i])
 		free(tab[i]);

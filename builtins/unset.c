@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 17:01:00 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 16:07:08 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 15:58:10 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,14 @@ static int	has_name_err(char *s)
 	return (FALSE);
 }
 
-static void	free_node(t_node *this)
+static int	free_node(t_node *this)
 {
 	if (this->name != 0)
 		free(this->name);
 	if (this->val != 0)
 		free(this->val);
 	free(this);
+	return (EXIT_SUCCESS);
 }
 
 static void	organize_node(t_node *this, t_dq *env)
@@ -90,7 +91,7 @@ int	_unset(char **opt, t_dq *env)
 			if (ft_strncmp(start->name, opt[i], ft_strlen(opt[i]) + 1) == 0)
 			{
 				organize_node(start, env);
-				free_node(start);
+				return (free_node(start));
 			}
 			start = start->next;
 		}

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 13:14:48 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 15:34:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ static int	is_empty(char *buf)
 		if (buf[i])
 			return (FALSE);
 	}
+	free(buf);
+	buf = 0;
 	return (TRUE);
 }
 

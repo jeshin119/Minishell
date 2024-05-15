@@ -164,11 +164,16 @@ echo <<a |cat >| :
 echo <<a <|:
 실행되고 나서 errmsg의 수정해야함.
 cat >| : bash : newline syntax err. my : | syntax err.
-
 -----------------------------------------------------
 5/15
+''안됨.
+echo '$USER'안됨
+''
+echo '$USER'
+echo '$HOME   dd'
 echo hi |$PATH 안됨. 
 directory 면 126 exitcode가.
+cat < a a < b b < c << hi > x >> y
 공부할것들 -----------------------------------------------
 stat함수
 open ~/Download/minishell.pdf

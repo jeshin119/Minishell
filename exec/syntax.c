@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:23:34 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 13:13:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 15:33:00 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,9 @@ int	check_syntax_err(char *s, int *heredoc)
 
 	sq = FALSE;
 	dq = FALSE;
+	status = 0;
 	if (*s == '|')
-		return (EXIT_FAILURE);
-	if (s == 0)
-		return (EXIT_SUCCESS);
+		return (put_syntax_err_msg(s, status, *heredoc));
 	i = -1;
 	while (s[++i])
 	{
