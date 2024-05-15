@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 17:05:08 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:31:31 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	handle_int_to_put_mark(int signum)
 {
 	if (WIFSIGNALED(signum))
 		g_status = WTERMSIG(g_status) + 128;
-	write(1, "^C\n", 3);
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }
 
 void	handle_int(int signum)
