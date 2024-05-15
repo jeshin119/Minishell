@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 17:51:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 20:02:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@ int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 	char			*bkup;
 
 	bkup = 0;
-	signal(SIGINT, handle_int_to_exit_heredoc);
 	while (TRUE)
 	{
 		buf = readline("> ");
+		if (g_status == SIGINT)
+		{
+			return (free_heredoc(buf, bkup, filename));
+		}
 		if (is_file_exist(filename, buf, bkup) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		if (buf == 0)
@@ -32,8 +35,7 @@ int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 		if (write(heredoc_fd, buf, ft_strlen_js(buf)) < 0)
 		{
 			ft_putstr_fd("bash: write error\n", 2);
-			free_heredoc(buf, bkup, filename);
-			return (EXIT_FAILURE);
+			return (free_heredoc(buf, bkup, filename));
 		}
 		make_bkup(buf, &bkup);
 	}
@@ -66,5 +68,21 @@ int	write_heredoc(t_subtree *subtree)
 	free(subtree->infile);
 	subtree->infile = filename;
 	subtree->is_heredoc = 1;
+	return (EXIT_SUCCESS);
+}
+
+int	get_heredoc(t_subtree *subtree, t_dq *env)
+{
+	int	interrupt;
+
+	signal(SIGINT, handle_int_to_exit_heredoc);
+	interrupt = 0;
+	if (write_heredoc(subtree))
+	{
+		g_status = 1;
+		update_prev_status(env);
+		return (EXIT_FAILURE);
+	}
+	signal(SIGINT, handle_int_in_main);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/15 17:51:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 19:34:34 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,13 +184,14 @@ int		check_buf(char **buf, t_dq *env);
 //syntax.c
 int		check_syntax_err(char *s, int *heredoc);
 //heredoc.c
-void	free_heredoc(char *buf, char *bkup, char *filename);
+int		free_heredoc(char *buf, char *bkup, char *filename);
 int		end_heredoc(char *buf, char *bkup, char *filename, int fd);
 void	make_bkup(char *buf, char **bkup);
 int		is_file_exist(char *filename, char *buf, char *bkup);
 //heredoc2.c
 int		write_line(char *filename, int heredoc_fd, char *limiter, int size);
 int		write_heredoc(t_subtree *subtree);
+int		get_heredoc(t_subtree *subtree, t_dq *env);
 //err.c
 int		put_errmsg_syntax_err(t_tree *tree);
 int		is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret);

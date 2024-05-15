@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 16:22:05 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 20:02:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_heredoc(char *buf, char *bkup, char *filename)
+int	free_heredoc(char *buf, char *bkup, char *filename)
 {
 	if (buf != NULL)
 	{
@@ -26,9 +26,12 @@ void	free_heredoc(char *buf, char *bkup, char *filename)
 	}
 	if (filename != NULL)
 	{
+		if (g_status == SIGINT)
+			unlink(filename);
 		free(filename);
 		filename = 0;
 	}
+	return (EXIT_FAILURE);
 }
 
 int	end_heredoc(char *buf, char *bkup, char *filename, int fd)

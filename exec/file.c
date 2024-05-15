@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 12:28:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 19:53:07 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
 	if (tree->ctrl_token == HERE_DOC)
 	{
 		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		if (write_heredoc(new))
+		if (get_heredoc(new, env))
 			return (EXIT_FAILURE);
 	}
 	if (tree->next_left && (tree->next_left)->ctrl_token != 0)

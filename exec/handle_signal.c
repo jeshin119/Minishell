@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 18:01:39 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 20:00:10 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,21 @@
 void	handle_int_to_put_mark(int signum)
 {
 	if (WIFSIGNALED(signum))
+	{
 		g_status = WTERMSIG(g_status) + 128;
+		printf("in handle int to put mark , g_status : %d\n",g_status);
+	}
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }
 
 void	handle_int_to_exit_heredoc(int signum)
 {
-	g_status = signum - 1;
-	write(1,"",1);
-	write(1,"\n",1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	if (signum == SIGINT)
+	{
+		g_status = signum;
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		write(1, "\033[1A", 4);
+	}
 }
 
 void	handle_int_in_main(int signum)
