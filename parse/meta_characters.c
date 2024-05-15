@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:09:46 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:09:20 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 18:31:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
 	start = (*i) + 1;
 	*i = quote_closed_chk(s, *i);
 	str = ft_substr(s, start, (*i) - start);
-	if (s[start - 2] == ' ' || !(*tk_list) || (*tk_list)-> ctrl_token)
+	if (!(*tk_list) || (*tk_list)-> ctrl_token || s[start - 2] == ' ')
 	{
 		if ((*tk_list) && (*tk_list)-> quote_to_space)
 		{
