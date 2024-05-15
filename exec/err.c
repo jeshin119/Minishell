@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 12:52:02 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 11:16:48 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,17 @@ int	is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret)
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
+}
+
+int	put_syntax_err_msg(char *s, int idx)
+{
+	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+	if (s[idx])
+		write(2, &s[idx], 1);
+	else
+		write(2, "newline", 7);
+	ft_putstr_fd("'\n", 2);
+	free(s);
+	g_status = 258;
+	return (EXIT_FAILURE);
 }

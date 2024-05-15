@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/14 16:38:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 11:13:27 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,7 @@ int		write_heredoc(t_subtree *subtree);
 //err.c
 void	put_errmsg_syntax_err(t_tree *tree);
 int		is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret);
+int		put_syntax_err_msg(char *s, int idx);
 //wait.c
 void	wait_childs(t_tree_info *info, t_dq *env);
 //builtins

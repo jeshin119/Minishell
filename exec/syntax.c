@@ -6,35 +6,21 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:23:34 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 18:51:35 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/15 11:18:19 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	put_err_msg(char *s, int idx)
-{
-	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
-	if (s[idx])
-		write(2, &s[idx], 1);
-	else
-		write(2, "newline", 7);
-	ft_putstr_fd("'\n", 2);
-	free(s);
-	g_status = 258;
-	return (EXIT_FAILURE);
-}
-
-static void	init(char *s, int i, int *deli, int *depth)
+static void	init(char c, char **set, int *deli, int *depth)
 {
 	int		k;
-	char	*set;
 
-	set = "<|>";
+	*set = "<|>";
 	k = -1;
-	while (set[++k])
+	while ((*set)[++k])
 	{
-		if (set[k] == s[i])
+		if ((*set)[k] == c)
 			*deli = k;
 	}
 	*depth = 0;
@@ -47,9 +33,8 @@ static int	check_behind(int i, char *s)
 	int		deli;
 	char	*set;
 
-	set = "<|>";
+	init (s[i], &set, &deli, &depth);
 	k = i;
-	init (s, i, &deli, &depth);
 	while (s[++k])
 	{
 		if (ft_isspace(s[k]))
@@ -66,14 +51,45 @@ static int	check_behind(int i, char *s)
 	return (EXIT_SUCCESS);
 }
 
+int	is_heredoc(int *i, char *s)
+{
+	int	d;
+	int	j;
+
+	if (*i == 0 || (size_t)(*i) == ft_strlen(s))
+		return (FALSE);
+	d = 0;
+	j = (*i)--;
+	while (s[++(*i)])
+	{
+		if (s[(*i)] == '<' && s[(*i) + 1] == '<')
+		{
+			d++;
+			continue ;
+		}
+		if (d && ft_isalnum(s[(*i)]))
+			return (TRUE);
+		if (d && (s[(*i)] == '|' || s[(*i)] == '>'))
+		{
+			*i = j;
+			return (FALSE);
+		}
+	}
+	*i = j;
+	return (FALSE);
+}
+
 static int	check(char *s, int i, int *status)
 {
 	int	ret;
 
 	ret = 0;
+	*status = 0;
 	if (s[i] == '<' || s[i] == '>')
 	{
 		ret = check_behind(i, s);
+		if (is_heredoc(&i, s))
+			return (-1);
 		if (ret)
 		{
 			*status = ret;
@@ -105,8 +121,10 @@ int	check_syntax_err(char *s)
 			dq = !dq;
 		if (sq == FALSE && dq == FALSE)
 		{
-			if (check(s, i, &status))
-				return (put_err_msg(s, status));
+			if (check(s, i, &status) == EXIT_FAILURE)
+				return (put_syntax_err_msg(s, status));
+			else if (check(s, i, &status) == -1)
+				return (EXIT_SUCCESS);
 		}
 	}
 	return (EXIT_SUCCESS);

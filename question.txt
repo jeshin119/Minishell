@@ -160,10 +160,14 @@ cat <<x <| : bash는 히어독 받음. 미완.
 echo hi >|cat : bash는 에러 없고 cat이란 파일을 생성함. 
 
 $PWD, $OLDPWD와 같이 기존의 환경변수 '/'로 치환됨. 
-echo $?
+echo $? : 계속 체크필요.
 env |grep -w PW
 echo <<a |cat >| : 히어독 받지않고 그냥 syntax error띄움.
+실행되고 나서 errmsg의 수정해야함.
 
+-----------------------------------------------------
+5/15
+ echo <<a| exitcode 없는듯
 
 공부할것들 -----------------------------------------------
 open ~/Download/minishell.pdf
