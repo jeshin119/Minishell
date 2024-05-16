@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 20:01:29 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:03:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,13 @@ int	main(int argc, char **argv, char **envp)
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		buf = readline("tash-3.2$ ");
 		if (check_buf(&buf, &env) == EXIT_FAILURE)
-		{
-			check_leak();
 			continue ;
-		}
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
 		exec_tree(tree, &env);
 		free_member(tree, tk_list, buf);
-		check_leak();
 	}
-	atexit(check_leak);
 	clear_dq(&env);
 	return (EXIT_SUCCESS);
 }
