@@ -6,11 +6,31 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 19:02:46 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:02:48 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static int	syntax_err_msg(t_tree *tree, int i)
+{
+	char	*msg;
+
+	if (tree->tk_idx_set[i])
+	{
+		msg = get_nth_token_from_lst(tree, tree->tk_idx_set[i]);
+		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd("'\n", 2);
+		free(msg);
+	}
+	else
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
+		ft_putstr_fd("newline'\n", 2);
+	}
+	return (EXIT_FAILURE);
+}
 
 int	put_errmsg_syntax_err(t_tree *tree)
 {
@@ -29,26 +49,14 @@ int	put_errmsg_syntax_err(t_tree *tree)
 		if (putted)
 			return (EXIT_FAILURE);
 	}
-	printf("here is put_errmsg in err.c\n");
 	i = -1;
-	while((tree->tk_idx_set)[++i] != -1)
+	while ((tree->tk_idx_set)[++i] != -1)
 		;
 	i--;
 	if (tree->tk_idx_set[i])
-	{
-		char *tmp = get_nth_token_from_lst(tree, tree->tk_idx_set[i]);
-		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
-		ft_putstr_fd(tmp, 2);
-		ft_putstr_fd("'\n", 2);
-		free(tmp);
-		return (EXIT_FAILURE);
-	}
+		return (syntax_err_msg(tree, i));
 	else
-	{
-		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
-		ft_putstr_fd("newline'\n", 2);
-		return (EXIT_FAILURE);
-	}
+		return (syntax_err_msg(tree, i));
 	return (EXIT_SUCCESS);
 }
 

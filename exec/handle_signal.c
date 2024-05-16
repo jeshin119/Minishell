@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 20:00:10 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 10:53:06 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 void	handle_int_to_put_mark(int signum)
 {
 	if (WIFSIGNALED(signum))
-	{
 		g_status = WTERMSIG(g_status) + 128;
-		printf("in handle int to put mark , g_status : %d\n",g_status);
-	}
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }
 
@@ -63,8 +60,10 @@ void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit)
 
 void	handle_sigint_to_rl_restart(int signum)
 {
-	g_status = signum;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
-	write(1, "\033[1A", 4);
-	return ;
+	if (signum == SIGINT)
+	{
+		g_status = signum;
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		write(1, "\033[1A", 4);
+	}
 }

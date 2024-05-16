@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 20:02:20 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 10:52:00 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@ int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 			break ;
 		buf = ft_strjoin(buf, ft_strdup("\n"));
 		if (write(heredoc_fd, buf, ft_strlen_js(buf)) < 0)
-		{
-			ft_putstr_fd("bash: write error\n", 2);
 			return (free_heredoc(buf, bkup, filename));
-		}
 		make_bkup(buf, &bkup);
 	}
 	free_heredoc(buf, bkup, 0);
