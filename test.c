@@ -1,43 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_signal.c                                    :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 18:28:11 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/16 18:43:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
-
-void	handle_int_to_put_mark(int signum)
-{
-	if (WIFSIGNALED(signum))
-		g_status = WTERMSIG(g_status) + 128;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
-	write(1, "\033[1A", 4);
-}
-
-void	set_exec_signal(void)
-{
-	t_sig	sig;
-
-	sigemptyset(&(sig.sa_int.sa_mask));
-	sig.sa_int.sa_flags = 0;
-	sig.sa_int.sa_handler = handle_int_to_put_mark;
-	sigemptyset(&(sig.sa_quit.sa_mask));
-	sig.sa_quit.sa_flags = 0;
-	sig.sa_quit.sa_handler = SIG_DFL;
-	if (sigaction(SIGINT, &(sig.sa_int), NULL) == -1)
-		perror("sigaction: ");
-	if (sigaction(SIGQUIT, &(sig.sa_quit), NULL) == -1)
-		perror("sigaction: ");
-}
+#include "include/minishell.h"
 
 void	handle_int_to_exit_heredoc(int signum)
 {
+	printf("alksdfaklsdfkljkldsjfalk\n");
 	if (signum == SIGINT)
 	{
 		g_status = signum;
@@ -77,13 +54,16 @@ void	set_main_signal(void)
 	if (sigaction(SIGQUIT, &(sig.sa_quit), NULL) == -1)
 		perror("sigaction: ");
 }
-
-void	handle_sigint_to_rl_restart(int signum)
+int	main(int argc, char **argv, char **envp)
 {
-	if (signum == SIGINT)
+	char	*buf;
+
+	while (TRUE)
 	{
-		g_status = signum;
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		write(1, "\033[1A", 4);
+		set_main_signal();
+		buf = readline("tttash-3.2$ ");
+		signal(SIGINT, handle_int_to_exit_heredoc);
+		if (buf == 0)
+			exit(0);
 	}
 }

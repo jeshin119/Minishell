@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 13:16:12 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:31:30 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 	{
 		buf = readline("> ");
 		if (g_status == SIGINT)
-		{
 			return (free_heredoc(buf, bkup, filename));
-		}
 		if (is_file_exist(filename, buf, bkup) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		if (buf == 0)
@@ -68,7 +66,7 @@ int	write_heredoc(t_subtree *subtree)
 	return (EXIT_SUCCESS);
 }
 
-int	get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env)
+int	get_heredoc(t_tree *tree, t_subtree *subtree)
 {
 	signal(SIGINT, handle_int_to_exit_heredoc);
 	if (subtree->infile && subtree->is_heredoc)
@@ -78,11 +76,7 @@ int	get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env)
 	}
 	subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	if (write_heredoc(subtree))
-	{
-		g_status = 1;
-		update_prev_status(env);
 		return (EXIT_FAILURE);
-	}
 	signal(SIGINT, handle_int_in_main);
 	return (EXIT_SUCCESS);
 }

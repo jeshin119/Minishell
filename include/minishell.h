@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 17:04:29 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 19:00:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_subtree
 	char				*outfile;
 	char				*cmd;
 	char				**opt;
+	int					opt_size;
 	struct s_subtree	*next;
 	struct s_subtree	*prev;
 }	t_subtree;
@@ -176,7 +177,7 @@ void	make_my_env(char **e, t_dq *env);
 char	**get_envtab(t_dq *env);
 //utils.c
 char	*get_nth_token_from_lst(t_tree *tree, int nth);
-char	**get_opt_from_lst(t_tree *tree);
+int		get_opt_from_lst(t_tree *tree, t_subtree **new);
 void	free_tab(char **tab);
 void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
@@ -192,7 +193,7 @@ int		is_file_exist(char *filename, char *buf, char *bkup);
 //heredoc2.c
 int		write_line(char *filename, int heredoc_fd, char *limiter, int size);
 int		write_heredoc(t_subtree *subtree);
-int		get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env);
+int		get_heredoc(t_tree *tree, t_subtree *subtree);
 //err.c
 int		put_errmsg_syntax_err(t_tree *tree);
 int		is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret);

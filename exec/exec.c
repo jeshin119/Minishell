@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 17:25:20 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:11:04 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,12 +125,11 @@ int	exec_tree(t_tree *tree, t_dq *env)
 	open_pipes(tree_info.pipe_num, &(tree_info.pipe_tab));
 	if (make_subtree_lst(tree, &tree_info, env))
 	{
-		printf("no exec~~~~~~~~~``\n");
 		reset_tree_info(&tree_info);
 		return (EXIT_FAILURE);
 	}
-	// signal(SIGINT, handle_int_to_put_mark);
-	signal(SIGINT, SIG_DFL);
+	signal(SIGINT, handle_int_to_put_mark);
+	// signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT,SIG_DFL);
 	exec_sbtr(&tree_info, env);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);

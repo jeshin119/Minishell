@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 17:07:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:55:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	init_subtree(t_subtree **subtree)
 	}
 	(*subtree)->cmd = 0;
 	(*subtree)->opt = 0;
+	(*subtree)->opt_size = 0;
 	(*subtree)->infile = 0;
 	(*subtree)->outfile = 0;
 	(*subtree)->infile_fd = 0;
@@ -50,7 +51,7 @@ static int	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 	new->cmd = get_nth_token_from_lst(tree, (tree->tk_idx_set)[0]);
 	if (new->cmd == 0)
 		return (EXIT_FAILURE);
-	new->opt = get_opt_from_lst(tree);
+	get_opt_from_lst(tree, &new);
 	return (EXIT_SUCCESS);
 }
 
@@ -113,6 +114,8 @@ int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
 	t_sbt_lst	*sbtl;
 
 	sbtl = info->sbt_lst;
+	if (g_status == SIGINT)
+		return (EXIT_FAILURE);
 	if (tree->ctrl_token != PIPE)
 	{
 		new = create_subtree(tree, env);

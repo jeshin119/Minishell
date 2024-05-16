@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 17:20:52 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:31:06 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,11 @@ int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
 		return (EXIT_SUCCESS);
 	if (tree->exit_code == 258)
 		return (258);
+	if (g_status == SIGINT)
+		return (EXIT_FAILURE);
 	if (tree->ctrl_token == HERE_DOC)
 	{
-		if (get_heredoc(tree, new, env))
+		if (get_heredoc(tree, new))
 			return (EXIT_FAILURE);
 	}
 	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
