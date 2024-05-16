@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/15 19:34:34 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:29:09 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void	free_next_node(t_tree *tree);
 void	go_to_first(t_tree **tree, t_list **tk_list);
 int		pipe_chk(t_list *tk_list);
 int		meta_chk(char *s, int i, int meta_value);
+int		white_chk(char ch);
 int		right_rd_chk(t_list *tk_list);
 int		quote_closed_chk(char *s, int i);
 int		get_double_direct(int direct);

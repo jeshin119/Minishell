@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:06:07 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:10:53 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:42:52 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,13 @@ int	quote_closed_chk(char *s, int i)
 		}
 	}
 	return (0);
+}
+
+int	white_chk(char ch)
+{
+	if (ch == ' ' || ch == '\t')
+		return (0);
+	return (1);
 }
 
 int	get_double_direct(int direct)

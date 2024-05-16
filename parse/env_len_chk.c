@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:22:02 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 12:29:07 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:30:53 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	env_count_chk(char *s, t_list *tk_list)
 		{
 			if (s[i + 1] && s[i + 1] != '\\')
 			{
-				if (s[i + 1] != ' ' && s[i + 1] != '$')
+				if (white_chk(s[i + 1]) && s[i + 1] != '$')
 					env_cnt++;
 			}
 		}
@@ -87,7 +87,7 @@ static void	alloc_env_len(t_env *env_lset_new, char *s, int e_idx, int m_t)
 		if (s[i] == '$' && s[i + 1])
 		{
 			i++;
-			if (s[i] && s[i] != '\\' && s[i] != ' ' && s[i] != '$')
+			if (s[i] && s[i] != '\\' && white_chk(s[i]) && s[i] != '$')
 			{
 				env_len = env_name_len_chk(s, &i);
 				if (s[i] == '?' || (s[i] >= '0' && s[i] <= '9'))
