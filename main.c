@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 11:13:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:22:54 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,18 @@ int	main(int argc, char **argv, char **envp)
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		buf = readline("bash-3.2$ ");
 		if (check_buf(&buf, &env) == EXIT_FAILURE)
+		{
+			system("leaks --list minishell");
 			continue ;
+		}
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
 		exec_tree(tree, &env);
 		free_member(tree, tk_list, buf);
+		system("leaks --list minishell");
 	}
 	clear_dq(&env);
+	system("leaks --list minishell");
 	return (EXIT_SUCCESS);
 }
