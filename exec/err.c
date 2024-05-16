@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 18:25:42 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:09:59 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,16 @@ int	put_errmsg_syntax_err(t_tree *tree)
 
 int	is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret)
 {
+	if (g_status == ENOENT)
+	{
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(new->no_infile,2);
+		ft_putstr_fd(": No such file or directory\n",2);
+		free(new->no_infile);
+		new->no_infile = 0;
+		g_status = 1;
+		return (EXIT_FAILURE);
+	}
 	if (ret == 258)
 	{
 		put_errmsg_syntax_err(tree);

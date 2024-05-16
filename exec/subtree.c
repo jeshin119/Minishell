@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 18:55:52 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:39:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->opt = 0;
 	(*subtree)->opt_size = 0;
 	(*subtree)->infile = 0;
+	(*subtree)->no_infile = 0;
 	(*subtree)->outfile = 0;
 	(*subtree)->infile_fd = 0;
 	(*subtree)->outfile_fd = 1;
@@ -55,29 +56,27 @@ static int	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 	return (EXIT_SUCCESS);
 }
 
-static t_subtree	*create_subtree(t_tree *tree, t_dq *env)
+static int	create_subtree(t_tree *tree, t_dq *env, t_subtree **new)
 {
-	t_subtree	*new;
-
-	init_subtree(&new);
+	init_subtree(new);
 	if (tree->exit_code == 258)
 	{
 		put_errmsg_syntax_err(tree);
-		free(new);
+		free(*new);
 		g_status = 258;
 		update_prev_status(env);
-		return (NULL);
+		return (EXIT_FAILURE);
 	}
-	if (get_cmd_opt(tree, new, env))
+	if (get_cmd_opt(tree, *new, env))
 	{
-		new->is_ambiguous = 1;
-		return (new);
+		(*new)->is_ambiguous = 1;
+		return (EXIT_SUCCESS);
 	}
-	if (is_file_err(tree, new, env, get_infile(tree, new, env)))
-		return (NULL);
-	if (is_file_err(tree, new, env, get_outfile(tree, new, env)))
-		return (NULL);
-	return (new);
+	if (is_file_err(tree, *new, env, get_infile(tree, *new, env)))
+		return (EXIT_FAILURE);
+	if (is_file_err(tree, *new, env, get_outfile(tree, *new, env)))
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 static int	link_subtree_to_lst(t_sbt_lst **sbtr_lst, t_subtree *new)
@@ -118,17 +117,20 @@ int	make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
 		return (EXIT_FAILURE);
 	if (tree->ctrl_token != PIPE)
 	{
-		new = create_subtree(tree, env);
+		if (create_subtree(tree, env, &new))
+			free_subtree(&new);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)
 	{
-		new = create_subtree(tree->next_left, env);
+		if(create_subtree(tree->next_left, env, &new))
+			free_subtree(&new);
 		return (link_subtree_to_lst(&sbtl, new));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
 	{
-		new = create_subtree(tree->next_left, env);
+		if(create_subtree(tree->next_left, env, &new))
+			free_subtree(&new);
 		return (link_subtree_to_lst(&sbtl, new) | \
 		make_subtree_lst(tree->next_right, info, env));
 	}

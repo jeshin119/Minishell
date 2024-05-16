@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 19:14:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:40:22 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct s_subtree
 	int					is_appending;
 	int					is_ambiguous;
 	char				*infile;
+	char				*no_infile;
 	char				*outfile;
 	char				*cmd;
 	char				**opt;
@@ -144,7 +145,7 @@ t_tree	*parse(char *line, t_dq *env);
 //tree_info.c
 void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
 void	reset_tree_info(t_tree_info *info);
-void	free_subtree(t_subtree *sbtr);
+void	free_subtree(t_subtree **sbtr);
 //pipe.c
 void	my_dup2(t_subtree *subtree, int rd, int wr);
 int		get_pipe_num_from_tree(t_tree *tre);
@@ -179,7 +180,7 @@ char	**get_envtab(t_dq *env);
 //utils.c
 char	*get_nth_token_from_lst(t_tree *tree, int nth);
 int		get_opt_from_lst(t_tree *tree, t_subtree **new);
-void	free_tab(char **tab);
+void	free_tab(char **tab, int size);
 void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
 //buf.c

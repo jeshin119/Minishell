@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 18:31:30 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 20:54:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ int	write_line(char *filename, int heredoc_fd, char *limiter, int size)
 	while (TRUE)
 	{
 		buf = readline("> ");
-		if (g_status == SIGINT)
-			return (free_heredoc(buf, bkup, filename));
 		if (is_file_exist(filename, buf, bkup) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		if (buf == 0)

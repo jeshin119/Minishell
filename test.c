@@ -6,11 +6,12 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 18:43:46 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 20:49:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
+#include <sys/stat.h>
 
 void	handle_int_to_exit_heredoc(int signum)
 {
@@ -54,16 +55,21 @@ void	set_main_signal(void)
 	if (sigaction(SIGQUIT, &(sig.sa_quit), NULL) == -1)
 		perror("sigaction: ");
 }
+
 int	main(int argc, char **argv, char **envp)
 {
-	char	*buf;
+	char	*file;
+	struct	stat statbuf;
 
-	while (TRUE)
+	file = "a";
+	stat(file, &statbuf);
+	if (S_ISREG(statbuf.st_mode) == 0)
 	{
-		set_main_signal();
-		buf = readline("tttash-3.2$ ");
-		signal(SIGINT, handle_int_to_exit_heredoc);
-		if (buf == 0)
-			exit(0);
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(file,2);
+		ft_putstr_fd(": ",2);
+		perror(NULL);
+		g_status = ENOENT;
 	}
-}
+	return (EXIT_FAILURE);
+}	

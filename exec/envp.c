@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 17:20:39 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:23:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,17 @@ static void	reset_oldpwd_env(t_dq *env)
 void	make_my_env(char **e, t_dq *env)
 {
 	char	**tmp;
+	int		size;
 
 	init_dq(env);
 	while (*e)
 	{
+		size = -1;
 		tmp = ft_split(*e, '=');
+		while (tmp[++size])
+			;
 		push_back_dq(env, ft_strdup(tmp[0]), ft_strdup(tmp[1]));
-		free_tab(tmp);
+		free_tab(tmp, size);
 		e++;
 	}
 	add_prev_status_env(env);

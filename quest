@@ -1,0 +1,29 @@
+cat <<hi <a ㅎㅏㅁㄴ hi가 남아있ㅇ므 릭남.. 해결
+$a 해결.
+cat $a 해결.
+cat < $a 해결.
+echo $a $USER 해결.
+
+cat <<a <<b | cat <<c <<d interrupt signal 줄때 두번줘야 끝남..,
+cat <a <b <c <d <e <f <<hi 릭체크
+tash-3.2$ cat <a <b <c <<hi <f
+
+
+$? ctrl+c
+
+grep ha ctrl +d 두두번번받받음음
+ctrl+\ quit해야함
+interective mode가 무엇?
+테스트하면서 leak쳌 필요
+interactive mode에서 quit되어야함.ctlr +\
+
+-------------------------
+Study need to.
+reentrant meaning
+Program counter, resister, about Context.
+subroutine
+signal blocking : internal, external.
+global valuable valatile. 
+how does a compiler optimize a extern?
+link time optimization
+compiler optimization

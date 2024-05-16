@@ -6,20 +6,20 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 19:04:03 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:17:04 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_tab(char	**tab)
+void	free_tab(char	**tab, int size)
 {
 	int	i;
 
 	if (tab == NULL)
 		return ;
 	i = -1;
-	while (tab[++i])
+	while (++i < size)
 		free(tab[i]);
 	free(tab);
 }
@@ -60,7 +60,6 @@ int	get_opt_from_lst(t_tree *tree, t_subtree **new)
 	(*new)->opt_size = -1;
 	while ((tree->tk_idx_set)[++((*new)->opt_size)] >= 0)
 		;
-	// printf("size : %d\n",(*new)->opt_size);
 	(*new)->opt = (char **)malloc(sizeof(char *) * ((*new)->opt_size + 1));
 	if ((*new)->opt == 0)
 		perror_n_exit("malloc");

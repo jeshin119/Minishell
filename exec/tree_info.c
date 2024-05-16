@@ -6,38 +6,38 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/13 16:04:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 21:40:35 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_subtree(t_subtree *sbtr)
+void	free_subtree(t_subtree **sbtr)
 {
-	if (sbtr->cmd)
+	if ((*sbtr)->cmd)
 	{
-		free(sbtr->cmd);
-		sbtr->cmd = 0;
+		free((*sbtr)->cmd);
+		(*sbtr)->cmd = 0;
 	}
-	if (sbtr->opt)
+	if ((*sbtr)->opt)
 	{
-		free_tab(sbtr->opt);
-		sbtr->opt = 0;
+		free_tab((*sbtr)->opt, (*sbtr)->opt_size);
+		(*sbtr)->opt = 0;
 	}
-	if (sbtr->is_heredoc)
-		unlink(sbtr->infile);
-	if (sbtr->infile)
+	if ((*sbtr)->is_heredoc)
+		unlink((*sbtr)->infile);
+	if ((*sbtr)->infile)
 	{
-		free(sbtr->infile);
-		sbtr->infile = 0;
+		free((*sbtr)->infile);
+		(*sbtr)->infile = 0;
 	}
-	if (sbtr->outfile)
+	if ((*sbtr)->outfile)
 	{
-		free(sbtr->outfile);
-		sbtr->outfile = 0;
+		free((*sbtr)->outfile);
+		(*sbtr)->outfile = 0;
 	}
-	free(sbtr);
-	sbtr = 0;
+	free((*sbtr));
+	(*sbtr) = 0;
 }
 
 void	reset_tree_info(t_tree_info *info)
@@ -63,7 +63,7 @@ void	reset_tree_info(t_tree_info *info)
 	{
 		tmp = start;
 		start = start->next;
-		free_subtree(tmp);
+		free_subtree(&tmp);
 	}
 	free(info->sbt_lst);
 	info->sbt_lst = 0;
