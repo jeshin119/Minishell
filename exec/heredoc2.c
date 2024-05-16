@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 10:52:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 13:16:12 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,15 @@ int	write_heredoc(t_subtree *subtree)
 	return (EXIT_SUCCESS);
 }
 
-int	get_heredoc(t_subtree *subtree, t_dq *env)
+int	get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env)
 {
-	int	interrupt;
-
 	signal(SIGINT, handle_int_to_exit_heredoc);
-	interrupt = 0;
+	if (subtree->infile && subtree->is_heredoc)
+	{
+		unlink(subtree->infile);
+		free(subtree->infile);
+	}
+	subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	if (write_heredoc(subtree))
 	{
 		g_status = 1;

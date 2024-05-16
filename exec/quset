@@ -1,0 +1,2 @@
+cat <<hi <a ㅎㅏㅁㄴ hi가 남아있ㅇ므 릭남.. 해결
+cat <<a <<b | cat <<c <<d interrupt signal 줄때 두번줘야 끝남..,

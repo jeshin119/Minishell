@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 12:30:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 13:22:08 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,51 +40,39 @@ int	get_outfile_fd(t_subtree *subtree)
 	return (STDOUT_FILENO);
 }
 
-// int	check_file_is(t_tree *tree, t_subtree *new, int rd)
-// {
-// 	int		fd;
-// 	char	*file;
-
-// 	if (rd && tree->ctrl_token != LEFT)
-// 		return (EXIT_SUCCESS);
-// 	if (!rd && tree->ctrl_token != RIGHT)
-// 		return (EXIT_SUCCESS);
-// 	file = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-// 	if (rd)
-// 		fd = open(file, O_RDONLY);
-// 	if (!rd)
-// 		fd = open(file, O_WRONLY);
-// 	if (fd < 0)
-// 		g_status = ENOENT;
-// 	else
-// 		close(file);
-// 	return (EXIT_FAILURE);
-// }
-
-int	get_infile2(t_tree *tree, t_subtree *new, t_dq *env)
+int	check_file_is(t_tree *tree, t_subtree *new, int rd)
 {
-	if (tree == 0)
+	int		fd;
+	char	*file;
+
+	printf("new : %p\n",new);
+	if (rd && tree->ctrl_token != LEFT)
 		return (EXIT_SUCCESS);
-	if (tree->exit_code == 258)
-		return (258);
-	if (tree->ctrl_token == HERE_DOC)
+	if (!rd && tree->ctrl_token != RIGHT)
+		return (EXIT_SUCCESS);
+	file = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	if (rd)
 	{
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		if (get_heredoc(new, env))
-			return (EXIT_FAILURE);
+		fd = open(file, O_RDONLY);
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(file,2);
+		ft_putstr_fd(": ",2);
+		perror(NULL);
 	}
-	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
+	if (!rd)
 	{
-		// check_file_is(tree, new, 0);
-		return (get_infile(tree->next_left, new, env));
+		fd = open(file, O_WRONLY);
+		ft_putstr_fd("bash: ",2);
+		ft_putstr_fd(file,2);
+		ft_putstr_fd(": ",2);
+		perror(NULL);
 	}
-	if (tree->ctrl_token == LEFT)
-	{
-		new->is_heredoc = 0;
-		env_chk(tree, env->head);
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-	}
-	return (EXIT_SUCCESS);
+	if (fd < 0)
+		g_status = ENOENT;
+	else
+		close(fd);
+	free(file);
+	return (EXIT_FAILURE);
 }
 
 int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
@@ -95,12 +83,14 @@ int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
 		return (258);
 	if (tree->ctrl_token == HERE_DOC)
 	{
-		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
-		if (get_heredoc(new, env))
+		if (get_heredoc(tree, new, env))
 			return (EXIT_FAILURE);
 	}
 	if (tree->next_left && (tree->next_left)->ctrl_token != 0)
+	{
+		check_file_is(tree, new, 0);
 		return (get_infile(tree->next_left, new, env));
+	}
 	if (tree->ctrl_token == LEFT)
 	{
 		new->is_heredoc = 0;
