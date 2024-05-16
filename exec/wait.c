@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 12:33:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 19:03:43 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:11:50 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	wait_childs(t_tree_info *info, t_dq *env)
 	{
 		if (is_builtin(subtree))
 		{
-			printf("g_status : %d\n", g_status);
 			update_prev_status(env);
 			return ;
 		}
@@ -35,7 +34,6 @@ void	wait_childs(t_tree_info *info, t_dq *env)
 			g_status = WEXITSTATUS(g_status);
 		else if (WIFSIGNALED(g_status))
 			g_status = WTERMSIG(g_status) + 128;
-		printf("g_status : %d\n", g_status);
 		update_prev_status(env);
 	}
 }
