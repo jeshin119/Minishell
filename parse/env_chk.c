@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 12:46:22 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:13:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 18:28:11 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static char	*env_exp(t_tree *now, t_node *env_list, char *s)
 	{
 		if (s[i] == '$' && s[i + 1])
 		{
-			if (s[i + 1] != '\\' && s[i + 1] != ' ' && s[i + 1] != '$')
+			if (s[i + 1] != '\\' && white_chk(s[i]) && s[i + 1] != '$')
 			{
 				token = get_front_str(token, s, i, &front_len);
 				token = expansion(token, now, &i, env_list);
