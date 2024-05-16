@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 11:10:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:13:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
-		buf = readline("tash-3.2$ ");
+		buf = readline("bash-3.2$ ");
 		if (check_buf(&buf, &env) == EXIT_FAILURE)
 			continue ;
 		set_signal(&(sig.sa_int), &(sig.sa_quit));
