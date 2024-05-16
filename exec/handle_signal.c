@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 10:53:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 16:01:02 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,19 @@ void	handle_int_in_main(int signum)
 	rl_redisplay();
 }
 
-void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit)
+void	set_main_signal(void)
 {
-	sigemptyset(&(sa_int->sa_mask));
-	sa_int->sa_flags = 0;
-	sa_int->sa_handler = handle_int_in_main;
-	sigemptyset(&(sa_quit->sa_mask));
-	sa_quit->sa_flags = 0;
-	sa_quit->sa_handler = SIG_IGN;
-	if (sigaction(SIGINT, sa_int, NULL) == -1)
+	t_sig	sig;
+
+	sigemptyset(&(sig.sa_int.sa_mask));
+	sig.sa_int.sa_flags = 0;
+	sig.sa_int.sa_handler = handle_int_in_main;
+	sigemptyset(&(sig.sa_quit.sa_mask));
+	sig.sa_quit.sa_flags = 0;
+	sig.sa_quit.sa_handler = SIG_IGN;
+	if (sigaction(SIGINT, &(sig.sa_int), NULL) == -1)
 		perror("sigaction: ");
-	if (sigaction(SIGQUIT, sa_quit, NULL) == -1)
+	if (sigaction(SIGQUIT, &(sig.sa_quit), NULL) == -1)
 		perror("sigaction: ");
 }
 

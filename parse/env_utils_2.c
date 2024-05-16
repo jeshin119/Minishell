@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 14:19:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/15 18:55:03 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/16 13:41:58 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	rd_empty_chk(t_tree *now, char *exp_token)
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(now->tk_list->token, 2);
 		ft_putstr_fd(": ambiguous redirect\n", 2);
+		now -> tk_idx_set[1] = END;
 		now -> ambi_flag = ON;
 	}
 }

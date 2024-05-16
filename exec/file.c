@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 13:22:08 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 17:20:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ int	get_infile(t_tree *tree, t_subtree *new, t_dq *env)
 	{
 		new->is_heredoc = 0;
 		env_chk(tree, env->head);
+		if (tree->tk_idx_set[1] == -1)
+			new->is_ambiguous = 1;
 		new->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	}
 	return (EXIT_SUCCESS);

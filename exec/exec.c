@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:36:38 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:26:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 17:25:20 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,19 +97,23 @@ static void	exec_sbtr(t_tree_info *tree_info, t_dq *env)
 	subtree = tree_info->sbt_lst->head;
 	if (tree_info->pipe_num == 0)
 	{
+		if (subtree->is_ambiguous)
+		{
+			g_status = 1;
+			return ;
+		}
 		if (is_builtin(subtree))
 			exec_builtin(subtree, env);
 		else
 			exec_one_not_builtin(subtree, env);
+		return ;
 	}
-	else
+	i = -1;
+	while (++i < tree_info->pipe_num + 1)
 	{
-		i = -1;
-		while (++i < tree_info->pipe_num + 1)
-		{
+		if (subtree->is_ambiguous == 0)
 			exec_cmds(subtree, tree_info, env, i);
-			subtree = subtree->next;
-		}
+		subtree = subtree->next;
 	}
 }
 
@@ -117,14 +121,17 @@ int	exec_tree(t_tree *tree, t_dq *env)
 {
 	t_tree_info	tree_info;
 
-	signal(SIGINT, handle_int_to_put_mark);
 	init_tree_info(tree, &tree_info);
 	open_pipes(tree_info.pipe_num, &(tree_info.pipe_tab));
 	if (make_subtree_lst(tree, &tree_info, env))
 	{
+		printf("no exec~~~~~~~~~``\n");
 		reset_tree_info(&tree_info);
 		return (EXIT_FAILURE);
 	}
+	// signal(SIGINT, handle_int_to_put_mark);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT,SIG_DFL);
 	exec_sbtr(&tree_info, env);
 	close_all_pipe(tree_info.pipe_num, tree_info.pipe_tab);
 	wait_childs(&tree_info, env);

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 12:45:53 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 13:37:59 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,12 @@ int	put_errmsg_syntax_err(t_tree *tree)
 
 int	is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret)
 {
+	// if (ret == 1)
+	// {
+	// 	g_status = 1;
+	// 	update_prev_status(env);
+	// 	return (EXIT_FAILURE);
+	// }
 	if (ret == 258)
 	{
 		put_errmsg_syntax_err(tree);

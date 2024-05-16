@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 11:44:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 17:07:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,29 +28,30 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->outfile_fd = 1;
 	(*subtree)->is_heredoc = 0;
 	(*subtree)->is_appending = 0;
+	(*subtree)->is_ambiguous = 0;
 	(*subtree)->next = 0;
 	(*subtree)->prev = 0;
 }
 
-static void	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
+static int	get_cmd_opt(t_tree *tree, t_subtree *new, t_dq *env)
 {
 	if (tree == 0)
-		return ;
+		return (EXIT_FAILURE);
 	if (tree->ctrl_token != 0)
-	{
-		get_cmd_opt(tree->next_left, new, env);
-		return ;
-	}
+		return (get_cmd_opt(tree->next_left, new, env));
 	if (tree->exit_code == 258)
 	{
 		put_errmsg_syntax_err(tree);
 		g_status = 258;
 		update_prev_status(env);
-		return ;
+		return (EXIT_FAILURE);
 	}
 	env_chk(tree, env->head);
 	new->cmd = get_nth_token_from_lst(tree, (tree->tk_idx_set)[0]);
+	if (new->cmd == 0)
+		return (EXIT_FAILURE);
 	new->opt = get_opt_from_lst(tree);
+	return (EXIT_SUCCESS);
 }
 
 static t_subtree	*create_subtree(t_tree *tree, t_dq *env)
@@ -66,7 +67,11 @@ static t_subtree	*create_subtree(t_tree *tree, t_dq *env)
 		update_prev_status(env);
 		return (NULL);
 	}
-	get_cmd_opt(tree, new, env);
+	if (get_cmd_opt(tree, new, env))
+	{
+		new->is_ambiguous = 1;
+		return (new);
+	}
 	if (is_file_err(tree, new, env, get_infile(tree, new, env)))
 		return (NULL);
 	if (is_file_err(tree, new, env, get_outfile(tree, new, env)))

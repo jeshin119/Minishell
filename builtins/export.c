@@ -6,39 +6,56 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 12:07:43 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 16:52:17 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	care_export_error(char *str)
+static int	care_export_error(char *name, char *val)
 {
+	if (ft_strncmp(name, "_", 2) == EXIT_SUCCESS)
+	{
+		if (name)
+			free(name);
+		if (val)
+			free(val);
+		return (EXIT_SUCCESS);
+	}
 	ft_putstr_fd("bash: export: ", 2);
-	ft_putstr_fd("`", 2);
-	if (*str)
-		ft_putstr_fd(str, 2);
+	ft_putstr_fd("`", 2); if (name && *name)
+		ft_putstr_fd(name, 2);
+	else
+		ft_putstr_fd(val, 2);
 	ft_putstr_fd("': ", 2);
 	ft_putstr_fd("not a vaild identifier\n", 2);
+	if (name)
+		free(name);
+	if (val)
+		free(val);
 	return (EXIT_FAILURE);
 }
 
-static int	has_name_err(char *s)
+static int	has_name_err(char *name)
 {
 	int	has_letter;
 
+	if (name == 0 || *name == 0)
+		return (TRUE);
+	if (*name == '_' && *(name + 1) == 0)
+		return (TRUE);
 	has_letter = 0;
-	while (*s)
+	while (*name)
 	{
-		if (has_letter == 0 && ft_isdigit(*s))
+		if (has_letter == 0 && ft_isdigit(*name))
 			return (TRUE);
-		if (!ft_isalnum(*s) && *s != '_')
+		if (!ft_isalnum(*name) && *name != '_')
 			return (TRUE);
-		if (*s == 32 || (*s >= 9 && *s <= 13))
+		if (*name == 32 || (*name >= 9 && *name <= 13))
 			return (TRUE);
-		if (ft_isalpha(*s))
+		if (ft_isalpha(*name))
 			has_letter = 1;
-		s++;
+		name++;
 	}
 	return (FALSE);
 }
@@ -55,6 +72,8 @@ static void	assign_variable_to_env(char *name, char *val, t_dq *env)
 			if (node->val)
 				free(node->val);
 			node->val = val;
+			if (name)
+				free(name);
 			return ;
 		}
 		node = node->next;
@@ -69,6 +88,8 @@ static int	ep(char *str, t_dq *env)
 	int		i;
 
 	i = -1;
+	if (str && *str == '=')
+		return (care_export_error(NULL, ft_strdup(str)));
 	while (str[++i] && str[i] != '=')
 		;
 	name = ft_substr(str, 0, i);
@@ -76,10 +97,8 @@ static int	ep(char *str, t_dq *env)
 		val = NULL;
 	else
 		val = ft_substr(str, i + 1, ft_strlen(str));
-	if (ft_strncmp(name, "_", 2) == 0)
-		return (EXIT_SUCCESS);
-	if (has_name_err(name))
-		return (care_export_error(str));
+	if (has_name_err(name) == TRUE)
+		return (care_export_error(name, val));
 	assign_variable_to_env(name, val, env);
 	return (EXIT_SUCCESS);
 }
@@ -94,13 +113,6 @@ int	_export(char **opt, t_dq *env)
 		return (status);
 	i = 0;
 	while (opt[++i])
-	{
-		if (opt[i][0] == '=')
-		{
-			status = care_export_error(opt[i]);
-			continue ;
-		}
 		status = ep(opt[i], env);
-	}
 	return (status);
 }

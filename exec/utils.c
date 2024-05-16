@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:58:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 17:20:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*get_nth_token_from_lst(t_tree *tree, int nth)
 
 	if (tree == 0 || tree->tk_list == 0)
 		return (NULL);
+	if (nth == -1)
+		return (NULL);
 	i = -1;
 	here = tree->tk_list;
 	tmp = here->token;
@@ -41,7 +43,7 @@ char	*get_nth_token_from_lst(t_tree *tree, int nth)
 		here = here->next;
 		tmp = here->token;
 	}
-	if (here == 0)
+	if (here->token == 0)
 		return (NULL);
 	ret = ft_strdup(tmp);
 	return (ret);

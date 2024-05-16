@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 13:25:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 15:58:13 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static void	limit_argc(int argc, char **argv)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_sig	sig;
 	t_tree	*tree;
 	t_list	*tk_list;
 	t_dq	env;
@@ -46,15 +45,15 @@ int	main(int argc, char **argv, char **envp)
 	while (TRUE)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
-		set_signal(&(sig.sa_int), &(sig.sa_quit));
-		buf = readline("bash-3.2$ ");
+		set_main_signal();
+		buf = readline("tash-3.2$ ");
 		if (check_buf(&buf, &env) == EXIT_FAILURE)
 		{
 			system("leaks --list minishell");
 			continue ;
 		}
 		update_prev_status(&env);
-		set_signal(&(sig.sa_int), &(sig.sa_quit));
+		set_main_signal();
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
 		exec_tree(tree, &env);
@@ -62,6 +61,6 @@ int	main(int argc, char **argv, char **envp)
 		system("leaks --list minishell");
 	}
 	clear_dq(&env);
-	system("leaks --list minishell");
+	// system("leaks --list minishell");
 	return (EXIT_SUCCESS);
 }

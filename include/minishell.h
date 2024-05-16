@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 13:02:30 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 17:04:29 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_subtree
 	int					outfile_fd;
 	int					is_heredoc;
 	int					is_appending;
+	int					is_ambiguous;
 	char				*infile;
 	char				*outfile;
 	char				*cmd;
@@ -166,7 +167,7 @@ void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 void	handle_int_to_put_mark(int signum);
 void	handle_int_to_exit_heredoc(int signum);
 void	handle_int_in_main(int signum);
-void	set_signal(struct sigaction *sa_int, struct sigaction *sa_quit);
+void	set_main_signal(void);
 void	handle_sigint_to_rl_restart(int signum);
 //path.c
 int		get_path(char **cmd, t_dq *env);
