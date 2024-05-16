@@ -6,18 +6,11 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 11:03:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:10:06 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
-
-static void	check_leak(void)
-{
-	printf("***********************\n");
-	system("leaks --list minishell");
-	printf("***********************\n");
-}
 
 static void	init_tree_tk_lst(t_tree **tree, t_list **tk_list)
 {
