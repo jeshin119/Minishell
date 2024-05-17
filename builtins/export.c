@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 16:52:17 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:31:29 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ static int	care_export_error(char *name, char *val)
 		return (EXIT_SUCCESS);
 	}
 	ft_putstr_fd("bash: export: ", 2);
-	ft_putstr_fd("`", 2); if (name && *name)
+	ft_putstr_fd("`", 2);
+	if (name && *name)
 		ft_putstr_fd(name, 2);
 	else
 		ft_putstr_fd(val, 2);

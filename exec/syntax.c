@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 17:23:34 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 15:33:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 15:53:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static int	check(char *s, int i, int *status, int *heredoc)
 	return (EXIT_SUCCESS);
 }
 
-int	check_syntax_err(char *s, int *heredoc)
+int	check_buf_syntax_err(char *s, int *heredoc)
 {
 	int	i;
 	int	sq;
@@ -113,7 +113,7 @@ int	check_syntax_err(char *s, int *heredoc)
 	dq = FALSE;
 	status = 0;
 	if (*s == '|')
-		return (put_syntax_err_msg(s, status, *heredoc));
+		return (put_buf_has_syntax_err_msg(s, status, *heredoc));
 	i = -1;
 	while (s[++i])
 	{
@@ -124,7 +124,7 @@ int	check_syntax_err(char *s, int *heredoc)
 		if (sq == FALSE && dq == FALSE)
 		{
 			if (check(s, i, &status, heredoc))
-				return (put_syntax_err_msg(s, status, *heredoc));
+				return (put_buf_has_syntax_err_msg(s, status, *heredoc));
 		}
 	}
 	return (EXIT_SUCCESS);

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 21:40:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:27:37 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,27 +145,28 @@ t_tree	*parse(char *line, t_dq *env);
 //tree_info.c
 void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
 void	reset_tree_info(t_tree_info *info);
-void	free_subtree(t_subtree **sbtr);
+int		free_subtree(t_subtree **sbtr);
 //pipe.c
 void	my_dup2(t_subtree *subtree, int rd, int wr);
 int		get_pipe_num_from_tree(t_tree *tre);
 void	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 //subtree.c
-int		make_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
+int		mke_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
 //fd.c
-int		open_infile_n_return(t_subtree *subtree);
-int		open_outfile_n_return(t_subtree *subtree);
-int		open_appending_n_return(t_subtree *subtree);
-//file.c
+int		open_infile(t_subtree *subtree);
+int		open_outfile(t_subtree *subtree, int is_appending);
 int		get_infile_fd(t_subtree *subtree);
 int		get_outfile_fd(t_subtree *subtree);
-int		get_infile(t_tree *tree, t_subtree *new, t_dq *env);
-int		get_outfile(t_tree *tree, t_subtree *new, t_dq *env);
+//file.c
+int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
+int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
 int		exec_tree(t_tree *tree, t_dq *env);
-//exec_subtree.c
-void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
+//redicrection.c
+void	save_stdin_stdout(t_subtree *sbtr, int *stdin_copy, int *stdout_copy);
+int		redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
+void	get_back_redirection(t_subtree *sbte, int stdin_copy, int stdout_copy);
 //handle_signal.c
 void	handle_int_to_put_mark(int signum);
 void	handle_int_to_exit_heredoc(int signum);
@@ -186,21 +187,22 @@ void	perror_n_exit(const char *str);
 //buf.c
 int		check_buf(char **buf, t_dq *env);
 //syntax.c
-int		check_syntax_err(char *s, int *heredoc);
+int		check_buf_syntax_err(char *s, int *heredoc);
+//heredoc_utils.c
+void	check_already_has_heredoc(t_subtree *new);
+int		free_heredoc(char *buf, char *filename);
+int		is_file_exist(char *filename);
 //heredoc.c
-int		free_heredoc(char *buf, char *bkup, char *filename);
-int		end_heredoc(char *buf, char *bkup, char *filename, int fd);
-void	make_bkup(char *buf, char **bkup);
-int		is_file_exist(char *filename, char *buf, char *bkup);
-//heredoc2.c
-int		write_line(char *filename, int heredoc_fd, char *limiter, int size);
-int		write_heredoc(t_subtree *subtree);
 int		get_heredoc(t_tree *tree, t_subtree *subtree);
-//err.c
-int		put_errmsg_syntax_err(t_tree *tree);
-int		is_file_err(t_tree *tree, t_subtree *new, t_dq *env, int ret);
-int		put_syntax_err_msg(char *s, int idx, int heredoc);
+//errmsg.c
+int		put_subtree_has_syntax_err_msg(t_tree *tree);
+int		put_subtree_has_nofile_err_msg(t_subtree *subtree);
+int		put_buf_has_syntax_err_msg(char *s, int idx, int heredoc);
 int		put_command_not_found(char *cmd);
+//err.c
+int		check_subtree_syntax_err(t_tree *tree, t_subtree **new);
+int		is_subtree_ambiguous(t_subtree *subtree);
+int		has_subtree_no_infile(t_subtree *subtree);
 //wait.c
 void	wait_childs(t_tree_info *info, t_dq *env);
 //builtins
@@ -214,7 +216,4 @@ int		_exit_(char **opt);
 int		_bexit_(char **opt, t_dq *env);
 int		go_builtin(t_subtree *subtree, t_dq *env);
 int		is_builtin(t_subtree *subtree);
-int		b_redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
-int		b_get_infile_fd(t_subtree *subtree);
-int		b_get_outfile_fd(t_subtree *subtree);
 #endif

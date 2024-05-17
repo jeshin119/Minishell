@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 13:13:55 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 19:08:56 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:31:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	_echo(t_subtree *subtree)
 		if (check_flg((subtree->opt)[i], &flg, &has_str))
 			continue ;
 		if ((subtree->opt)[i] == 0)
-			continue;
+			continue ;
 		ft_putstr((subtree->opt[i]));
 		if ((subtree->opt[i + 1]) != 0)
 			write(1, " ", 1);

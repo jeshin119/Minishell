@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:53:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 21:02:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:30:56 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	handle_int_to_exit_heredoc(int signum)
 	if (signum == SIGINT)
 	{
 		g_status = signum;
-		printf("status : %d",g_status);
 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
 		write(1, "\033[1A", 4);
 	}

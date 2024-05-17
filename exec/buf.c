@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 15:32:49 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 15:10:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int	check_buf(char **buf, t_dq *env)
 	if (is_empty(*buf))
 		return (EXIT_FAILURE);
 	heredoc = 0;
-	if (check_syntax_err(*buf, &heredoc) == EXIT_FAILURE)
+	if (check_buf_syntax_err(*buf, &heredoc) == EXIT_FAILURE)
 	{
 		update_prev_status(env);
 		return (EXIT_FAILURE);

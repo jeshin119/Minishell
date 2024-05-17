@@ -5,71 +5,73 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 20:02:46 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/17 20:05:37 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	free_heredoc(char *buf, char *bkup, char *filename)
+static int	write_heredoc(char *filename, t_subtree *subtree)
 {
-	if (buf != NULL)
+	char			*buf;
+	char			*limiter;
+	int				fd;
+
+	limiter = subtree->infile;
+	fd = subtree->infile_fd;
+	while (TRUE)
 	{
+		buf = readline("> ");
+		if (is_file_exist(filename) == EXIT_FAILURE)
+			return (free_heredoc(buf, filename));
+		if (buf == 0)
+			return (EXIT_SUCCESS);
+		if (ft_strncmp(buf, limiter, ft_strlen_js(limiter) + 1) == 0)
+			break ;
+		buf = ft_strjoin(buf, ft_strdup("\n"));
+		if (write(fd, buf, ft_strlen_js(buf)) < 0)
+			return (free_heredoc(buf, filename));
 		free(buf);
-		buf = 0;
 	}
-	if (bkup != NULL)
-	{
-		free(bkup);
-		bkup = 0;
-	}
-	if (filename != NULL)
-	{
-		if (g_status == SIGINT)
-			unlink(filename);
-		free(filename);
-		filename = 0;
-	}
-	return (EXIT_FAILURE);
+	free_heredoc(buf, 0);
+	return (EXIT_SUCCESS);
 }
 
-int	end_heredoc(char *buf, char *bkup, char *filename, int fd)
+static int	open_heredoc(t_subtree *subtree, char **filename, char *limiter)
 {
-	write(1, "\033[1A", 4);
-	write(1, "\033[2C", 4);
-	if (bkup)
-		write(1, bkup, ft_strlen_js(bkup));
-	close(fd);
-	unlink(filename);
-	free_heredoc(buf, bkup, filename);
-	return (EXIT_FAILURE);
-}
-
-void	make_bkup(char *buf, char **bkup)
-{
-	char	*tmp;
-
-	tmp = *bkup;
-	*bkup = ft_strjoin_no_free(tmp, buf);
-	if (tmp != NULL)
-		free(tmp);
-	if (buf != NULL)
-		free(buf);
-}
-
-int	is_file_exist(char *filename, char *buf, char *bkup)
-{
-	int				tmp_fd;
-
-	tmp_fd = open(filename, O_RDONLY);
-	if (tmp_fd < 0)
+	if (subtree == 0)
+		return (EXIT_FAILURE);
+	*filename = ft_strjoin_no_free(".here_doc_", limiter);
+	subtree->infile_fd = open(*filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (subtree->infile_fd < 0)
 	{
-		ft_putstr_fd("bash: no heredoc file\n", 2);
-		free_heredoc(buf, bkup, filename);
+		perror("open :");
+		g_status = 1;
 		return (EXIT_FAILURE);
 	}
-	else
-		close(tmp_fd);
+	return (EXIT_SUCCESS);
+}
+
+int	get_heredoc(t_tree *tree, t_subtree *subtree)
+{
+	char	*filename;
+	char	*limiter;
+
+	subtree->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+	limiter = subtree->infile;
+	if (limiter == 0)
+		return (EXIT_FAILURE);
+	if (open_heredoc(subtree, &filename, limiter))
+		return (EXIT_FAILURE);
+	signal(SIGINT, handle_int_to_exit_heredoc);
+	if (write_heredoc(filename, subtree))
+		return (EXIT_FAILURE);
+	close(subtree->infile_fd);
+	subtree->infile_fd = 0;
+	free(subtree->infile);
+	subtree->infile = filename;
+	subtree->is_heredoc = 1;
+	signal(SIGINT, handle_int_in_main);
 	return (EXIT_SUCCESS);
 }

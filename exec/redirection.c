@@ -6,23 +6,53 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 11:02:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/10 16:52:31 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:36:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy)
+void	save_stdin_stdout(t_subtree *sbtr, int *stdin_copy, int *stdout_copy)
 {
-	subtree->infile_fd = get_infile_fd(subtree);
-	subtree->outfile_fd = get_outfile_fd(subtree);
-	if (subtree->infile_fd != STDIN_FILENO || \
-	subtree->outfile_fd != STDOUT_FILENO)
+	if (sbtr->infile_fd != STDIN_FILENO && stdin_copy)
+		*stdin_copy = dup(STDIN_FILENO);
+	if (sbtr->outfile_fd != STDOUT_FILENO && stdout_copy)
+		*stdout_copy = dup(STDOUT_FILENO);
+}
+
+void	get_back_redirection(t_subtree *sbtr, int stdin_copy, int stdout_copy)
+{
+	if (sbtr->infile_fd != STDIN_FILENO)
 	{
-		if (stdin_copy != 0)
-			*stdin_copy = dup(STDIN_FILENO);
-		if (stdout_copy != 0)
-			*stdout_copy = dup(STDOUT_FILENO);
-		my_dup2(subtree, subtree->infile_fd, subtree->outfile_fd);
+		dup2(stdin_copy, STDIN_FILENO);
+		close(sbtr->infile_fd);
 	}
+	if (sbtr->outfile_fd != STDOUT_FILENO)
+	{
+		dup2(stdout_copy, STDOUT_FILENO);
+		close(sbtr->outfile_fd);
+	}
+}
+
+int	redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy)
+{
+	if (has_subtree_no_infile(subtree))
+	{
+		put_subtree_has_nofile_err_msg(subtree);
+		g_status = 1;
+		return (EXIT_FAILURE);
+	}
+	if (get_infile_fd(subtree))
+	{
+		g_status = 1;
+		return (EXIT_FAILURE);
+	}
+	if (get_outfile_fd(subtree))
+	{
+		g_status = 1;
+		return (EXIT_FAILURE);
+	}
+	save_stdin_stdout(subtree, stdin_copy, stdout_copy);
+	my_dup2(subtree, subtree->infile_fd, subtree->outfile_fd);
+	return (EXIT_SUCCESS);
 }

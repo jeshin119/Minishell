@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 11:50:19 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/14 17:46:19 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 17:27:12 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,22 @@ void	my_dup2(t_subtree *subtree, int rd, int wr)
 {
 	if (subtree->infile_fd == STDIN_FILENO && rd != STDIN_FILENO)
 	{
-		if (dup2(rd, 0) < 0)
+		if (dup2(rd, STDIN_FILENO) < 0)
 			perror("dup2: ");
 	}
 	if (subtree->infile_fd != STDIN_FILENO)
 	{
-		if (dup2(subtree->infile_fd, 0) < 0)
+		if (dup2(subtree->infile_fd, STDIN_FILENO) < 0)
 			perror("dup2: ");
 	}
 	if (subtree->outfile_fd == STDOUT_FILENO && wr != STDOUT_FILENO)
 	{
-		if (dup2(wr, 1) < 0)
+		if (dup2(wr, STDOUT_FILENO) < 0)
 			perror("dup2: ");
 	}
 	if (subtree->outfile_fd != STDOUT_FILENO)
 	{
-		if (dup2(subtree->outfile_fd, 1) < 0)
+		if (dup2(subtree->outfile_fd, STDOUT_FILENO) < 0)
 			perror("dup2: ");
 	}
 }

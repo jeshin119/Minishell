@@ -1,24 +1,25 @@
-cat <<hi <a ㅎㅏㅁㄴ hi가 남아있ㅇ므 릭남.. 해결
+cat <<hi <a 릭 해결
 $a 해결.
 cat $a 해결.
 cat < $a 해결.
 echo $a $USER 해결.
+cat <a <b <c <d <e <f <<hi 릭체크 해결.
+cat <a <b <c <<hi <f  해결.
+cat <a <b | ls 해결.
+$? ctrl+c 해결.
 
+------------signal 처리 필요---------------
 cat <<a <<b | cat <<c <<d interrupt signal 줄때 두번줘야 끝남..,
-cat <a <b <c <d <e <f <<hi 릭체크
-tash-3.2$ cat <a <b <c <<hi <f
-
-
-$? ctrl+c
-
 grep ha ctrl +d 두두번번받받음음
 ctrl+\ quit해야함
-interective mode가 무엇?
-테스트하면서 leak쳌 필요
 interactive mode에서 quit되어야함.ctlr +\
+
+
+
 
 -------------------------
 Study need to.
+interective mode가 무엇?
 reentrant meaning
 Program counter, resister, about Context.
 subroutine

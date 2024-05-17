@@ -6,38 +6,29 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 21:40:35 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:22:54 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_subtree(t_subtree **sbtr)
+int	free_subtree(t_subtree **sbtr)
 {
 	if ((*sbtr)->cmd)
-	{
 		free((*sbtr)->cmd);
-		(*sbtr)->cmd = 0;
-	}
 	if ((*sbtr)->opt)
-	{
 		free_tab((*sbtr)->opt, (*sbtr)->opt_size);
-		(*sbtr)->opt = 0;
-	}
 	if ((*sbtr)->is_heredoc)
 		unlink((*sbtr)->infile);
 	if ((*sbtr)->infile)
-	{
 		free((*sbtr)->infile);
-		(*sbtr)->infile = 0;
-	}
 	if ((*sbtr)->outfile)
-	{
 		free((*sbtr)->outfile);
-		(*sbtr)->outfile = 0;
-	}
+	if ((*sbtr)->no_infile)
+		free((*sbtr)->no_infile);
 	free((*sbtr));
 	(*sbtr) = 0;
+	return (EXIT_FAILURE);
 }
 
 void	reset_tree_info(t_tree_info *info)
@@ -48,7 +39,7 @@ void	reset_tree_info(t_tree_info *info)
 
 	if (info == 0)
 		return ;
-	if (info->pipe_num != 0)
+	if (info->pipe_num != 0 && info->pipe_tab)
 	{
 		i = -1;
 		while (++i < info->pipe_num)
@@ -79,5 +70,6 @@ void	init_tree_info(t_tree *tree, t_tree_info *tree_info)
 	}
 	tree_info->sbt_lst->head = 0;
 	tree_info->sbt_lst->tail = 0;
+	tree_info->pipe_tab = 0;
 	tree_info->pipe_num = get_pipe_num_from_tree(tree);
 }
