@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:03:08 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 14:44:57 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,14 @@ int	main(int argc, char **argv, char **envp)
 	while (TRUE)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
-		set_main_signal();
-		buf = readline("tash-3.2$ ");
-		if (check_buf(&buf, &env) == EXIT_FAILURE)
+		set_signal_in_main();
+		update_prev_status(&env);
+		buf = readline("bash-3.2$ ");
+		if (check_buf(&buf) == EXIT_FAILURE)
 		{
 			system("leaks --list minishell");
 			continue ;
 		}
-		update_prev_status(&env);
-		set_main_signal();
 		tk_list = tokenize(buf);
 		tree = make_tree(tree, tk_list);
 		exec_tree(tree, &env);
@@ -61,6 +60,6 @@ int	main(int argc, char **argv, char **envp)
 		system("leaks --list minishell");
 	}
 	clear_dq(&env);
-	// system("leaks --list minishell");
+	system("leaks --list minishell");
 	return (EXIT_SUCCESS);
 }

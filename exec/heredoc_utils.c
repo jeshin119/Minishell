@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 15:51:27 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:05:33 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 13:31:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ void	check_already_has_heredoc(t_subtree *new)
 
 int	free_heredoc(char *buf, char *filename)
 {
-	if (buf != NULL)
+	if (buf)
 	{
 		free(buf);
 		buf = 0;
 	}
-	if (filename != NULL)
+	if (filename)
 	{
 		if (g_status == SIGINT)
 			unlink(filename);
@@ -42,7 +42,7 @@ int	free_heredoc(char *buf, char *filename)
 	return (EXIT_FAILURE);
 }
 
-int	is_file_exist(char *filename)
+int	exist_file(char *filename)
 {
 	int				tmp_fd;
 

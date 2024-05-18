@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 15:10:46 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 14:40:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ static int	is_empty(char *buf)
 	int		i;
 
 	if (*buf == 0)
+	{
+		free(buf);
 		return (TRUE);
+	}
 	i = -1;
 	while (buf[++i])
 	{
@@ -57,29 +60,28 @@ static int	get_extra_buf(char **buf)
 {
 	char	*extra;
 
-	signal(SIGINT, handle_sigint_to_rl_restart);
-	while (is_ended_with_pipe(*buf))
+	if (is_ended_with_pipe(*buf) == FALSE)
+		return (EXIT_SUCCESS);
+	extra = readline("> ");
+	if (g_status == SIGINT)
 	{
-		extra = readline("> ");
-		if (g_status == SIGINT)
-		{
-			add_history(*buf);
-			free(*buf);
-			g_status = 1;
-			return (EXIT_FAILURE);
-		}
-		if (extra == 0)
-		{
-			add_history(*buf);
-			free(*buf);
-			g_status = 258;
-			write(1, "\033[1A\033[2C", 8);
-			ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
-			return (EXIT_FAILURE);
-		}
-		*buf = ft_strjoin(*buf, extra);
+		if (extra)
+			free(extra);
+		add_history(*buf);
+		free(*buf);
+		return (EXIT_FAILURE);
 	}
-	return (EXIT_SUCCESS);
+	if (extra == 0)
+	{
+		add_history(*buf);
+		free(*buf);
+		g_status = 258;
+		write(1, "\033[1A\033[2C", 8);
+		ft_putstr_fd("bash: syntax error: unexpected end of file\n", 2);
+		return (EXIT_FAILURE);
+	}
+	*buf = ft_strjoin(*buf, extra);
+	return (get_extra_buf(buf));
 }
 
 static void	exit_when_eof(void)
@@ -91,7 +93,7 @@ static void	exit_when_eof(void)
 	exit(EXIT_SUCCESS);
 }
 
-int	check_buf(char **buf, t_dq *env)
+int	check_buf(char **buf)
 {
 	char	*tmp;
 	int		heredoc;
@@ -102,15 +104,14 @@ int	check_buf(char **buf, t_dq *env)
 		return (EXIT_FAILURE);
 	heredoc = 0;
 	if (check_buf_syntax_err(*buf, &heredoc) == EXIT_FAILURE)
-	{
-		update_prev_status(env);
 		return (EXIT_FAILURE);
-	}
+	signal(SIGINT, handle_sigint_to_exit_readline);
 	if (!heredoc && get_extra_buf(buf))
 	{
-		update_prev_status(env);
+		signal(SIGINT, handle_sigint_in_main);
 		return (EXIT_FAILURE);
 	}
+	signal(SIGINT, handle_sigint_in_main);
 	add_history(*buf);
 	tmp = ft_strdup(*buf);
 	free(*buf);

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/17 20:27:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 14:25:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,6 @@ typedef struct s_tree_info
 	int					pipe_num;
 }	t_tree_info;
 
-typedef struct s_sig
-{
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-}	t_sig;
-
 int		g_status;
 
 //parse
@@ -168,11 +162,10 @@ void	save_stdin_stdout(t_subtree *sbtr, int *stdin_copy, int *stdout_copy);
 int		redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
 void	get_back_redirection(t_subtree *sbte, int stdin_copy, int stdout_copy);
 //handle_signal.c
-void	handle_int_to_put_mark(int signum);
-void	handle_int_to_exit_heredoc(int signum);
-void	handle_int_in_main(int signum);
-void	set_main_signal(void);
-void	handle_sigint_to_rl_restart(int signum);
+void	handle_sigint_in_main(int signum);
+void	handle_sigint_to_exit_readline(int signum);
+void	set_signal_in_main(void);
+void	set_signal_in_exec(void);
 //path.c
 int		get_path(char **cmd, t_dq *env);
 //envp.c
@@ -185,13 +178,13 @@ void	free_tab(char **tab, int size);
 void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
 //buf.c
-int		check_buf(char **buf, t_dq *env);
+int		check_buf(char **buf);
 //syntax.c
 int		check_buf_syntax_err(char *s, int *heredoc);
 //heredoc_utils.c
 void	check_already_has_heredoc(t_subtree *new);
 int		free_heredoc(char *buf, char *filename);
-int		is_file_exist(char *filename);
+int		exist_file(char *filename);
 //heredoc.c
 int		get_heredoc(t_tree *tree, t_subtree *subtree);
 //errmsg.c

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 19:58:51 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 14:21:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,13 @@ static char	**get_path_tab(t_dq *env)
 	return (tab);
 }
 
-static int	ret_path(char **cmd, t_dq *env)
+static int	return_path(char **cmd, t_dq *env)
 {
 	int		i;
 	char	*path;
 	char	**tab;
 	int		size;
 
-	if (*cmd == 0)
-		return (EXIT_FAILURE);
 	tab = get_path_tab(env);
 	size = -1;
 	while (tab[++size])
@@ -69,7 +67,7 @@ static int	ret_path(char **cmd, t_dq *env)
 	return (EXIT_FAILURE);
 }
 
-static int	check_path(char *path)
+static int	check_absolute_path(char *path)
 {
 	struct stat	statbuf;
 
@@ -106,13 +104,13 @@ int	get_path(char **cmd, t_dq *env)
 			break ;
 		if ((*cmd)[i] == '/')
 		{
-			absolute_flg++;
+			absolute_flg = 1;
 			break ;
 		}
 	}
 	if (absolute_flg)
-		return (check_path(*cmd));
-	if (ret_path(cmd, env))
+		return (check_absolute_path(*cmd));
+	if (return_path(cmd, env) == EXIT_FAILURE)
 		return (put_command_not_found(*cmd));
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 21:17:04 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 14:40:28 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void	update_prev_status(t_dq *env)
 		{
 			if (start->val != 0)
 				free(start->val);
+			if (g_status == SIGINT)
+				g_status = 1;
 			start->val = ft_itoa(g_status);
 			break ;
 		}

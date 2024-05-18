@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:05:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 13:32:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ static int	write_heredoc(char *filename, t_subtree *subtree)
 	while (TRUE)
 	{
 		buf = readline("> ");
-		if (is_file_exist(filename) == EXIT_FAILURE)
+		if (g_status == SIGINT)
+			return (free_heredoc(buf, filename));
+		if (exist_file(filename) == EXIT_FAILURE)
 			return (free_heredoc(buf, filename));
 		if (buf == 0)
 			return (EXIT_SUCCESS);
@@ -64,7 +66,7 @@ int	get_heredoc(t_tree *tree, t_subtree *subtree)
 		return (EXIT_FAILURE);
 	if (open_heredoc(subtree, &filename, limiter))
 		return (EXIT_FAILURE);
-	signal(SIGINT, handle_int_to_exit_heredoc);
+	signal(SIGINT, handle_sigint_to_exit_readline);
 	if (write_heredoc(filename, subtree))
 		return (EXIT_FAILURE);
 	close(subtree->infile_fd);
@@ -72,6 +74,6 @@ int	get_heredoc(t_tree *tree, t_subtree *subtree)
 	free(subtree->infile);
 	subtree->infile = filename;
 	subtree->is_heredoc = 1;
-	signal(SIGINT, handle_int_in_main);
+	signal(SIGINT, handle_sigint_in_main);
 	return (EXIT_SUCCESS);
 }
