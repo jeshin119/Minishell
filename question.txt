@@ -1,0 +1,184 @@
+--jeshin--
+1. readline하고나서 또 말록해서 받아야하는지? test.c 에서도 같이 테스트해봤는데 잘 되는것 같은데?
+->테스트해봤는데 문제 없었음. 근데 동료코드에서는 새로 말록을 받아야 하더라 세그폴트가 떠서.. 동료코드가 문제인건가 아니면 새로 readline을 받으면 기존의 라인을 해제하는 가?
+
+//마지x막 노드가 |로 끝나면 추가로 입력받아서 처리해야함//이건 나중에 처리합시다 
+세그폴트 떠도 쉘이 종료되지 않게 어케하지? 애초에 세그폴트가 뜨지 않게하면되나?
+exit할때 자식에서 부모에서 exit되어야함.
+
+--------------------------------------
+5/1 : 구조 살피기 + 에러처리하기
+echo$? 에러코드 확정하기
+자식프로세스가 종료되지 않고 남아있음. 빌트인들 exit로 종료하게끔했음. file fd가 이상하게되어있었음. outfile_fd가 0으로된다던지..그래서 파이프가안됬던거임.
+cd안됨. 경로가안바껴져있음.
+스페이스바 쭉 주고 엔터입력하면 메이크트리함수에서 세그폴트뜸
+pp라고주면 커맨드가없다고나와야함. 지금은 파일없다고 나옴.
+echo hihi >a 안됨.no suchfile 나옴.
+echo  단독사용안됨 echo -n안됨. 해결. 
+echo | cat <file 안됨.
+빌트인 옵션 안되게금 처리.통일.
+
+--------------------------------
+5/2 
+$? 자식 state값 받아서 어떻게 할것인지.
+빌트인 잘 안됨. cd pwd export env 등 다. 
+빌트인명령은 fork를 하면 안되나?
+cat하고나서 ctrl+d 로 종료하지 않고 ctrl+c로 중단하면 이후에 readline이 이상해짐 왜? 
+ps로 확인해보니 cat이었다가  (cat)이 됨. ctrl+c로 중단하면. ()는 중단된 상태라는 것.
+ctrl+c를 자식에서는 아예 종료하도록해야함. 또다른 예로 sleep 2 에서 interrupt하면 끝나야하는데 제대로 끝나지않음.
+minisehll > \t 이게 뭐지? 탭을 주라는 건가?
+echo 여러케이스 해결.
+
+----------------------------
+5/3
+빌트인은 파이프가 있을경우 자식에서, 없을경우 부모 최상단에서 실행되어야한다.
+그러면 builtins사용할때 그 함수에서 종료하지않고, 호출한쪽에서 종료하도록 해야한다.왜냐하면 그래야 단독사용시 부모가 종료되지 않고
+파이프가있는경우는 호출쪽에서 종료시키면 되니까.
+exit|exit 안됨
+cd구현? PWD와 OLDPWD는?
+sleep 3| cat <question.txt 가 실행이 다름. dup2 수정해서 해결.
+sleep 3하고 중단시키면 ^C문구가뜸. 시그널핸들함수로 해결.
+exit 호출해서 exit문구를 출력할 때 언제해야하는지?
+----------------------------
+5/4
+path_max? bsd참고?
+getchar에 eof를 주면?
+cat <<e 
+echo <<e
+readline하고 read같이쓰면 안됨?
+heredoc : stdin:badfilddescriptor? ?????????????????
+heredoc에서 쓰고나서 읽으려면 읽는용도로 다시 열어야하는데 나는 쓰고나서 닫지않고 쓰려고 연걸가지고 읽으려고했음. 그래서 안됐던것.
+
+
+-----------------------------
+5/7
+exit 100 ,exit hello
+나갔다가 다시 들어와서 ctrl+c 를 빈프롬프트에 하면 ^C표시가 뜸. 뜨면 안되는데. 근데 다시 실행하거나 다시 나갔다가 들어오면 뜨지않음.
+exit하고 exit status.
+export not a vaild identifier. unset 도 마찬가지.
+builtin을 명령이 하나만왔을때 부모에서 실행하는게 아니라 명령이 하나여도 포크를 해야하는건가? 왜? exit code때문에?
+만약 리턴값이 있고 exit가 없다면builtin 함수구현중에서, 멀티프로세스를 구현할때 부모에서 자식상태값을 받는 중에서 아마 
+자식상태를 알기어려울 것.
+때문에 빌트인함수에서도 exit함수를 사용해서 에러가발생하거나 정상적으로 종료되도 프로세스가 끝나도록 해야함. 
+
+bash-3.2$ cat <<$h |echo <$pp | cat < asdf | iiiiii
+> qqqqqqqqqq
+> $h
+bash: $pp: ambiguous redirect
+bash: asdf: No such file or directory
+bash: iiiiii: command not found
+bash-3.2$ cat <<$h |echo < | cat < asdf | iiiiii
+bash: syntax error near unexpected token `|'
+> asdf
+
+순서 : syntaxerror->heredoc->->나머지는 파이프 순서대로.
+syntaxerror를 먼저 띄우고 히어독은 무조건 받음.
+bash-3.2$ export b="haha hoho"
+bash-3.2$ cat < $b
+bash: $b: ambiguous redirect
+bash-3.2$ cat < "$b"
+bash: haha hoho: No such file or directory
+
+
+히어독여러개오는거. 
+에러처리.
+-----------------
+5/8
+권한 없는 파일 열기?
+perror(str)주면str: undifinederror가 나옴. 
+이러지말고
+strerror(errno)을 주면 될듯.
+handle int signalhandle.c parmaeter?!
+malloc실패시 exit?맞음? 
+ls | <out
+ls |<
+^C가 두번출력됨.
+---------------------
+5/9
+export a="hi bye 추가입력받음 쿼터처리?
+export a="hi bye"하고 echo $a를 하면 "hi만 출력됨.
+
+cat <<$a ambiguous redirect
+heredoc에서 ctrl+d 시 print all하는것.
+각 라인마지막에 hi\0\nbye\0\nkkk\0와 같이 들어가있다.
+파일권한
+--------------------------
+5/9
+leaks : in make_env at tab
+in heredoc write at infile
+heredoc end of file?
+redirectoin -> infile is or isn't file
+when echo hi > out , leak is in make_tree
+when echo hi >>out , too.
+
+builtin no leak.
+command not found has leaks.
+위에 5/9까지 해결. 
+signal mark. 해결.
+tash-3.2$ /usr/bin/env. it wasn't executed.
+>test 와 같이 파일만 주는 거 안됨. 해결.
+근데 권한없는 파일 읽을 때 에러 안됨. 해결.
+echo hello > $alkdsl. hello가 출력됨. exitcode는 1로. 해결.
+echo >$a 파일을 만듬.
+$a 앞부분만 커맨드낫파운드. 나는 전체 이름추렭됨.
+a = "hi bye"이면 $a는 hi인지 hi bye인지
+
+쭉 보고 테스트케이스 돌리고. 해야할거 : 릭, 세그폴트 말해놨고. 신택스에러처리해야.
+unset path를 했을 때 다 파일로 보고 현재 폴더에서 찾아야함. 
+---------------해야할거: 다 해결 완.
+1. cat <a > b | wc -l했더니 파일 낫파운드 하는데 배쉬는 얘도 파일없다고 하네. 근데 wc-l결과를 띄움.
+//서브트리만드는 과정에서 파일을 오픈하지말고 파일명만 가지고 있따가, 서브트리 리스트 순회할 때 명령실행하기전에 파일오픈하자.
+//bash에서 cat <A | ls했더니 먼저 a 파일 없다고 나오고 후에 ls결과 출력됨. 그러므로 자식단계에서 각 파일을 오픈해야하네.
+
+2.|로 끝나는거 예를들어 cat | 처럼. 이런건 라인을 계쏙 붙여서 받자. gnl 보너스처럼. 
+아 아니네 라인 붙여서 받으려면 tree가 이어져있어야 하는데 따로따로 tree만들어서 받으니까 그건 좀 어렵고
+각 트리를 담아놔야하네.
+
+3. bash-3.2$에서 -이후 숫자가 bash버전임. 버전가져와야함.안가져와도 되나?굳이? 그게 중요한건아닌데?
+
+4. 반환값. 함수 구조 생각.
+
+5. 경로없으면 exit되서 쉘 나가짐. 쉘이 나가지면안됨.
+---------------------------------------------------------
+
+5/13
+export 했을 때 네임이 이미 있는경우 값을 갱신하도록 수정. 완.
+cat << x < y 완.
+ctrl+c 완.
+tmpfile 완.
+cat "<< |"  완.
+입력추가로 받을때 ctrl+c안됨. 완.
+echo > has leaks.완.
+echo <| 완.
+echo << | 완.
+cat << $a. 완.
+cat "<< 닫혀있지않은 쿼터 처리 안해도됨.
+
+echo <|cat has syntax err in bash but echo >|cat noerror in bash. 미완.
+export a="hi bye", cat $a : bash는 $a를 hi와 bye 두개의 파일로 인식. 미완.
+cat <<x <| : bash는 히어독 받음. 미완.
+echo hi >|cat : bash는 에러 없고 cat이란 파일을 생성함. 
+
+echo $? : 계속 체크필요.
+echo <<a |cat >| : 
+echo <<a <|:
+실행되고 나서 errmsg의 수정해야함.
+cat >| : bash : newline syntax err. my : | syntax err.
+-----------------------------------------------------
+5/15
+''안됨.
+echo '$USER'안됨
+''
+echo '$USER'
+echo '$HOME   dd'
+echo hi |$PATH 안됨. 
+directory 면 126 exitcode가.
+cat < a a < b b < c << hi > x >> y
+---------------------------------------------
+sleep 5 하다가 c입력하면 ^c두번나옴.
+공부할것들 -----------------------------------------------
+stat함수
+open ~/Download/minishell.pdf
+sigaction.
+ucontext.
+restrict?

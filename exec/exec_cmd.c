@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:42:09 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 14:44:38 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 16:21:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	exec_builtin(t_subtree *subtree, t_dq *env)
+static int	exec_one_builtin(t_subtree *subtree, t_dq *env)
 {
 	int		stdin_copy;
 	int		stdout_copy;
@@ -33,9 +33,9 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	pid_t	child_pid;
 
 	child_pid = fork();
+	set_signal_in_exec();
 	if (child_pid != 0)
 		return ;
-	set_signal_in_exec();
 	if (is_subtree_ambiguous(subtree) == TRUE)
 		exit(EXIT_FAILURE);
 	if (redirection(subtree, &stdin_copy, &stdout_copy))
@@ -57,14 +57,14 @@ static void	link_pipes(t_subtree *subtree, t_tree_info *info, int i)
 	close_all_pipe(info->pipe_num, info->pipe_tab);
 }
 
-static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
+void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 {
 	pid_t		child_pid;
 
 	child_pid = fork();
+	set_signal_in_exec();
 	if (child_pid != 0)
 		return ;
-	set_signal_in_exec();
 	if (is_subtree_ambiguous(subtree) == TRUE)
 		exit(EXIT_FAILURE);
 	if (has_subtree_no_infile(subtree))
@@ -82,9 +82,10 @@ static void	exec_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 		exit(EXIT_FAILURE);
 	}
 	execve(subtree->cmd, subtree->opt, get_envtab(env));
+	exit(EXIT_FAILURE);
 }
 
-void	go_exec(t_tree_info *tree_info, t_dq *env)
+void	exec_cmds(t_tree_info *tree_info, t_dq *env)
 {
 	t_subtree	*subtree;
 	int			i;
@@ -93,7 +94,7 @@ void	go_exec(t_tree_info *tree_info, t_dq *env)
 	if (tree_info->pipe_num == 0)
 	{
 		if (is_builtin(subtree))
-			exec_builtin(subtree, env);
+			exec_one_builtin(subtree, env);
 		else
 			exec_one_not_builtin(subtree, env);
 		return ;
@@ -104,7 +105,7 @@ void	go_exec(t_tree_info *tree_info, t_dq *env)
 		if (is_subtree_ambiguous(subtree) == TRUE)
 			;
 		else
-			exec_cmds(subtree, tree_info, env, i);
+			exec_multi_cmds(subtree, tree_info, env, i);
 		subtree = subtree->next;
 	}
 }

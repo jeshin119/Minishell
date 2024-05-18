@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/18 14:25:32 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 16:15:09 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
 int		exec_tree(t_tree *tree, t_dq *env);
+//exec_cmds.c
+void	exec_cmds(t_tree_info *tree_info, t_dq *env);
 //redicrection.c
 void	save_stdin_stdout(t_subtree *sbtr, int *stdin_copy, int *stdout_copy);
 int		redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);

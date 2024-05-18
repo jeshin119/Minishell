@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 14:03:59 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 17:21:53 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	syntax_err_msg(t_tree *tree, int i)
 {
 	char	*msg;
 
-	if (tree->tk_idx_set[i])
+	if (tree->tk_idx_set && tree->tk_idx_set[i])
 	{
 		msg = get_nth_token_from_lst(tree, tree->tk_idx_set[i]);
 		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
@@ -50,10 +50,10 @@ int	put_subtree_has_syntax_err_msg(t_tree *tree)
 			return (258);
 	}
 	i = -1;
-	while ((tree->tk_idx_set)[++i] != -1)
+	while ((tree->tk_idx_set) && (tree->tk_idx_set)[++i] != -1)
 		;
 	i--;
-	if (tree->tk_idx_set[i])
+	if (tree->tk_idx_set && tree->tk_idx_set[i])
 		return (syntax_err_msg(tree, i));
 	else
 		return (syntax_err_msg(tree, i));

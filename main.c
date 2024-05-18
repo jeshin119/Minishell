@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 14:44:57 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 17:16:32 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int	main(int argc, char **argv, char **envp)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
 		set_signal_in_main();
-		update_prev_status(&env);
 		buf = readline("bash-3.2$ ");
+		update_prev_status(&env);
 		if (check_buf(&buf) == EXIT_FAILURE)
 		{
 			system("leaks --list minishell");

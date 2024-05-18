@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:22:54 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/18 17:07:51 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	free_subtree(t_subtree **sbtr)
 {
+	if (*sbtr == 0)
+		return (EXIT_FAILURE);
 	if ((*sbtr)->cmd)
 		free((*sbtr)->cmd);
 	if ((*sbtr)->opt)
