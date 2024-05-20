@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 16:34:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/20 11:54:20 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:02:21 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@ static void	give_token_idx(t_list *tk_list, int add)
 t_list	*tokenize(char *cmd_line)
 {
 	t_list	*tk_list;
+	char	*one_use_cmd_line;
 
 	tk_list = 0;
-	tk_list = token_split(tk_list, cmd_line);
+	one_use_cmd_line = ft_strdup(cmd_line);
+	tk_list = token_split(tk_list, one_use_cmd_line);
+	free(one_use_cmd_line);
 	return (tk_list);
 }
