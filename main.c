@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/20 15:13:31 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:44:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		tk_list = tokenize(buf, 0);
 		tree = make_tree(tree, tk_list);
-		exec_tree(buf, tree, &env);
+		exec_tree(&buf, tree, &env);
 		free_member(tree, tk_list, buf);
 		system("leaks --list minishell");
 	}

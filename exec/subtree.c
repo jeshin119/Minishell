@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/20 13:19:56 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:41:46 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	init_subtree(t_subtree **subtree)
+void	init_subtree(t_subtree **subtree)
 {
 	*subtree = (t_subtree *)malloc(sizeof(t_subtree));
 	if (*subtree == 0)
@@ -35,23 +35,7 @@ static void	init_subtree(t_subtree **subtree)
 	(*subtree)->prev = 0;
 }
 
-static int	get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env)
-{
-	if (tree == 0)
-		return (EXIT_FAILURE);
-	if (check_subtree_syntax_err(tree, new))
-		return (EXIT_FAILURE);
-	if (tree->ctrl_token != 0)
-		return (get_cmd_opt(tree->next_left, new, env));
-	env_chk(tree, env->head);
-	(*new)->cmd = get_nth_token_from_lst(tree, (tree->tk_idx_set)[0]);
-	if (tree->tk_idx_set[0] == -1)
-		(*new)->is_ambiguous = 1;
-	get_opt_from_lst(tree, new);
-	return (EXIT_SUCCESS);
-}
-
-static int	create_subtree(t_tree *tree, t_subtree **new, t_dq *env)
+int	create_subtree(t_tree *tree, t_subtree **new, t_dq *env)
 {
 	init_subtree(new);
 	if (check_subtree_syntax_err(tree, new))
@@ -65,7 +49,7 @@ static int	create_subtree(t_tree *tree, t_subtree **new, t_dq *env)
 	return (EXIT_SUCCESS);
 }
 
-static int	link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new)
+int	link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new)
 {
 	t_sbt_lst	*lst;
 	t_subtree	*here;
@@ -91,34 +75,4 @@ static int	link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new)
 		lst->tail = new;
 	}
 	return (EXIT_SUCCESS);
-}
-
-int	mke_subtree_lst(char *buf, t_tree *tree, t_tree_info *info, t_dq *env)
-{
-	t_subtree	*new;
-
-	if (g_status == SIGINT)
-		return (EXIT_FAILURE);
-	if (tree->ctrl_token != PIPE)
-	{
-		if (create_subtree(tree, &new, env) == EXIT_FAILURE)
-			info->pipe_num--;
-		return (link_subtree(&(info->sbt_lst), new));
-	}
-	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right == 0)
-	{
-		if (create_subtree(tree, &new, env) == EXIT_FAILURE)
-			info->pipe_num--;
-		link_subtree(&(info->sbt_lst), new);
-		return (add_pipe_input(buf, tree, tree->tk_list) == EXIT_SUCCESS && \
-		mke_subtree_lst(buf, tree->next_right, info, env));
-	}
-	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
-	{
-		if (create_subtree(tree, &new, env) == EXIT_FAILURE)
-			info->pipe_num--;
-		return (link_subtree(&(info->sbt_lst), new) | \
-		mke_subtree_lst(buf, tree->next_right, info, env));
-	}
-	return (EXIT_FAILURE);
 }

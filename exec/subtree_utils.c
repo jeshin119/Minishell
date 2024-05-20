@@ -1,16 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file.c                                             :+:      :+:    :+:   */
+/*   subtree_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:30:34 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:40:53 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env)
+{
+	if (tree == 0)
+		return (EXIT_FAILURE);
+	if (check_subtree_syntax_err(tree, new))
+		return (EXIT_FAILURE);
+	if (tree->ctrl_token != 0)
+		return (get_cmd_opt(tree->next_left, new, env));
+	env_chk(tree, env->head);
+	(*new)->cmd = get_nth_token_from_lst(tree, (tree->tk_idx_set)[0]);
+	if (tree->tk_idx_set[0] == -1)
+		(*new)->is_ambiguous = 1;
+	get_opt_from_lst(tree, new);
+	return (EXIT_SUCCESS);
+}
 
 static int	check_file_is(t_tree *tree, t_subtree **new)
 {
@@ -39,7 +55,7 @@ int	get_infile(t_tree *tree, t_subtree **new, t_dq *env)
 	if (tree->ctrl_token == HERE_DOC)
 	{
 		check_already_has_heredoc(*new);
-		if (get_heredoc(tree, *new))
+		if (get_heredoc(tree, *new, env))
 			return (EXIT_FAILURE);
 	}
 	if (tree->ctrl_token == LEFT && (*new)->no_infile == NULL)

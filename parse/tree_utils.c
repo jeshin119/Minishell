@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/20 15:11:08 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 18:09:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value)
 	return (now);
 }
 
-static char	*malloc_readline(char *buf)
+char	*malloc_readline(char *buf)
 {
 	int		i;
 	char	*buf_m;
@@ -80,33 +80,31 @@ static char	*malloc_readline(char *buf)
 	return (buf_m);
 }
 
-int	add_pipe_input(char *prev_buf, t_tree *now, t_list *tk_list)
+int	add_pipe_input(t_tree_info *info, t_tree *now, t_list *tk_list)
 {
-	int		i;
 	char	*buf;
 	t_list	*tk_list_add;
 
-	if (!now || !tk_list)
-		return (EXIT_SUCCESS);
-	i = 0;
-	if (now -> ctrl_token == PIPE && !(now -> next_right))
+	if (g_status == SIGINT)
+		return (EXIT_FAILURE);
+	signal(SIGINT, handle_sigint_to_exit_readline);
+	while (TRUE)
 	{
-		while(TRUE)
-		{
-			buf = readline("> ");
-			buf = malloc_readline(buf);
-			tk_list_add = tokenize(buf, ADD);
-			while (tk_list -> next)
-				tk_list = tk_list -> next;
-			tk_list -> next = tk_list_add;
-			tk_list_add -> prev = tk_list;
-			now = make_tree(now, tk_list_add);
-			if (check_extra_buf(prev_buf, &buf))
-				continue;
-			else
-				break;
-			free(buf);
-		}
+		buf = readline("> ");
+		if (check_extra_buf(info->buf, &buf) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+		if (is_empty(buf))
+			continue ;
+		tk_list_add = tokenize(buf, ADD);
+		while (tk_list -> next)
+			tk_list = tk_list -> next;
+		tk_list -> next = tk_list_add;
+		tk_list_add -> prev = tk_list;
+		now = make_tree(now, tk_list_add);
+		free(buf);
+		info->pipe_num++;
+		signal(SIGINT, handle_sigint_in_main);
+		return (EXIT_SUCCESS);
 	}
 	return (EXIT_SUCCESS);
 }

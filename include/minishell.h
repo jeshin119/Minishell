@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/20 16:31:36 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 18:11:19 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct s_tree_info
 	struct s_sbt_lst	*sbt_lst;
 	int					**pipe_tab;
 	int					pipe_num;
+	char				**buf;
 }	t_tree_info;
 
 int		g_status;
@@ -117,6 +118,7 @@ int		env_first_ch_chk(char *s, int i);
 int		name_valid_chk(char *name, char *s, int i);
 int		handle_qt(t_env *env_lset_new, int env_len, int e_idx, int m_v);
 char	*get_front_str(char *token, char *s, int i, int *front_len);
+char	*malloc_readline(char *buf);
 t_tree	*make_tree(t_tree *now, t_list *tk_list);
 t_tree	*malloc_tree_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*malloc_cmd_node(t_tree *now, t_list *tk_list, int cmd_cnt);
@@ -127,7 +129,7 @@ t_tree	*make_pipe_node(t_tree *now, t_list *tk_list);
 t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*reassembly(t_tree *now, t_list *tk_list);
 t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value);
-int		add_pipe_input(char **prev_buf, t_tree *now, t_list *tk_list);
+int		add_pipe_input( t_tree_info *info, t_tree *now, t_list *tk_list);
 t_tree	*free_sub_tree(t_tree *tree);
 t_list	*tokenize(char *cmd_line, int add);
 t_list	*token_split(t_list *tk_list, char *s);
@@ -139,7 +141,7 @@ t_tree	*parse(char *line, t_dq *env);
 
 //exec
 //tree_info.c
-void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
+void	init_tree_info(char **buf, t_tree *tree, t_tree_info *tr_info);
 void	reset_tree_info(t_tree_info *info);
 int		free_subtree(t_subtree **sbtr);
 //pipe.c
@@ -148,13 +150,18 @@ int		get_pipe_num_from_tree(t_tree *tre);
 void	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 //subtree.c
-int		mke_subtree_lst(char **buf, t_tree *tree, t_tree_info *info, t_dq *env);
+void	init_subtree(t_subtree **subtree);
+int		create_subtree(t_tree *tree, t_subtree **new, t_dq *env);
+int		link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new);
+//subtree_list.c
+int		make_subtree_list(t_tree *tree, t_tree_info *info, t_dq *env);
 //fd.c
 int		open_infile(t_subtree *subtree);
 int		open_outfile(t_subtree *subtree, int is_appending);
 int		get_infile_fd(t_subtree *subtree);
 int		get_outfile_fd(t_subtree *subtree);
 //file.c
+int		get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
@@ -183,6 +190,7 @@ void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
 //buf.c
 int		check_buf(char **buf);
+int		check_extra_buf(char **bkup, char **buf);
 //buf_utils.c
 int		is_ended_with_pipe(char *buf);
 int		is_empty(char *buf);

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:09:53 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 17:07:51 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:01:59 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	reset_tree_info(t_tree_info *info)
 	info->sbt_lst = 0;
 }
 
-void	init_tree_info(t_tree *tree, t_tree_info *tree_info)
+void	init_tree_info(char **buf, t_tree *tree, t_tree_info *tree_info)
 {
 	tree_info->sbt_lst = (t_sbt_lst *)malloc(sizeof(t_sbt_lst));
 	if (tree_info->sbt_lst == 0)
@@ -70,6 +70,7 @@ void	init_tree_info(t_tree *tree, t_tree_info *tree_info)
 		perror("malloc: ");
 		exit(EXIT_FAILURE);
 	}
+	tree_info->buf = buf;
 	tree_info->sbt_lst->head = 0;
 	tree_info->sbt_lst->tail = 0;
 	tree_info->pipe_tab = 0;

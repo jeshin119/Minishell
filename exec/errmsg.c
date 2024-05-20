@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/20 12:55:27 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 18:14:42 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,7 @@ int	put_subtree_has_syntax_err_msg(t_tree *tree)
 	while ((tree->tk_idx_set) && (tree->tk_idx_set)[++i] != -1)
 		;
 	i--;
-	if (tree->tk_idx_set && tree->tk_idx_set[i])
-		return (syntax_err_msg(tree, i));
-	else
-		return (syntax_err_msg(tree, i));
-	return (EXIT_SUCCESS);
+	return (syntax_err_msg(tree, i));
 }
 
 int	put_subtree_has_nofile_err_msg(t_subtree *subtree)

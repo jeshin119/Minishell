@@ -6,18 +6,18 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:26:06 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/20 12:55:36 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:38:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	exec_tree(char *buf, t_tree *tree, t_dq *env)
+int	exec_tree(char **buf, t_tree *tree, t_dq *env)
 {
 	t_tree_info	tree_info;
 
-	init_tree_info(tree, &tree_info);
-	if (mke_subtree_lst(buf, tree, &tree_info, env) == EXIT_FAILURE)
+	init_tree_info(buf, tree, &tree_info);
+	if (make_subtree_list(tree, &tree_info, env) == EXIT_FAILURE)
 	{
 		reset_tree_info(&tree_info);
 		return (EXIT_FAILURE);
