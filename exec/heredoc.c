@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 16:46:44 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 16:31:51 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	write_heredoc(char *filename, t_subtree *subtree)
+static int	write_heredoc(char *filename, t_subtree *subtree, t_dq *env)
 {
 	char			*buf;
 	char			*limiter;
@@ -55,7 +55,7 @@ static int	open_heredoc(t_subtree *subtree, char **filename, char *limiter)
 	return (EXIT_SUCCESS);
 }
 
-int	get_heredoc(t_tree *tree, t_subtree *subtree)
+int	get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env)
 {
 	char	*filename;
 	char	*limiter;
@@ -67,7 +67,7 @@ int	get_heredoc(t_tree *tree, t_subtree *subtree)
 	if (open_heredoc(subtree, &filename, limiter))
 		return (EXIT_FAILURE);
 	signal(SIGINT, handle_sigint_to_exit_readline);
-	if (write_heredoc(filename, subtree))
+	if (write_heredoc(filename, subtree, env))
 		return (EXIT_FAILURE);
 	close(subtree->infile_fd);
 	subtree->infile_fd = 0;
