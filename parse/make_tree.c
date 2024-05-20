@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 18:17:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 15:53:37 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 11:52:29 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ t_tree	*reassembly(t_tree *now, t_list *tk_list)
 
 t_tree	*make_tree(t_tree *now, t_list *tk_list)
 {
+	t_tree	*tree_root;
+
+	tree_root = now;
 	while (tk_list)
 	{
 		if (!tk_list -> prev || tk_list -> prev -> ctrl_token == PIPE)
@@ -34,9 +37,15 @@ t_tree	*make_tree(t_tree *now, t_list *tk_list)
 		tk_list = tk_list -> next;
 	}
 	now -> end_flag = ON;
-	while (now -> prev)
+	if (!tree_root)
 	{
-		now = now -> prev;
+		while (now -> prev)
+			now = now -> prev;
+	}
+	else
+	{
+		while (now -> ctrl_token != PIPE)
+			now = now -> prev;
 	}
 	return (now);
 }

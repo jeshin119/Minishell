@@ -6,13 +6,14 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/18 16:15:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 11:55:53 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define BACK_SLASH 1
+# define ADD 1
 # define UPP 1
 # define LEFT 2
 # define RIGHT 3
@@ -126,8 +127,9 @@ t_tree	*make_pipe_node(t_tree *now, t_list *tk_list);
 t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*reassembly(t_tree *now, t_list *tk_list);
 t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value);
+t_tree	*add_pipe_input(t_tree *now, t_list *tk_list);
 t_tree	*free_sub_tree(t_tree *tree);
-t_list	*tokenize(char *cmd_line);
+t_list	*tokenize(char *cmd_line, int add);
 t_list	*token_split(t_list *tk_list, char *s);
 t_list	*mv_to_valid_token(t_tree *now, int i);
 t_node	*chk_valid_env(t_tree *now, char *s, int i, t_node *env_list);

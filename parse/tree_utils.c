@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/12 12:24:39 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/20 11:53:09 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,51 @@ t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value)
 			(now -> tk_idx_set)[1] = END;
 	}
 	now -> exit_code = 258;
+	return (now);
+}
+
+static char	*malloc_readline(char *buf)
+{
+	int		i;
+	char	*buf_m;
+
+	i = 0;
+	while (buf[i])
+		i++;
+	buf_m = (char *)malloc(i + 1);
+	if (!buf_m)
+		exit(1);
+	i = 0;
+	while (buf[i])
+	{
+		buf_m[i] = buf[i];
+		i++;
+	}
+	buf_m[i] = 0;
+	free(buf);
+	return (buf_m);
+}
+
+t_tree	*add_pipe_input(t_tree *now, t_list *tk_list)
+{
+	int		i;
+	char	*buf;
+	t_list	*tk_list_add;
+
+	if (!now || !tk_list)
+		return (0);
+	i = 0;
+	if (now -> ctrl_token == PIPE && !(now -> next_right))
+	{
+		buf = readline("> ");
+		buf = malloc_readline(buf);
+		tk_list_add = tokenize(buf, ADD);
+		now = make_tree(now, tk_list_add);
+		while (tk_list -> next)
+			tk_list = tk_list -> next;
+		tk_list -> next = tk_list_add;
+		tk_list_add -> prev = tk_list;
+		free(buf);
+	}
 	return (now);
 }
