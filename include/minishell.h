@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/20 11:55:53 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:01:54 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ t_tree	*make_pipe_node(t_tree *now, t_list *tk_list);
 t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*reassembly(t_tree *now, t_list *tk_list);
 t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value);
-t_tree	*add_pipe_input(t_tree *now, t_list *tk_list);
+int		add_pipe_input(char *prev_buf, t_tree *now, t_list *tk_list);
 t_tree	*free_sub_tree(t_tree *tree);
 t_list	*tokenize(char *cmd_line, int add);
 t_list	*token_split(t_list *tk_list, char *s);
@@ -148,7 +148,7 @@ int		get_pipe_num_from_tree(t_tree *tre);
 void	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
 //subtree.c
-int		mke_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env);
+int		mke_subtree_lst(char *buf, t_tree *tree, t_tree_info *info, t_dq *env);
 //fd.c
 int		open_infile(t_subtree *subtree);
 int		open_outfile(t_subtree *subtree, int is_appending);
@@ -158,7 +158,7 @@ int		get_outfile_fd(t_subtree *subtree);
 int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
-int		exec_tree(t_tree *tree, t_dq *env);
+int		exec_tree(char *buf, t_tree *tree, t_dq *env);
 //exec_cmds.c
 void	exec_cmds(t_tree_info *tree_info, t_dq *env);
 //redicrection.c
@@ -183,6 +183,7 @@ void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
 //buf.c
 int		check_buf(char **buf);
+int		check_extra_buf(char *prev, char **buf);
 //syntax.c
 int		check_buf_syntax_err(char *s, int *heredoc);
 //heredoc_utils.c

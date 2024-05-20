@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 14:40:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 15:13:42 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,13 @@ static int	get_extra_buf(char **buf)
 	return (get_extra_buf(buf));
 }
 
-static void	exit_when_eof(void)
+static int	exit_when_eof(void)
 {
 	write(1, "\033[1A", 4);
 	write(1, "\033[10C", 5);
 	write(1, "exit\n", 5);
 	rl_clear_history();
-	exit(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 
 int	check_buf(char **buf)
@@ -98,8 +98,8 @@ int	check_buf(char **buf)
 	char	*tmp;
 	int		heredoc;
 
-	if (*buf == 0)
-		exit_when_eof();
+	if (*buf == 0 && (exit_when_eof() == EXIT_SUCCESS))
+		exit(EXIT_SUCCESS);
 	if (is_empty(*buf))
 		return (EXIT_FAILURE);
 	heredoc = 0;
@@ -116,5 +116,23 @@ int	check_buf(char **buf)
 	tmp = ft_strdup(*buf);
 	free(*buf);
 	*buf = tmp;
+	return (EXIT_SUCCESS);
+}
+
+int	check_extra_buf(char *prev, char **buf)
+{
+	char	*tmp;
+	int		heredoc;
+
+	if (*buf == 0)
+		exit_when_eof();
+	if (is_empty(*buf))
+		return (EXIT_FAILURE);
+	heredoc = 0;
+	if (check_buf_syntax_err(*buf, &heredoc) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
+	tmp = ft_strjoin_no_free(prev, *buf);
+	add_history(tmp);
+	free(tmp);
 	return (EXIT_SUCCESS);
 }

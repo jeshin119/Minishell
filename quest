@@ -33,6 +33,10 @@ link time optimization
 compiler optimization
 --------------------------
 echo >|cat : 실행안됨. 근데 배쉬는 됨. >| overwirte하는 기호라서 되는 것. > | 는 신택스가맞음.
+--------------------------
+
+cat enter doesnt work;
+히스토리 복제품. 릭. 
 
 -------------얘기해야할것-------------
 1. echo <| 를 하면 |노드에도 258이 들어가고 <에도 258이 들어가는데, 순회를 파이프노드부터 순회하니까 다음 newline error을 출력하게 됨.

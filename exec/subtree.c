@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:14:40 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/20 13:19:56 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ static int	link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new)
 	return (EXIT_SUCCESS);
 }
 
-int	mke_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
+int	mke_subtree_lst(char *buf, t_tree *tree, t_tree_info *info, t_dq *env)
 {
 	t_subtree	*new;
 
@@ -109,14 +109,16 @@ int	mke_subtree_lst(t_tree *tree, t_tree_info *info, t_dq *env)
 	{
 		if (create_subtree(tree, &new, env) == EXIT_FAILURE)
 			info->pipe_num--;
-		return (link_subtree(&(info->sbt_lst), new));
+		link_subtree(&(info->sbt_lst), new);
+		return (add_pipe_input(buf, tree, tree->tk_list) == EXIT_SUCCESS && \
+		mke_subtree_lst(buf, tree->next_right, info, env));
 	}
 	if (tree->ctrl_token == PIPE && tree->next_left && tree->next_right)
 	{
 		if (create_subtree(tree, &new, env) == EXIT_FAILURE)
 			info->pipe_num--;
 		return (link_subtree(&(info->sbt_lst), new) | \
-		mke_subtree_lst(tree->next_right, info, env));
+		mke_subtree_lst(buf, tree->next_right, info, env));
 	}
 	return (EXIT_FAILURE);
 }
