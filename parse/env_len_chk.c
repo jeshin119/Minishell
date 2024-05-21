@@ -6,21 +6,24 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:22:02 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 18:30:53 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:29:05 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	env_count_chk(char *s, t_list *tk_list)
+int	env_count_chk(char *s, t_list *tk_list)
 {
 	int	i;
 	int	env_cnt;
 
 	i = 0;
 	env_cnt = 0;
-	while (tk_list -> env_lset && tk_list -> env_lset[env_cnt]. len != END)
-		env_cnt++;
+	if (tk_list)
+	{
+		while (tk_list -> env_lset && tk_list -> env_lset[env_cnt]. len != END)
+			env_cnt++;
+	}
 	while (s[i])
 	{
 		if (s[i] == '$')
@@ -75,7 +78,7 @@ static int	cpy_former_env_lset(t_env *env_lset_new, t_list *tk_list, int e_idx)
 	return (e_idx);
 }
 
-static void	alloc_env_len(t_env *env_lset_new, char *s, int e_idx, int m_t)
+void	alloc_env_len(t_env *env_lset_new, char *s, int e_idx, int m_t)
 {
 	int	env_len;
 	int	i;

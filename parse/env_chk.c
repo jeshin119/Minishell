@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 12:46:22 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 18:28:11 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:23:55 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char	*expansion(char *token, t_tree *now, int *i, t_node *env_list)
+static char	*expansion(char *token, t_tree *now, int *i, t_node *env_list)
 {
 	static int	e_idx;
 	char		*env;
