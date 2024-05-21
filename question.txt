@@ -177,8 +177,3 @@ cat < a a < b b < c << hi > x >> y
 ---------------------------------------------
 sleep 5 하다가 c입력하면 ^c두번나옴.
 공부할것들 -----------------------------------------------
-stat함수
-open ~/Download/minishell.pdf
-sigaction.
-ucontext.
-restrict?

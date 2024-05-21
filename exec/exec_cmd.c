@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:42:09 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 16:21:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 11:59:21 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 		exit(EXIT_FAILURE);
 	if (get_outfile_fd(subtree))
 		exit(EXIT_FAILURE);
-	get_path(&(subtree->cmd), env);
 	link_pipes(subtree, info, i);
 	if (is_builtin(subtree))
 	{
@@ -81,6 +80,7 @@ void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 			exit(EXIT_SUCCESS);
 		exit(EXIT_FAILURE);
 	}
+	get_path(&(subtree->cmd), env);
 	execve(subtree->cmd, subtree->opt, get_envtab(env));
 	exit(EXIT_FAILURE);
 }
