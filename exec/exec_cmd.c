@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:42:09 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 16:29:07 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 16:57:52 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	if (redirection(subtree, &stdin_copy, &stdout_copy))
 		exit(EXIT_FAILURE);
 	get_path(&(subtree->cmd), env);
-	execve(subtree->cmd, subtree->opt,get_envtab(env));
+	execve(subtree->cmd, subtree->opt, get_envtab(env));
 	get_back_redirection(subtree, stdin_copy, stdout_copy);
 	exit(EXIT_SUCCESS);
 }

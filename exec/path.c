@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 12:51:17 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 16:41:01 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	return_path(char **cmd, t_dq *env)
 
 	tab = get_path_tab(env);
 	size = -1;
-	while (tab[++size])
+	while (tab && tab[++size])
 		;
 	i = -1;
 	while (tab && tab[++i])
