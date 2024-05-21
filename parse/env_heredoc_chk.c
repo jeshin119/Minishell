@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 15:29:37 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 11:58:47 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/21 13:41:43 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static char	*expansion(char *token, t_env *env_lset, int *i, t_node *env_list)
 	static int	e_idx;
 	char		*env;
 
-	env_list = chk_env(env_lset, token, *i, env_list);
 	if (!env_list)
 	{
 		*i += env_lset[e_idx]. len;
@@ -69,6 +68,7 @@ static char	*expansion(char *token, t_env *env_lset, int *i, t_node *env_list)
 
 static char	*env_exp(t_env *env_lset, t_node *env_list, char *s, int i)
 {
+	t_node	*env_list_now;
 	char	*token;
 	int		front_len;
 
@@ -83,7 +83,8 @@ static char	*env_exp(t_env *env_lset, t_node *env_list, char *s, int i)
 			if (s[i + 1] != '\\' && white_chk(s[i]) && s[i + 1] != '$')
 			{
 				token = get_front_str(token, s, i, &front_len);
-				token = expansion(token, env_lset, &i, env_list);
+				env_list_now = chk_env(env_lset, s, i, env_list);
+				token = expansion(token, env_lset, &i, env_list_now);
 				front_len--;
 			}
 		}
@@ -132,6 +133,10 @@ char	*env_heredoc_chk(char *hd_input, t_node *env_list)
 		exp_input = env_exp(env_lset, env_list, hd_input, i);
 		free(env_lset);
 		free(hd_input);
+		if (exp_input)
+			return (exp_input);
+		else
+			return (ft_strdup(""));
 	}
-	return (exp_input);
+	return (hd_input);
 }
