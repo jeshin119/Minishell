@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 11:13:07 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:51:17 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	get_path(char **cmd, t_dq *env)
 	int			i;
 	int			absolute_flg;
 
-	if (*cmd == 0)
+	if (cmd == 0 || *cmd == 0)
 		return (EXIT_SUCCESS);
 	if (**cmd == 0)
 		return (put_command_not_found(*cmd));

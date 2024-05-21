@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 12:39:07 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:56:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int		env_name_len_chk(char *s, int *i);
 int		env_first_ch_chk(char *s, int i);
 int		name_valid_chk(char *name, char *s, int i);
 int		handle_qt(t_env *env_lset_new, int env_len, int e_idx, int m_v);
-int	add_pipe_input(t_tree_info *info, t_tree *now, t_list *tk_list);
+int		add_pipe_input(t_tree_info *info, t_tree *now, t_list *tk_list);
 char	*get_front_str(char *token, char *s, int i, int *front_len);
 char	*malloc_readline(char *buf);
 char	*env_heredoc_chk(char *hd_input, t_node *env_list);
@@ -159,9 +159,9 @@ void	init_subtree(t_subtree **subtree);
 int		create_subtree(t_tree *tree, t_subtree **new, t_dq *env);
 int		link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new);
 //subtree_utils.c
-int	get_infile(t_tree *tree, t_subtree **new, t_dq *env);
-int	get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
-int	get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env);
+int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
+int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
+int		get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env);
 //fd.c
 int		open_infile(t_subtree *subtree);
 int		open_outfile(t_subtree *subtree, int is_appending);
@@ -171,7 +171,7 @@ int		get_outfile_fd(t_subtree *subtree);
 int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
-int	exec_tree(char **buf, t_tree *tree, t_dq *env);
+int		exec_tree(char **buf, t_tree *tree, t_dq *env);
 //exec_cmds.c
 void	exec_cmds(t_tree_info *tree_info, t_dq *env);
 //redicrection.c

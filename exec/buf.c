@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:04:29 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 12:35:30 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:34:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ int	check_buf(char **buf)
 		return (EXIT_FAILURE);
 	heredoc = 0;
 	if (check_buf_syntax_err(*buf, &heredoc) == EXIT_FAILURE)
+	{
+		add_history(*buf);
 		return (EXIT_FAILURE);
+	}
 	signal(SIGINT, handle_sigint_to_exit_readline);
 	if (!heredoc && get_extra_buf(buf))
 	{

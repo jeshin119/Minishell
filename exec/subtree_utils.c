@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 12:23:56 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:08:57 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env)
 {
 	if (tree == 0)
-		return (EXIT_FAILURE);
+		return (EXIT_SUCCESS);
 	if (check_subtree_syntax_err(tree, new))
 		return (EXIT_FAILURE);
 	if (tree->ctrl_token != 0)

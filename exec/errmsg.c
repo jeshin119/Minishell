@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 11:14:00 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:54:50 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	put_subtree_has_syntax_err_msg(t_tree *tree)
 			return (258);
 	}
 	if (tree->ctrl_token == PIPE)
-		syntax_err_msg(tree, 0);
+		return (syntax_err_msg(tree, 0));
 	i = -1;
 	while ((tree->tk_idx_set) && (tree->tk_idx_set)[++i] != -1)
 		;
