@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:31:29 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 19:11:57 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	care_export_error(char *name, char *val)
 {
-	if (ft_strncmp(name, "_", 2) == EXIT_SUCCESS)
+	if (name && ft_strncmp(name, "_", 2) == EXIT_SUCCESS)
 	{
 		if (name)
 			free(name);
