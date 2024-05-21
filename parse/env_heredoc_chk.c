@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 15:29:37 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 11:52:20 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/21 11:58:47 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ static char	*env_exp(t_env *env_lset, t_node *env_list, char *s, int i)
 
 t_env	*env_heredoc_len_chk(char *hd_input)
 {
+	t_env	*env_lset;
 	int		env_cnt;
 	int		e_idx;
 
