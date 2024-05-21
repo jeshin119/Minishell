@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 10:57:31 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:22:50 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ static int	write_heredoc(char *filename, t_subtree *subtree, t_dq *env)
 	char			*buf;
 	char			*limiter;
 	int				fd;
-	t_node			*tmp;
+
 	limiter = subtree->infile;
 	fd = subtree->infile_fd;
-	tmp = env->head;
 	while (TRUE)
 	{
 		buf = readline("> ");
+		buf = env_heredoc_chk(buf, env->head);
 		if (g_status == SIGINT)
 			return (free_heredoc(buf, filename));
 		if (exist_file(filename) == EXIT_FAILURE)

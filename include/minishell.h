@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 11:52:56 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/21 12:26:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct s_tree_info
 	struct s_sbt_lst	*sbt_lst;
 	int					**pipe_tab;
 	int					pipe_num;
+	char				*buf;
 }	t_tree_info;
 
 int		g_status;
@@ -121,6 +122,7 @@ int		handle_qt(t_env *env_lset_new, int env_len, int e_idx, int m_v);
 int		add_pipe_input(char *prev_buf, t_tree *now, t_list *tk_list);
 char	*get_front_str(char *token, char *s, int i, int *front_len);
 char	*malloc_readline(char *buf);
+char	*env_heredoc_chk(char *hd_input, t_node *env_list);
 t_tree	*make_tree(t_tree *now, t_list *tk_list);
 t_tree	*malloc_tree_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*malloc_cmd_node(t_tree *now, t_list *tk_list, int cmd_cnt);
@@ -150,8 +152,16 @@ void	my_dup2(t_subtree *subtree, int rd, int wr);
 int		get_pipe_num_from_tree(t_tree *tre);
 void	open_pipes(int num, int ***pipe_fd_tab);
 void	close_all_pipe(int size, int **pipe_tab);
+//subtree_list.c
+int		make_subtree_list(t_tree *tree, t_tree_info *info, t_dq *env);
 //subtree.c
-int		mke_subtree_lst(char *buf, t_tree *tree, t_tree_info *info, t_dq *env);
+void	init_subtree(t_subtree **subtree);
+int		create_subtree(t_tree *tree, t_subtree **new, t_dq *env);
+int		link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new);
+//subtree_utils.c
+int	get_infile(t_tree *tree, t_subtree **new, t_dq *env);
+int	get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
+int	get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env);
 //fd.c
 int		open_infile(t_subtree *subtree);
 int		open_outfile(t_subtree *subtree, int is_appending);
@@ -161,7 +171,7 @@ int		get_outfile_fd(t_subtree *subtree);
 int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
-int		exec_tree(char *buf, t_tree *tree, t_dq *env);
+int		exec_tree(t_tree *tree, t_dq *env);
 //exec_cmds.c
 void	exec_cmds(t_tree_info *tree_info, t_dq *env);
 //redicrection.c
@@ -186,7 +196,12 @@ void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
 //buf.c
 int		check_buf(char **buf);
-int		check_extra_buf(char *prev, char **buf);
+int		check_extra_buf(char **bkup, char **buf);
+//buf_utils.c
+int		is_ended_with_pipe(char *buf);
+int		is_empty(char *buf);
+int		get_extra_buf(char **buf);
+int		exit_when_eof(void);
 //syntax.c
 int		check_buf_syntax_err(char *s, int *heredoc);
 //heredoc_utils.c
@@ -194,7 +209,7 @@ void	check_already_has_heredoc(t_subtree *new);
 int		free_heredoc(char *buf, char *filename);
 int		exist_file(char *filename);
 //heredoc.c
-int		get_heredoc(t_tree *tree, t_subtree *subtree);
+int		get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env);
 //errmsg.c
 int		put_subtree_has_syntax_err_msg(t_tree *tree);
 int		put_subtree_has_nofile_err_msg(t_subtree *subtree);

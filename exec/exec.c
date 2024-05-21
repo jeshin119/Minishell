@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:26:06 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 12:07:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:11:36 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	exec_tree(char **buf, t_tree *tree, t_dq *env)
+int	exec_tree(t_tree *tree, t_dq *env)
 {
 	t_tree_info	tree_info;
 
