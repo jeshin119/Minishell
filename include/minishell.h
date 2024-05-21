@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 12:26:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:39:07 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ typedef struct s_tree_info
 	struct s_sbt_lst	*sbt_lst;
 	int					**pipe_tab;
 	int					pipe_num;
-	char				*buf;
+	char				**buf;
 }	t_tree_info;
 
 int		g_status;
@@ -119,7 +119,7 @@ int		env_name_len_chk(char *s, int *i);
 int		env_first_ch_chk(char *s, int i);
 int		name_valid_chk(char *name, char *s, int i);
 int		handle_qt(t_env *env_lset_new, int env_len, int e_idx, int m_v);
-int		add_pipe_input(char *prev_buf, t_tree *now, t_list *tk_list);
+int	add_pipe_input(t_tree_info *info, t_tree *now, t_list *tk_list);
 char	*get_front_str(char *token, char *s, int i, int *front_len);
 char	*malloc_readline(char *buf);
 char	*env_heredoc_chk(char *hd_input, t_node *env_list);
@@ -144,7 +144,7 @@ t_tree	*parse(char *line, t_dq *env);
 
 //exec
 //tree_info.c
-void	init_tree_info(t_tree *tree, t_tree_info *tr_info);
+void	init_tree_info(char **buf, t_tree *tree, t_tree_info *tree_info);
 void	reset_tree_info(t_tree_info *info);
 int		free_subtree(t_subtree **sbtr);
 //pipe.c
@@ -171,7 +171,7 @@ int		get_outfile_fd(t_subtree *subtree);
 int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
 int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
 //exec.c
-int		exec_tree(t_tree *tree, t_dq *env);
+int	exec_tree(char **buf, t_tree *tree, t_dq *env);
 //exec_cmds.c
 void	exec_cmds(t_tree_info *tree_info, t_dq *env);
 //redicrection.c
