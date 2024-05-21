@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 21:23:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 16:30:23 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,6 @@ char	**get_envtab(t_dq *env)
 	i = -1;
 	while (start && i < env->size)
 	{
-		if (start->name == 0 || start->val == 0)
-		{
-			start = start->next;
-			i++;
-			continue ;
-		}
 		tmp = ft_strjoin_no_free(start->name, "=");
 		tab[++i] = ft_strjoin_no_free(tmp, start->val);
 		free(tmp);
