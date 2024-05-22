@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:42:09 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 18:01:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 19:50:37 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ static void	exec_one_not_builtin(t_subtree *subtree, t_dq *env)
 	pid_t	child_pid;
 
 	child_pid = fork();
-	set_signal_in_exec();
 	if (child_pid != 0)
 		return ;
+	set_signal_in_exec();
 	if (is_subtree_ambiguous(subtree) == TRUE)
 		exit(EXIT_FAILURE);
 	if (redirection(subtree, &stdin_copy, &stdout_copy))
@@ -62,9 +62,9 @@ void	exec_multi_cmds(t_subtree *subtree, t_tree_info *info, t_dq *env, int i)
 	pid_t		child_pid;
 
 	child_pid = fork();
-	set_signal_in_exec();
 	if (child_pid != 0)
 		return ;
+	set_signal_in_exec();
 	if (is_subtree_ambiguous(subtree) == TRUE)
 		exit(EXIT_FAILURE);
 	if (has_subtree_no_infile(subtree))

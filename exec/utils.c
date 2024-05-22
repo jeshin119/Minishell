@@ -6,13 +6,13 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/18 15:25:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 19:30:53 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_tab(char	**tab, int size)
+void	free_tab(char **tab, int size)
 {
 	int	i;
 

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 14:49:05 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/16 11:40:54 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 19:29:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,18 @@
 
 static int	care_cd_error(char *path, char *home, char *new)
 {
-	ft_putstr("bash: cd: ");
-	ft_putstr(path);
-	ft_putstr(": ");
-	perror(NULL);
+	if (path == NULL)
+	{
+		ft_putstr_fd("bash: cd: error retrieving current directory: ", 2);
+		perror("getcwd: cannot access parent directories: ");
+	}
+	else
+	{
+		ft_putstr_fd("bash: cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": ", 2);
+		perror(NULL);
+	}
 	if (home != NULL)
 		free(home);
 	if (new != NULL)
@@ -76,6 +84,7 @@ int	_cd(char *path, t_dq *env)
 {
 	char	*home;
 	char	*new;
+	char	check[4096];
 
 	new = 0;
 	home = find_home_path(env);
@@ -90,6 +99,8 @@ int	_cd(char *path, t_dq *env)
 	}
 	if (chdir(path) != EXIT_SUCCESS)
 		return (care_cd_error(path, home, new));
+	if (getcwd(check, sizeof(check)) == NULL)
+		return (care_cd_error(NULL, home, new));
 	update_env_pwd(env);
 	if (home != NULL)
 		free(home);
