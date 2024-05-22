@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:09:46 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 18:34:38 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/21 21:57:16 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
 	int		start;
 	char	*str;
 
+	meta_value = 0;
 	start = (*i) + 1;
 	*i = quote_closed_chk(s, *i);
 	str = ft_substr(s, start, (*i) - start);
@@ -47,17 +48,15 @@ static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
 	{
 		if ((*tk_list) && (*tk_list)-> quote_to_space)
 		{
-			env_len_chk(*tk_list, str, meta_value);
 			(*tk_list)-> token = ft_strjoin((*tk_list)-> token, str);
+			(*tk_list)-> quote_to_space = OFF;
 			return ;
 		}
 		*tk_list = ft_lstnew(*tk_list);
 		(*tk_list)-> token = str;
-		env_len_chk(*tk_list, str, meta_value);
 	}
 	else
 	{
-		env_len_chk(*tk_list, str, meta_value);
 		(*tk_list)-> token = ft_strjoin((*tk_list)-> token, str);
 	}
 }

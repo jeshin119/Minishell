@@ -6,24 +6,19 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:22:02 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/20 16:29:05 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/21 21:25:57 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	env_count_chk(char *s, t_list *tk_list)
+int	env_count_chk(char *s)
 {
 	int	i;
 	int	env_cnt;
 
 	i = 0;
 	env_cnt = 0;
-	if (tk_list)
-	{
-		while (tk_list -> env_lset && tk_list -> env_lset[env_cnt]. len != END)
-			env_cnt++;
-	}
 	while (s[i])
 	{
 		if (s[i] == '$')
@@ -67,67 +62,57 @@ int	env_name_len_chk(char *s, int *i)
 	return (name_len);
 }
 
-static int	cpy_former_env_lset(t_env *env_lset_new, t_list *tk_list, int e_idx)
-{
-	while ((tk_list -> env_lset)[e_idx]. len != END)
-	{
-		env_lset_new[e_idx]. len = (tk_list -> env_lset)[e_idx]. len;
-		env_lset_new[e_idx]. d_quote = (tk_list -> env_lset)[e_idx]. d_quote;
-		e_idx++;
-	}
-	return (e_idx);
-}
-
-void	alloc_env_len(t_env *env_lset_new, char *s, int e_idx, int m_t)
+void	get_env_len(char *s, int *i, int e_idx, t_env *env_lset)
 {
 	int	env_len;
+
+	env_len = 0;
+	env_len = env_name_len_chk(s, i);
+	if (s[(*i)] == '?' || (s[(*i)] >= '0' && s[(*i)] <= '9'))
+		env_len = 1;
+	env_lset[e_idx]. len = env_len;
+}
+
+static int	is_quote(char *s, int i, int q_flag)
+{
+	if (q_flag == D_QUOTE)
+	{
+		if (s[i - 1] != '\\' && s[i] == '\"')
+			return (1);
+	}
+	else if (q_flag == S_QUOTE)
+	{
+		if (s[i - 1] != '\\' && s[i] == '\'')
+			return (1);
+	}
+	return (0);
+}
+
+void	alloc_env_len(t_env *env_lset, char *s, int e_idx, int hd_flag)
+{
+	int	q_flag;
 	int	i;
 
-	i = 0;
+	ini_q_flag_idx(&q_flag, &i);
 	while (s[i])
 	{
-		env_len = 0;
+		if (q_flag >= QUOTES && is_quote(s, i, q_flag))
+			q_flag = 0;
+		if (q_flag < QUOTES)
+			q_flag = meta_chk(s, i, q_flag);
 		if (s[i] == '$' && s[i + 1])
 		{
 			i++;
 			if (s[i] && s[i] != '\\' && white_chk(s[i]) && s[i] != '$')
 			{
-				env_len = env_name_len_chk(s, &i);
-				if (s[i] == '?' || (s[i] >= '0' && s[i] <= '9'))
-					env_len = 1;
-				env_len = handle_qt(env_lset_new, env_len, e_idx, m_t);
-				env_lset_new[e_idx]. len = env_len;
+				get_env_len(s, &i, e_idx, env_lset);
+				handle_qt(env_lset, e_idx, q_flag, hd_flag);
 				e_idx++;
 			}
-			if (s[i] == '$')
+			if (s[i] == '$' || is_quote(s, i, q_flag))
 				i--;
 		}
 		if (s[i])
 			i++;
 	}
-}
-
-void	env_len_chk(t_list *tk_list, char *token, int meta_value)
-{
-	t_env	*env_lset_new;
-	int		env_cnt;
-	int		e_idx;
-
-	e_idx = 0;
-	env_cnt = env_count_chk(token, tk_list);
-	if (env_cnt)
-		env_lset_new = (t_env *)malloc(sizeof(t_env) * (env_cnt + 1));
-	else
-		return ;
-	if (!env_lset_new)
-		exit(1);
-	env_lset_new = ini_env_lset(env_lset_new, env_cnt);
-	if (tk_list -> env_lset)
-	{
-		e_idx = cpy_former_env_lset(env_lset_new, tk_list, e_idx);
-		free(tk_list -> env_lset);
-	}
-	alloc_env_len(env_lset_new, token, e_idx, meta_value);
-	env_lset_new[env_cnt]. len = END;
-	tk_list -> env_lset = env_lset_new;
 }

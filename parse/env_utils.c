@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 12:04:47 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/07 15:20:26 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 21:27:40 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,12 @@ t_node	*env_name_chk(char *s, t_node *env_list, int i)
 	return (env_list);
 }
 
-int	handle_qt(t_env *env_lset_new, int env_len, int e_idx, int meta_value)
+void	handle_qt(t_env *env_lset, int e_idx, int q_flag, int hd_flag)
 {
-	if (meta_value == S_QUOTE)
-		env_len = 0;
-	else if (meta_value == D_QUOTE)
-		env_lset_new[e_idx]. d_quote = ON;
-	return (env_len);
+	if (hd_flag)
+		return ;
+	if (q_flag == D_QUOTE)
+		env_lset[e_idx]. d_quote = ON;
+	else if (q_flag == S_QUOTE)
+		env_lset[e_idx]. len = 0;
 }
