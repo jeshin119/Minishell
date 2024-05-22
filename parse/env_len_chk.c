@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:22:02 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 21:25:57 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/22 12:32:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	alloc_env_len(t_env *env_lset, char *s, int e_idx, int hd_flag)
 	{
 		if (q_flag >= QUOTES && is_quote(s, i, q_flag))
 			q_flag = 0;
-		if (q_flag < QUOTES)
+		else if (q_flag < QUOTES)
 			q_flag = meta_chk(s, i, q_flag);
 		if (s[i] == '$' && s[i + 1])
 		{

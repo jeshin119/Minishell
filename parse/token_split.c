@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 18:03:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/22 11:27:08 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/22 12:11:22 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	change_to_space(char *s, t_list **tk_list, int meta_value, int i)
 	i++;
 	if (meta_value != BACK_SLASH)
 		meta_split(s, tk_list, &i);
-	if (white_chk(s[i + 1]))
+	if (meta_value >= ENV && white_chk(s[i + 1]))
 		(*tk_list)-> quote_to_space = ON;
 	s[i] = ' ';
 	i--;
