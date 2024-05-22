@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 12:56:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 11:30:04 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,16 +142,14 @@ t_node	*env_name_chk(char *s, t_node *env_list, int i);
 t_env	*ini_env_lset(t_env *env_lset_new, int env_cnt);
 t_tree	*parse(char *line, t_dq *env);
 
-//exec
-//tree_info.c
-void	init_tree_info(char **buf, t_tree *tree, t_tree_info *tree_info);
-void	reset_tree_info(t_tree_info *info);
-int		free_subtree(t_subtree **sbtr);
-//pipe.c
-void	my_dup2(t_subtree *subtree, int rd, int wr);
-int		get_pipe_num_from_tree(t_tree *tre);
-void	open_pipes(int num, int ***pipe_fd_tab);
-void	close_all_pipe(int size, int **pipe_tab);
+//////////////////////////////////////////////////////////////
+//exec part
+//exec.c
+int		exec_tree(char **buf, t_tree *tree, t_dq *env);
+//exec_cmds.c
+void	exec_cmds(t_tree_info *tree_info, t_dq *env);
+//////////////////////////////////////////////////////////////
+//subtree for exec tree
 //subtree_list.c
 int		make_subtree_list(t_tree *tree, t_tree_info *info, t_dq *env);
 //subtree.c
@@ -160,40 +158,65 @@ int		create_subtree(t_tree *tree, t_subtree **new, t_dq *env);
 int		link_subtree(t_sbt_lst **sbtr_lst, t_subtree *new);
 //subtree_utils.c
 int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
-int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
-int		get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env);
+int		get_outfile(t_tree *tree, t_subtree **new);
+int		get_cmd_opt(t_tree *tree, t_subtree **new);
+//////////////////////////////////////////////////////////////
+//tree_info
+//tree_info.c
+void	init_tree_info(char **buf, t_tree *tree, t_tree_info *tree_info);
+void	reset_tree_info(t_tree_info *info);
+int		free_subtree(t_subtree **sbtr);
+//////////////////////////////////////////////////////////////
+//redirection
+//redicrection.c
+void	save_stdin_stdout(t_subtree *sbtr, int *stdin_copy, int *stdout_copy);
+int		redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
+void	get_back_redirection(t_subtree *sbte, int stdin_copy, int stdout_copy);
+//pipe.c
+void	my_dup2(t_subtree *subtree, int rd, int wr);
+int		get_pipe_num_from_tree(t_tree *tre);
+void	open_pipes(int num, int ***pipe_fd_tab);
+void	close_all_pipe(int size, int **pipe_tab);
+//////////////////////////////////////////////////////////////
 //fd.c
 int		open_infile(t_subtree *subtree);
 int		open_outfile(t_subtree *subtree, int is_appending);
 int		get_infile_fd(t_subtree *subtree);
 int		get_outfile_fd(t_subtree *subtree);
-//file.c
-int		get_infile(t_tree *tree, t_subtree **new, t_dq *env);
-int		get_outfile(t_tree *tree, t_subtree **new, t_dq *env);
-//exec.c
-int		exec_tree(char **buf, t_tree *tree, t_dq *env);
-//exec_cmds.c
-void	exec_cmds(t_tree_info *tree_info, t_dq *env);
-//redicrection.c
-void	save_stdin_stdout(t_subtree *sbtr, int *stdin_copy, int *stdout_copy);
-int		redirection(t_subtree *subtree, int *stdin_copy, int *stdout_copy);
-void	get_back_redirection(t_subtree *sbte, int stdin_copy, int stdout_copy);
+//////////////////////////////////////////////////////////////
+//heredoc
+//heredoc.c
+int		get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env);
+//heredoc_utils.c
+void	check_already_has_heredoc(t_subtree *new);
+int		free_heredoc(char *buf, char *filename);
+int		exist_file(char *filename);
+//////////////////////////////////////////////////////////////
+//handle signal
 //handle_signal.c
 void	handle_sigint_in_main(int signum);
 void	handle_sigint_to_exit_readline(int signum);
 void	set_signal_in_main(void);
 void	set_signal_in_exec(void);
+//////////////////////////////////////////////////////////////
+//path for execve
 //path.c
 int		get_path(char **cmd, t_dq *env);
+//////////////////////////////////////////////////////////////
+//env list and env arrary
 //envp.c
 void	make_my_env(char **e, t_dq *env);
 char	**get_envtab(t_dq *env);
+//////////////////////////////////////////////////////////////
+//utils
 //utils.c
 char	*get_nth_token_from_lst(t_tree *tree, int nth);
 int		get_opt_from_lst(t_tree *tree, t_subtree **new);
 void	free_tab(char **tab, int size);
 void	update_prev_status(t_dq *env);
 void	perror_n_exit(const char *str);
+//////////////////////////////////////////////////////////////
+//manage readline_buf
 //buf.c
 int		check_buf(char **buf);
 int		check_extra_buf(char **bkup, char **buf);
@@ -204,23 +227,22 @@ int		get_extra_buf(char **buf);
 int		exit_when_eof(void);
 //syntax.c
 int		check_buf_syntax_err(char *s, int *heredoc);
-//heredoc_utils.c
-void	check_already_has_heredoc(t_subtree *new);
-int		free_heredoc(char *buf, char *filename);
-int		exist_file(char *filename);
-//heredoc.c
-int		get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env);
+//////////////////////////////////////////////////////////////
+//err
+//err.c
+int		check_subtree_syntax_err(t_tree *tree, t_subtree **new);
+int		is_subtree_ambiguous(t_subtree *subtree);
+int		has_subtree_no_infile(t_subtree *subtree);
 //errmsg.c
 int		put_subtree_has_syntax_err_msg(t_tree *tree);
 int		put_subtree_has_nofile_err_msg(t_subtree *subtree);
 int		put_buf_has_syntax_err_msg(char *s, int idx, int heredoc);
 int		put_command_not_found(char *cmd);
-//err.c
-int		check_subtree_syntax_err(t_tree *tree, t_subtree **new);
-int		is_subtree_ambiguous(t_subtree *subtree);
-int		has_subtree_no_infile(t_subtree *subtree);
+//////////////////////////////////////////////////////////////
+//wait child
 //wait.c
 void	wait_childs(t_tree_info *info, t_dq *env);
+//////////////////////////////////////////////////////////////
 //builtins
 int		_echo(t_subtree *t_subtree);
 int		_cd(char *path, t_dq *env);
@@ -232,4 +254,5 @@ int		_exit_(char **opt);
 int		_bexit_(char **opt, t_dq *env);
 int		go_builtin(t_subtree *subtree, t_dq *env);
 int		is_builtin(t_subtree *subtree);
+//////////////////////////////////////////////////////////////
 #endif

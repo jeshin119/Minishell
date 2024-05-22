@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 09:22:35 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 13:48:43 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 11:30:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ int	create_subtree(t_tree *tree, t_subtree **new, t_dq *env)
 		return (free_subtree(new));
 	if (get_infile(tree, new, env))
 		return (free_subtree(new));
-	if (get_cmd_opt(tree, new, env))
+	if (get_cmd_opt(tree, new))
 		return (free_subtree(new));
-	if (get_outfile(tree, new, env))
+	if (get_outfile(tree, new))
 		return (free_subtree(new));
 	return (EXIT_SUCCESS);
 }

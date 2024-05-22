@@ -6,21 +6,20 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 13:08:57 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 11:30:11 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	get_cmd_opt(t_tree *tree, t_subtree **new, t_dq *env)
+int	get_cmd_opt(t_tree *tree, t_subtree **new)
 {
 	if (tree == 0)
 		return (EXIT_SUCCESS);
 	if (check_subtree_syntax_err(tree, new))
 		return (EXIT_FAILURE);
 	if (tree->ctrl_token != 0)
-		return (get_cmd_opt(tree->next_left, new, env));
-	env_chk(tree, env->head);
+		return (get_cmd_opt(tree->next_left, new));
 	(*new)->cmd = get_nth_token_from_lst(tree, (tree->tk_idx_set)[0]);
 	if (tree->tk_idx_set[0] == -1)
 		(*new)->is_ambiguous = 1;
@@ -65,7 +64,6 @@ int	get_infile(t_tree *tree, t_subtree **new, t_dq *env)
 	if (tree->ctrl_token == LEFT)
 	{
 		check_already_has_heredoc(*new);
-		env_chk(tree, env->head);
 		if (tree->tk_idx_set[1] == -1)
 			(*new)->is_ambiguous = 1;
 		(*new)->infile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
@@ -73,19 +71,18 @@ int	get_infile(t_tree *tree, t_subtree **new, t_dq *env)
 	return (EXIT_SUCCESS);
 }
 
-int	get_outfile(t_tree *tree, t_subtree **new, t_dq *env)
+int	get_outfile(t_tree *tree, t_subtree **new)
 {
 	if (tree == 0)
 		return (EXIT_SUCCESS);
 	if (check_subtree_syntax_err(tree, new))
 		return (free_subtree(new));
 	if (tree->next_right && (tree->next_right)->ctrl_token != 0)
-		return (get_outfile(tree->next_right, new, env));
+		return (get_outfile(tree->next_right, new));
 	if (tree->ctrl_token != D_RIGHT && tree->ctrl_token != RIGHT)
 		return (EXIT_SUCCESS);
 	if (tree->ctrl_token == D_RIGHT)
 		(*new)->is_appending = 1;
-	env_chk(tree, env->head);
 	if (tree->tk_idx_set[1] == -1)
 		(*new)->is_ambiguous = 1;
 	(*new)->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
