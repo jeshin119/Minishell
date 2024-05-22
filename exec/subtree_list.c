@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 17:37:32 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/22 11:30:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 11:45:51 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	make_subtree_list(t_tree *tree, t_tree_info *info, t_dq *env)
 	{
 		if (create_and_link_subtree(tree, info, env) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
-		if (add_pipe_input(info, tree, tree->tk_list) == EXIT_FAILURE)
+		if (add_input(info, tree, tree->tk_list, env->head))
 			return (EXIT_FAILURE);
 		return (make_subtree_list(tree->next_right, info, env));
 	}

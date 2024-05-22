@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 15:29:37 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 13:41:43 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/21 21:29:31 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ static char	*env_exp(t_env *env_lset, t_node *env_list, char *s, int i)
 	return (token);
 }
 
-t_env	*env_heredoc_len_chk(char *hd_input)
+t_env	*env_string_len_chk(char *hd_input, int hd_flag)
 {
 	t_env	*env_lset;
 	int		env_cnt;
 	int		e_idx;
 
 	e_idx = 0;
-	env_cnt = env_count_chk(hd_input, 0);
+	env_cnt = env_count_chk(hd_input);
 	if (env_cnt)
 		env_lset = (t_env *)malloc(sizeof(t_env) * (env_cnt + 1));
 	else
@@ -110,33 +110,33 @@ t_env	*env_heredoc_len_chk(char *hd_input)
 	if (!env_lset)
 		exit(1);
 	env_lset = ini_env_lset(env_lset, env_cnt);
-	alloc_env_len(env_lset, hd_input, e_idx, 0);
+	alloc_env_len(env_lset, hd_input, e_idx, hd_flag);
 	env_lset[env_cnt]. len = END;
 	return (env_lset);
 }
 
-char	*env_heredoc_chk(char *hd_input, t_node *env_list)
+char	*env_string_chk(char *input, t_node *env_list, int hd_flag)
 {
 	t_env	*env_lset;
 	char	*exp_input;
 	int		i;
 
-	if (!hd_input || !env_list)
+	if (!input || !env_list)
 		return (0);
 	env_lset = 0;
 	exp_input = 0;
 	i = 0;
-	hd_input = malloc_readline(hd_input);
-	env_lset = env_heredoc_len_chk(hd_input);
+	input = malloc_readline(input);
+	env_lset = env_string_len_chk(input, hd_flag);
 	if (env_lset)
 	{
-		exp_input = env_exp(env_lset, env_list, hd_input, i);
+		exp_input = env_exp(env_lset, env_list, input, i);
 		free(env_lset);
-		free(hd_input);
+		free(input);
 		if (exp_input)
 			return (exp_input);
 		else
 			return (ft_strdup(""));
 	}
-	return (hd_input);
+	return (input);
 }

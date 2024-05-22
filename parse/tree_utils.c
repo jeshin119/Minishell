@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 12:39:27 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/22 11:45:34 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*malloc_readline(char *buf)
 	return (buf_m);
 }
 
-int	add_pipe_input(t_tree_info *info, t_tree *now, t_list *tk_list)
+int	add_input(t_tree_info *info, t_tree *now, t_list *tkl, t_node *env)
 {
 	char	*buf;
 	t_list	*tk_list_add;
@@ -95,11 +95,11 @@ int	add_pipe_input(t_tree_info *info, t_tree *now, t_list *tk_list)
 			return (EXIT_FAILURE);
 		if (is_empty(buf))
 			continue ;
-		tk_list_add = tokenize(buf, ADD);
-		while (tk_list -> next)
-			tk_list = tk_list -> next;
-		tk_list -> next = tk_list_add;
-		tk_list_add -> prev = tk_list;
+		tk_list_add = tokenize(buf, ADD, env);
+		while (tkl -> next)
+			tkl = tkl -> next;
+		tkl -> next = tk_list_add;
+		tk_list_add -> prev = tkl;
 		now = make_tree(now, tk_list_add);
 		free(buf);
 		info->pipe_num++;

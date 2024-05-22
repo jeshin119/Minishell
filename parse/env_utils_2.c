@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 14:19:41 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/16 13:41:58 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/21 21:26:34 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,10 @@ void	rd_space_chk(char *env, t_tree *now, int d_quote)
 		}
 		i++;
 	}
+}
+
+void	ini_q_flag_idx(int *q_flag, int *i)
+{
+	*q_flag = 0;
+	*i = 0;
 }
