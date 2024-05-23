@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 17:01:00 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/15 15:58:10 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/23 16:48:38 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ static void	organize_node(t_node *this, t_dq *env)
 		this->prev->next = this->next;
 		this->next->prev = this->prev;
 	}
+	env->size--;
 }
 
 int	_unset(char **opt, t_dq *env)

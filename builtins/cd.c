@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   cd2.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/10 14:49:05 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/23 11:24:05 by jeshin           ###   ########.fr       */
+/*   Created: 2024/05/23 15:06:57 by jeshin            #+#    #+#             */
+/*   Updated: 2024/05/23 18:24:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*find_home_path(t_dq *env)
 	start = env->head;
 	while (start)
 	{
-		if (ft_strncmp(start->name, "HOME", 5) == 0)
+		if (ft_strncmp(start->name, "~", 2) == 0)
 		{
 			home = ft_substr(start->val, 0, ft_strlen(start->val));
 			return (home);
@@ -55,7 +55,7 @@ void	update_env_pwd(t_dq *env)
 {
 	t_node	*here;
 	char	*pwd;
-	char	cwd[1024];
+	char	cwd[4096];
 
 	here = env->head;
 	while (here)
@@ -63,7 +63,7 @@ void	update_env_pwd(t_dq *env)
 		if (!ft_strncmp(here->name, "PWD", 4))
 		{
 			pwd = here->val;
-			here->val = ft_strdup(getcwd(cwd, 1024));
+			here->val = ft_strdup(getcwd(cwd, sizeof(cwd)));
 		}
 		here = here->next;
 	}
@@ -82,16 +82,16 @@ void	update_env_pwd(t_dq *env)
 
 int	_cd(char *path, t_dq *env)
 {
-	char	*home;
-	char	*new;
-	char	check[4096];
+	char		*home;
+	char		*new;
+	char		cur[4096];
 
 	new = 0;
 	home = find_home_path(env);
 	if (path == 0 || !ft_strncmp(path, "-", 2) || \
 	!ft_strncmp(path, "--", 3) || !ft_strncmp(path, "~", 2))
 		path = home;
-	if (!ft_strncmp(path, "~/", 2))
+	else if (!ft_strncmp(path, "~/", 2))
 	{
 		path++;
 		new = ft_strjoin_no_free(home, path);
@@ -99,7 +99,7 @@ int	_cd(char *path, t_dq *env)
 	}
 	if (chdir(path) != EXIT_SUCCESS)
 		return (care_cd_error(path, home, new));
-	if (getcwd(check, sizeof(check)) == NULL)
+	if (getcwd(cur, sizeof(cur)) == NULL)
 		return (care_cd_error(NULL, home, new));
 	update_env_pwd(env);
 	if (home != NULL)
