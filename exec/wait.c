@@ -6,44 +6,42 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 12:33:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/22 20:14:41 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/23 14:59:35 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	h(int signum)
+void	update_child_status(int *redundant, t_dq *env)
 {
-	struct termios	term;
-
-	if (signum == SIGINT)
+	if (WIFEXITED(g_status))
 	{
-		tcgetattr(STDIN_FILENO, &term);
-		term.c_lflag &= ~(ECHOCTL);
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
-		g_status = SIGINT;
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		write(1, "\033[1A", 4);
+		g_status = WEXITSTATUS(g_status);
+		update_prev_status(env);
 	}
-}
-
-void	h2(int signum)
-{
-	struct termios	term;
-
-	if (signum == SIGINT)
+	if (WIFSIGNALED(g_status))
 	{
-		tcgetattr(STDIN_FILENO, &term);
-		term.c_lflag &= ~(ECHOCTL);
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
-		g_status = SIGINT;
-		write(1, "\n", 1);
+		if (!(*redundant) && g_status == SIGINT)
+		{
+			if (*redundant == 0)
+				*redundant = 1;
+			write(2, "\n", 1);
+		}
+		if (!(*redundant) && g_status == SIGQUIT)
+		{
+			if (*redundant == 0)
+				*redundant = 1;
+			write(2, "QUIT: 3\n", 8);
+		}
+		g_status = WTERMSIG(g_status) + 128;
+		update_prev_status(env);
 	}
 }
 
 void	wait_childs(t_tree_info *info, t_dq *env)
 {
 	int			i;
+	int			redundant;
 	t_subtree	*subtree;
 
 	subtree = info->sbt_lst->head;
@@ -52,15 +50,14 @@ void	wait_childs(t_tree_info *info, t_dq *env)
 		update_prev_status(env);
 		return ;
 	}
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	i = -1;
+	redundant = 0;
 	while (++i < info->pipe_num + 1)
 	{
-		signal(SIGINT,SIG_IGN);
 		waitpid(-1, &(g_status), 0);
-		if (WIFEXITED(g_status))
-			g_status = WEXITSTATUS(g_status);
-		else if (WIFSIGNALED(g_status))
-			g_status = WTERMSIG(g_status) + 128;
-		update_prev_status(env);
+		update_child_status(&redundant, env);
 	}
+	set_signal_in_main();
 }

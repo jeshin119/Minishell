@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/22 19:45:56 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/23 15:04:15 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ int	main(int argc, char **argv, char **envp)
 
 	limit_argc(argc, argv);
 	make_my_env(envp, &env);
+	set_signal_in_main();
 	while (TRUE)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
-		set_signal_in_main();
 		buf = readline("tash-3.2$ ");
 		update_prev_status(&env);
 		if (check_buf(&buf) == EXIT_FAILURE)

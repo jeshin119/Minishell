@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:05:41 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 16:30:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/23 13:27:54 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,15 @@
 
 static void	add_prev_status_env(t_dq *env)
 {
+	t_node	*here;
+
+	here = env->head;
+	while (here)
+	{
+		if (ft_strncmp(here->name, "?", 2) == 0)
+			return ;
+		here = here->next;
+	}
 	push_back_dq(env, ft_strdup("?"), ft_itoa(0));
 }
 

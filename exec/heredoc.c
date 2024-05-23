@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 16:20:36 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/22 11:40:23 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/23 11:01:30 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ int	get_heredoc(t_tree *tree, t_subtree *subtree, t_dq *env)
 		return (EXIT_FAILURE);
 	signal(SIGINT, handle_sigint_to_exit_readline);
 	if (write_heredoc(filename, subtree, env))
+	{
+		signal(SIGINT, handle_sigint_in_main);
 		return (EXIT_FAILURE);
+	}
 	close(subtree->infile_fd);
 	subtree->infile_fd = 0;
 	free(subtree->infile);
