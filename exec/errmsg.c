@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 14:57:28 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 17:05:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@ static int	syntax_err_msg(t_tree *tree, int i)
 
 	if (tree->ctrl_token == PIPE)
 		ft_putstr_fd("bash: syntax error near unexpected token '|'\n", 2);
+	else if (tree->tk_idx_set && tree->tk_idx_set[i + 1] == -1)
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
+		ft_putstr_fd("newline'\n", 2);
+	}
 	else if (tree->tk_idx_set && tree->tk_idx_set[i])
 	{
 		msg = get_nth_token_from_lst(tree, tree->tk_idx_set[i]);
@@ -25,11 +30,6 @@ static int	syntax_err_msg(t_tree *tree, int i)
 		ft_putstr_fd(msg, 2);
 		ft_putstr_fd("'\n", 2);
 		free(msg);
-	}
-	else
-	{
-		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
-		ft_putstr_fd("newline'\n", 2);
 	}
 	return (EXIT_FAILURE);
 }

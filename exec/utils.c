@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 16:28:30 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 16:58:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,8 @@ char	*get_nth_token_from_lst(t_tree *tree, int nth)
 		tmp = here->token;
 	}
 	if (here && here->token == 0)
-		ret = ft_strdup("");
-	else
-		ret = ft_strdup(tmp);
+		return (NULL);
+	ret = ft_strdup(tmp);
 	return (ret);
 }
 
