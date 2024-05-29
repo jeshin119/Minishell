@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 18:11:23 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 15:00:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 15:53:40 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	check_file_is(t_tree *tree, t_subtree **new)
 	char		*file;
 	struct stat	statbuf;
 
-	if (tree->ctrl_token != LEFT && tree->ctrl_token != RIGHT)
+	if (tree->ctrl_token != LEFT)
 		return (EXIT_SUCCESS);
 	file = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	stat(file, &statbuf);
@@ -72,17 +72,29 @@ int	get_infile(t_tree *tree, t_subtree **new, t_dq *env)
 
 int	get_outfile(t_tree *tree, t_subtree **new)
 {
+	char	*tmp;
+
 	if (tree == 0)
 		return (EXIT_SUCCESS);
 	if (check_subtree_syntax_err(tree, new))
 		return (free_subtree(new));
+	check_ambiguous(tree, *new);
+	if (tree->ctrl_token == D_RIGHT && (*new)->is_ambiguous == 0)
+	{
+		tmp = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+		open_tmp_outfile(tmp, 1);
+	}
+	if (tree->ctrl_token == RIGHT && (*new)->is_ambiguous == 0)
+	{
+		tmp = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
+		open_tmp_outfile(tmp, 0);
+	}
 	if (tree->next_right && (tree->next_right)->ctrl_token != 0)
 		return (get_outfile(tree->next_right, new));
 	if (tree->ctrl_token != D_RIGHT && tree->ctrl_token != RIGHT)
 		return (EXIT_SUCCESS);
 	if (tree->ctrl_token == D_RIGHT)
 		(*new)->is_appending = 1;
-	check_ambiguous(tree, *new);
 	(*new)->outfile = get_nth_token_from_lst(tree, tree->tk_idx_set[1]);
 	return (EXIT_SUCCESS);
 }

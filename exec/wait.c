@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 12:33:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 12:50:47 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 15:46:51 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,8 @@
 void	update_child_status(int *redundant, t_dq *env)
 {
 	if (WIFEXITED(g_status))
-	{
 		g_status = WEXITSTATUS(g_status);
-		update_prev_status(env);
-	}
-	if (WIFSIGNALED(g_status))
+	else if (WIFSIGNALED(g_status))
 	{
 		if (!(*redundant) && g_status == SIGINT)
 		{
@@ -34,8 +31,8 @@ void	update_child_status(int *redundant, t_dq *env)
 			write(2, "QUIT: 3\n", 8);
 		}
 		g_status = WTERMSIG(g_status) + 128;
-		update_prev_status(env);
 	}
+	update_prev_status(env);
 }
 
 void	wait_childs(t_tree_info *info, t_dq *env)

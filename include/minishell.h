@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 14:51:14 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 15:27:48 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,7 @@ void	close_all_pipe(int size, int **pipe_tab);
 //fd.c
 int		open_infile(t_subtree *subtree);
 int		open_outfile(t_subtree *subtree, int is_appending);
+int		open_tmp_outfile(char *tmp, int is_appending);
 int		get_infile_fd(t_subtree *subtree);
 int		get_outfile_fd(t_subtree *subtree);
 //////////////////////////////////////////////////////////////

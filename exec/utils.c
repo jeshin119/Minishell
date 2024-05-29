@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 17:46:28 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 12:46:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 16:28:30 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,15 @@ char	*get_nth_token_from_lst(t_tree *tree, int nth)
 		here = here->next;
 		tmp = here->token;
 	}
-	if (here->token == 0)
-		return (NULL);
-	ret = ft_strdup(tmp);
+	if (here && here->token == 0)
+		ret = ft_strdup("");
+	else
+		ret = ft_strdup(tmp);
 	return (ret);
 }
 
 int	get_opt_from_lst(t_tree *tree, t_subtree **new)
 {
-	t_list	*start;
 	int		i;
 	int		j;
 
@@ -63,11 +63,8 @@ int	get_opt_from_lst(t_tree *tree, t_subtree **new)
 	(*new)->opt = (char **)malloc(sizeof(char *) * ((*new)->opt_size + 1));
 	if ((*new)->opt == 0)
 		perror_n_exit("malloc");
-	((*new)->opt)[(*new)->opt_size] = 0;
-	i = -1;
-	start = tree->tk_list;
-	while (++i < tree->tk_idx_set[0] && start)
-		start = start->next;
+	((*new)->opt)[(*new)->opt_size] = NULL;
+	i = tree->tk_idx_set[0];
 	j = -1;
 	while (++j < (*new)->opt_size)
 		(*new)->opt[j] = get_nth_token_from_lst(tree, i++);

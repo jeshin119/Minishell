@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 15:06:21 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 16:44:44 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,9 @@ int	check_ambiguous(t_tree *tree, t_subtree *subtree)
 	int		i;
 	t_list	*start;
 
-	if (tree == 0 || tree->tk_list == 0 || subtree == 0)
-		return (EXIT_FAILURE);
 	if (subtree->is_ambiguous)
 		return (EXIT_SUCCESS);
-	if (tree->tk_idx_set[1] == -1)
+	if (tree->tk_idx_set == 0 || tree->tk_idx_set[1] == -1)
 		return (EXIT_FAILURE);
 	i = -1;
 	start = tree->tk_list;

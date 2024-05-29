@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:15:43 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/17 20:29:46 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 15:35:58 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,28 @@ int	open_infile(t_subtree *subtree)
 		perror(NULL);
 		return (EXIT_FAILURE);
 	}
+	return (EXIT_SUCCESS);
+}
+
+int	open_tmp_outfile(char *tmp, int is_appending)
+{
+	int		fd;
+
+	if (tmp == NULL)
+		return (EXIT_FAILURE);
+	if (is_appending)
+		fd = open(tmp, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(tmp, 2);
+		ft_putstr_fd(": ", 2);
+		perror(NULL);
+		return (EXIT_FAILURE);
+	}
+	close(fd);
 	return (EXIT_SUCCESS);
 }
 
