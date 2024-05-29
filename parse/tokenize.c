@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 16:34:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 12:50:09 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 15:57:53 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_list	*tokenize(char *cmd_line, int add, t_node *env_list)
 	tmp_cmd_line = ft_strdup(cmd_line);
 	tk_list = 0;
 	tmp_tk_list = 0;
-	tmp_cmd_line = env_string_chk(tmp_cmd_line, env_list, ON);
+	tmp_cmd_line = env_string_chk(tmp_cmd_line, env_list, OFF);
 	tk_list = token_split(tk_list, tmp_cmd_line, OFF);
 	free(tmp_cmd_line);
 	give_token_idx(tk_list, add);
