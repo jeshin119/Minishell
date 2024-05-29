@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 12:04:47 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 12:49:16 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 15:53:21 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_node	*env_name_chk(char *s, t_node *env_list, int i)
 
 void	handle_qt(t_env *env_lset, int e_idx, int q_flag, int hd_flag)
 {
-	if (hd_flag == HERE_DOC)
+	if (hd_flag)
 		return ;
 	if (q_flag == D_QUOTE)
 		env_lset[e_idx]. d_quote = ON;

@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 15:29:37 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 12:49:06 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 16:17:22 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,8 @@ char	*env_string_chk(char *input, t_node *env_list, int hd_flag)
 	if (env_lset)
 	{
 		exp_input = env_exp(env_lset, env_list, input, i);
+		if (hd_flag)
+			exp_input = empty_fenv(exp_input);
 		free(env_lset);
 		free(input);
 		if (exp_input)
