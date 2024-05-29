@@ -6,7 +6,7 @@
 /*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 12:00:57 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 12:10:49 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/29 13:04:11 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ static t_env	*malloc_env_lset_new(t_list *tk_list, t_env *env_lset_arg)
 		e_idx++;
 	while (env_lset_arg[e_idx_new]. len > 0)
 		e_idx_new++;
-	env_lset_new = (t_env *)malloc(sizeof(t_env) * (e_idx + e_idx_new));
+	env_lset_new = (t_env *)malloc(sizeof(t_env) * (e_idx + e_idx_new + 1));
 	if (!env_lset_new)
 		exit(1);
+	env_lset_new[e_idx + e_idx_new]. len = END;
 	return (env_lset_new);
 }
 
@@ -56,5 +57,7 @@ void	add_env_lset(t_list *tkl, t_env *env_lset_arg)
 		e_idx++;
 	}
 	free(tkl -> env_lset);
+	if (env_lset_arg)
+		free(env_lset_arg);
 	tkl -> env_lset = env_lset_new;
 }
