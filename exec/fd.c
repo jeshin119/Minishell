@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:15:43 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 15:35:58 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 17:27:31 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	open_tmp_outfile(char *tmp, int is_appending)
 		perror(NULL);
 		return (EXIT_FAILURE);
 	}
+	free(tmp);
 	close(fd);
 	return (EXIT_SUCCESS);
 }

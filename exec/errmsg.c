@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 17:44:07 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 17:05:25 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 18:03:16 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,23 @@
 static int	syntax_err_msg(t_tree *tree, int i)
 {
 	char	*msg;
+	t_list	*start;
+	int		j;
 
+	start = tree->tk_list;
 	if (tree->ctrl_token == PIPE)
 		ft_putstr_fd("bash: syntax error near unexpected token '|'\n", 2);
-	else if (tree->tk_idx_set && tree->tk_idx_set[i + 1] == -1)
+	j = -1;
+	while (start && ++j < i)
+		start = start->next;
+	if (start == 0)
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
 		ft_putstr_fd("newline'\n", 2);
 	}
-	else if (tree->tk_idx_set && tree->tk_idx_set[i])
+	else
 	{
-		msg = get_nth_token_from_lst(tree, tree->tk_idx_set[i]);
+		msg = get_nth_token_from_lst(tree, tree->tk_idx_set[i - 1]);
 		ft_putstr_fd("bash: syntax error near unexpected token '", 2);
 		ft_putstr_fd(msg, 2);
 		ft_putstr_fd("'\n", 2);
@@ -56,7 +62,6 @@ int	put_subtree_has_syntax_err_msg(t_tree *tree)
 	i = -1;
 	while ((tree->tk_idx_set) && (tree->tk_idx_set)[++i] != -1)
 		;
-	i--;
 	return (syntax_err_msg(tree, i));
 }
 
@@ -81,7 +86,6 @@ int	put_buf_has_syntax_err_msg(char *s, int idx, int heredoc)
 	else
 		write(2, "newline", 7);
 	ft_putstr_fd("'\n", 2);
-	free(s);
 	g_status = 258;
 	return (EXIT_FAILURE);
 }
