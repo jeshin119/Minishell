@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:09:46 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 21:57:16 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/29 12:49:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
 	int		start;
 	char	*str;
 
-	meta_value = 0;
 	start = (*i) + 1;
 	*i = quote_closed_chk(s, *i);
 	str = ft_substr(s, start, (*i) - start);
@@ -48,16 +47,19 @@ static void	quote_tokenize(char *s, t_list **tk_list, int meta_value, int *i)
 	{
 		if ((*tk_list) && (*tk_list)-> quote_to_space)
 		{
-			(*tk_list)-> token = ft_strjoin((*tk_list)-> token, str);
+			str = env_len_and_empty(*tk_list, str, meta_value);
+			token_merge(*tk_list, str, start - 1, (*i) - start + 2);
 			(*tk_list)-> quote_to_space = OFF;
 			return ;
 		}
 		*tk_list = ft_lstnew(*tk_list);
-		(*tk_list)-> token = str;
+		str = env_len_and_empty(*tk_list, str, meta_value);
+		put_str_in_tk_list(*tk_list, str, start - 1, (*i) - start + 2);
 	}
 	else
 	{
-		(*tk_list)-> token = ft_strjoin((*tk_list)-> token, str);
+		str = env_len_and_empty(*tk_list, str, meta_value);
+		token_merge(*tk_list, str, start - 1, (*i) - start + 2);
 	}
 }
 
@@ -70,12 +72,16 @@ void	meta_split(char *s, t_list **tk_list, int *i)
 	if (meta_value == PIPE || meta_value == LEFT || meta_value == RIGHT)
 	{
 		*tk_list = ft_lstnew(*tk_list);
+		if ((*tk_list)-> prev && (*tk_list)-> prev -> tmp_flag)
+			(*tk_list)-> tmp_flag = ON;
 		(*tk_list)-> token = ft_substr(s, *i, 1);
 		(*tk_list)-> ctrl_token = meta_value;
 	}
 	else if (meta_value == D_RIGHT || meta_value == HERE_DOC)
 	{
 		*tk_list = ft_lstnew(*tk_list);
+		if ((*tk_list)-> prev && (*tk_list)-> prev -> tmp_flag)
+			(*tk_list)-> tmp_flag = ON;
 		(*tk_list)-> token = ft_substr(s, *i, 2);
 		(*tk_list)-> ctrl_token = meta_value;
 		(*i)++;

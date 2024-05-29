@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 20:06:38 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/09 09:47:29 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 12:47:30 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 typedef struct s_env
 {
 	int	len;
+	int	white_flag;
 	int	d_quote;
 }	t_env;
 
@@ -33,6 +34,10 @@ typedef struct s_list
 	int				token_idx;
 	int				ctrl_token;
 	int				quote_to_space;
+	int				start;
+	int				len;
+	int				ambi_flag;
+	int				tmp_flag;
 	struct s_list	*next;
 	struct s_list	*prev;
 	t_env			*env_lset;

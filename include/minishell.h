@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/23 11:43:49 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 12:47:43 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,6 @@ int		g_status;
 //parse
 void	meta_split(char *s, t_list **tk_list, int *i);
 void	preorder_travel(t_tree *now, t_list *tk_list, t_node *env_list);
-void	rd_empty_chk(t_tree *now, char *exp_token);
-void	rd_space_chk(char *env, t_tree *now, int d_quote);
 void	free_all(t_tree *tree, t_list *tk_list);
 void	free_tk_idx_set(t_tree *tree);
 void	free_next_node(t_tree *tree);
@@ -108,6 +106,12 @@ void	go_to_first(t_tree **tree, t_list **tk_list);
 void	alloc_env_len(t_env *env_lset_new, char *s, int e_idx, int i);
 void	handle_qt(t_env *env_lset, int e_idx, int q_flag, int hd_flag);
 void	ini_q_flag_idx(int *q_flag, int *i);
+void	env_white_chk(t_list *tk_list, t_node *env_list);
+void	chk_ambi(t_list *tkl, t_list *tmp_tkl, t_node *env_list, char *cl);
+void	ini_tree_node(t_tree *next, t_list *tk_list_arg);
+void	token_merge(t_list *tk_list, char *str, int start, int len);
+void	put_str_in_tk_list(t_list *tk_list, char *str, int start, int len);
+void	add_env_lset(t_list *tk_list, t_env *env_lset_arg);
 int		pipe_chk(t_list *tk_list);
 int		meta_chk(char *s, int i, int meta_value);
 int		white_chk(char ch);
@@ -119,9 +123,12 @@ int		env_name_len_chk(char *s, int *i);
 int		env_first_ch_chk(char *s, int i);
 int		name_valid_chk(char *name, char *s, int i);
 int		add_input(t_tree_info *info, t_tree *now, t_list *tkl, t_node *env);
+int		contain_quote_tmp(t_list *tk_list, int *start);
 char	*get_front_str(char *token, char *s, int i, int *front_len);
 char	*malloc_readline(char *buf);
-char	*env_string_chk(char *hd_input, t_node *env_list, int hd_flag);
+char	*env_string_chk(char *input, t_node *env_list, int hd_flag);
+char	*env_len_and_empty(t_list *tk_list, char *token, int meta_value);
+char	*empty_fenv(char *str);
 t_tree	*make_tree(t_tree *now, t_list *tk_list);
 t_tree	*malloc_tree_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*malloc_cmd_node(t_tree *now, t_list *tk_list, int cmd_cnt);
@@ -133,13 +140,15 @@ t_tree	*make_rd_node(t_tree *now, t_list *tk_list, int direct);
 t_tree	*reassembly(t_tree *now, t_list *tk_list);
 t_tree	*syntax_error_malloc(t_tree *now, t_list *tk_list, int meta_value);
 t_tree	*free_sub_tree(t_tree *tree);
+t_tree	*parse(char *line, t_dq *env);
 t_list	*tokenize(char *cmd_line, int add, t_node *env_list);
-t_list	*token_split(t_list *tk_list, char *s);
+t_list	*token_split(t_list *tk_list, char *s, int tmp_flag);
 t_list	*mv_to_valid_token(t_tree *now, int i);
 t_node	*chk_valid_env(t_tree *now, char *s, int i, t_node *env_list);
 t_node	*env_name_chk(char *s, t_node *env_list, int i);
+t_node	*chk_env(t_env *env_lset, char *s, int i, t_node *env_list);
 t_env	*ini_env_lset(t_env *env_lset_new, int env_cnt);
-t_tree	*parse(char *line, t_dq *env);
+t_env	*env_len_chk(char *input, int hd_flag);
 
 //////////////////////////////////////////////////////////////
 //exec part

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_heredoc_chk.c                                  :+:      :+:    :+:   */
+/*   env_string_chk.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seunghan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 15:29:37 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 21:29:31 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/29 12:49:06 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_node	*chk_env(t_env *env_lset, char *s, int i, t_node *env_list)
+t_node	*chk_env(t_env *env_lset, char *s, int i, t_node *env_list)
 {
 	static int	e_idx;
 	int			env_len;
@@ -48,7 +48,6 @@ static char	*expansion(char *token, t_env *env_lset, int *i, t_node *env_list)
 
 	if (!env_list)
 	{
-		*i += env_lset[e_idx]. len;
 		e_idx++;
 		if (env_lset[e_idx]. len == END)
 			e_idx = 0;
@@ -95,14 +94,16 @@ static char	*env_exp(t_env *env_lset, t_node *env_list, char *s, int i)
 	return (token);
 }
 
-t_env	*env_string_len_chk(char *hd_input, int hd_flag)
+t_env	*env_len_chk(char *input, int hd_flag)
 {
 	t_env	*env_lset;
 	int		env_cnt;
 	int		e_idx;
 
 	e_idx = 0;
-	env_cnt = env_count_chk(hd_input);
+	if (!input)
+		return (0);
+	env_cnt = env_count_chk(input);
 	if (env_cnt)
 		env_lset = (t_env *)malloc(sizeof(t_env) * (env_cnt + 1));
 	else
@@ -110,7 +111,7 @@ t_env	*env_string_len_chk(char *hd_input, int hd_flag)
 	if (!env_lset)
 		exit(1);
 	env_lset = ini_env_lset(env_lset, env_cnt);
-	alloc_env_len(env_lset, hd_input, e_idx, hd_flag);
+	alloc_env_len(env_lset, input, e_idx, hd_flag);
 	env_lset[env_cnt]. len = END;
 	return (env_lset);
 }
@@ -127,7 +128,7 @@ char	*env_string_chk(char *input, t_node *env_list, int hd_flag)
 	exp_input = 0;
 	i = 0;
 	input = malloc_readline(input);
-	env_lset = env_string_len_chk(input, hd_flag);
+	env_lset = env_len_chk(input, hd_flag);
 	if (env_lset)
 	{
 		exp_input = env_exp(env_lset, env_list, input, i);

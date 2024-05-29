@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/21 14:56:28 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/05/29 12:49:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_tree	*make_pipe_node(t_tree *now, t_list *tk_list)
 	}
 	if (tk_list -> ctrl_token != PIPE)
 		return (now);
-	if (tk_list -> prev)
+	if (tk_list -> prev && tk_list -> prev -> ctrl_token != PIPE)
 	{
 		if (!now)
 			now = malloc_tree_node(now, tk_list, NO_DR);
