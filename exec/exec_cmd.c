@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:42:09 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 12:45:45 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 14:25:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,7 @@ void	exec_cmds(t_tree_info *tree_info, t_dq *env)
 	i = -1;
 	while ((++i < (tree_info->pipe_num + 1)) && subtree)
 	{
-		if (is_subtree_ambiguous(subtree) == TRUE)
-			;
-		else
-			exec_multi_cmds(subtree, tree_info, env, i);
+		exec_multi_cmds(subtree, tree_info, env, i);
 		subtree = subtree->next;
 	}
 }

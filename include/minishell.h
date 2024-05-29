@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 12:47:43 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 14:51:14 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,6 +239,7 @@ int		check_buf_syntax_err(char *s, int *heredoc);
 //err
 //err.c
 int		check_subtree_syntax_err(t_tree *tree, t_subtree **new);
+int		check_ambiguous(t_tree *tree, t_subtree *subtree);
 int		is_subtree_ambiguous(t_subtree *subtree);
 int		has_subtree_no_infile(t_subtree *subtree);
 //errmsg.c
