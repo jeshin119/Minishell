@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 13:20:03 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 12:49:25 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/05/29 17:56:16 by seunghan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ int	get_cmd_cnt(t_list *tk_list)
 		if (!tk_list -> ctrl_token)
 			cmd_cnt++;
 		if (tk_list -> ctrl_token && tk_list -> next)
-			cmd_cnt--;
+		{
+			if (!tk_list -> next -> ctrl_token)
+				cmd_cnt--;
+		}
 		tk_list = tk_list -> next;
 	}
 	return (cmd_cnt);
