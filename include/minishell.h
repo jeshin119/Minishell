@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 17:45:24 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 15:27:48 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/06/03 18:18:03 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,11 +258,14 @@ int		_echo(t_subtree *t_subtree);
 int		_cd(char *path, t_dq *env);
 int		_pwd(void);
 int		_export(char **opt, t_dq *env);
+int		prt_export(t_dq *env);
 int		_unset(char **opt, t_dq *env);
 int		_env(t_dq *env);
 int		_exit_(char **opt);
 int		_bexit_(char **opt, t_dq *env);
 int		go_builtin(t_subtree *subtree, t_dq *env);
 int		is_builtin(t_subtree *subtree);
+t_node	*get_node_from_env(char *cmp, t_dq *env);
+int		_free(void *m);
 //////////////////////////////////////////////////////////////
 #endif

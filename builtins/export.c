@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:56:17 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 19:11:57 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/06/03 17:38:12 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,10 @@ int	_export(char **opt, t_dq *env)
 
 	status = 0;
 	if (opt[1] == 0)
+	{
+		status = prt_export(env);
 		return (status);
+	}
 	i = 0;
 	while (opt[++i])
 		status = ep(opt[i], env);

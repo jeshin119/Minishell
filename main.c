@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/29 18:03:25 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/06/03 18:19:22 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	main(int argc, char **argv, char **envp)
 	while (TRUE)
 	{
 		init_tree_tk_lst(&tree, &tk_list);
-		buf = readline("bash-3.2$ ");
+		buf = readline("asdf-3.2$ ");
 		update_prev_status(&env);
 		if (check_buf(&buf) == EXIT_FAILURE)
 			continue ;

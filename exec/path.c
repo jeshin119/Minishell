@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:45:45 by jeshin            #+#    #+#             */
-/*   Updated: 2024/05/21 18:02:01 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/06/03 15:07:48 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,22 @@ static char	**get_path_tab(t_dq *env)
 	return (tab);
 }
 
+static int	check_relative_path(char **tab, char **cmd)
+{
+	char	*path;
+
+	if (tab != NULL)
+		return (EXIT_FAILURE);
+	path = ft_strjoin_no_free("./", *cmd);
+	if (access(path, F_OK | X_OK) == 0)
+	{
+		free(*cmd);
+		*cmd = path;
+		return (EXIT_SUCCESS);
+	}
+	return (EXIT_FAILURE);
+}
+
 static int	return_path(char **cmd, t_dq *env)
 {
 	int		i;
@@ -64,7 +80,7 @@ static int	return_path(char **cmd, t_dq *env)
 		free(path);
 	}
 	free_tab(tab, size);
-	return (EXIT_FAILURE);
+	return (check_relative_path(tab, cmd));
 }
 
 static int	check_absolute_path(char *path)
