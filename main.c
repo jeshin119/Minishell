@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/06/03 18:19:22 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/06/03 18:37:31 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	limit_argc(int argc, char **argv)
 {
 	if (argc > 1)
 	{
-		printf("%s don't need to any arguments\n", argv[0]);
+		printf("%s don't need any arguments\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
 }
