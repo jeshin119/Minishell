@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 15:29:37 by seunghan          #+#    #+#             */
-/*   Updated: 2024/05/29 16:17:22 by seunghan         ###   ########.fr       */
+/*   Updated: 2024/06/04 16:16:41 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char	*expansion(char *token, t_env *env_lset, int *i, t_node *env_list)
 	static int	e_idx;
 	char		*env;
 
-	if (!env_list)
+	if (!env_list || !env_list -> val)
 	{
 		e_idx++;
 		if (env_lset[e_idx]. len == END)

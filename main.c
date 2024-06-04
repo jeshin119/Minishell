@@ -6,7 +6,7 @@
 /*   By: jeshin <jeshin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:58:51 by jeshin            #+#    #+#             */
-/*   Updated: 2024/06/03 18:37:31 by jeshin           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:18:25 by jeshin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	main(int argc, char **argv, char **envp)
 		tree = make_tree(tree, tk_list);
 		exec_tree(&buf, tree, &env);
 		free_member(tree, tk_list, buf);
+		system("leaks minishell");
 	}
 	clear_dq(&env);
 	return (EXIT_SUCCESS);
