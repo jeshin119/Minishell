@@ -64,10 +64,8 @@ OBJ = $(SRC:.c=.o)
 
 all : $(NAME)
 
-%.c : %.o
-
 $(NAME) : $(OBJ) $(LIBFT)
-	@$(CC) $(CFLAGS) $(LIBFT) -l readline $^ -o $(NAME)
+	@$(CC) $(CFLAGS) -l readline $^ -o $(NAME)
 	@echo "minishell made"
 
 %.o : %.c
