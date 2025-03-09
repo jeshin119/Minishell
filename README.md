@@ -44,24 +44,6 @@ For everything else the subject allows only to use a few low-level functions and
 - ```[n]> file``` Redirecting Output
 - ```[n]>> file``` Appending Redirected Output
 
-## How to use
-
-The current version of minishell is developed and tested on macOS, but it should work on all UNIX/LINUX based systems as well.
-
-<b>Requirements:</b>
-- GCC / CLANG Compiler
-- GNU Make
-- GNU Readline library
-
-```
-git clone https://github.com/tjensen42/42-minishell.git minishell
-```
-```
-cd minishell && make release
-```
-```
-./minishell
-```
 
 ## Dependencies
 ### Install readline with [brew](https://brew.sh/)
@@ -113,40 +95,6 @@ echo 'export LIBRARY_PATH="$HOME/.brew/lib:$LIBRARY_PATH"' >> ~/.zshrc
 ```
 source ~/.zshrc
 ```
-
-## Run tests
-
-To check if your minishell build was succesful you can run a tester, which compares most of the features with your current Bash installation. The test compares the stdout and the exit-code directly and checks in case of an error if both print something in stderr. 
-
-```
-make test
-```
-
-## Activate debug mode
-
-Enter minishell and export the DEBUG env:
-
-```
-export DEBUG=printer
-```
-
-For all next commands you will execute in the minishell you will see the different processing steps from the lexer and parser with syntax highlighting.
-
-## Change the command line prompt
-1. Enter the SHELL
-```
-./minishell
-```
-2. Export the PS1 env (also works in Bash and other similar shells)
-```
-export PS1='enter your prompt wish...$ '
-```
-
-
-<br>
-<hr>
-<b>*All 42 projects must be written in C (later C++) in accordance to the 42 School Norm.<br></b>
-<br>
 
 > #### Sample restrictions:
 > - All variables have to be declared and aligned at the top of each function
