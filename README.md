@@ -1,102 +1,51 @@
+# Minishell (팀 프로젝트)
 
-# 42-minishell
+`bash`를 모사한 커맨드라인 인터프리터입니다. 42서울 커리큘럼의 첫 팀 프로젝트로, 2인이 함께 파싱/실행 엔진을 나눠 구현했습니다.
 
-The objective of this project is to create a simple shell, like an own little bash.<br>
-It is the first group project in the 42 core curriculum. 
+## 배경
 
-## Project specifications
+셸은 사용자가 입력한 문자열을 토큰으로 쪼개고(렉싱), 파이프·리다이렉션·따옴표 규칙에 따라 구문 트리로 구성한 뒤(파싱), 그 트리를 실제 프로세스 실행으로 옮기는(실행) 3단계 파이프라인입니다. `readline`을 제외하면 malloc, fork, execve 같은 저수준 함수만 허용되기 때문에, 파서와 시그널 처리, 프로세스 동기화를 전부 직접 설계해야 하는 것이 이 과제의 난이도입니다. 2인 팀 프로젝트였기 때문에 파싱(parse/)과 실행(exec/)을 역할 분담하고 공통 자료구조(트리, 리스트)의 인터페이스를 먼저 합의하는 협업 경험도 함께 얻었습니다.
 
-For the project we were allowed to use GNU's readline library which handles the terminal interaction (history & input reading).
-For everything else the subject allows only to use a few low-level functions and a few POSIX system calls.
+## 요구사항
 
-<b>Allowed functions:</b>
-```readline, rl_clear_history, rl_on_new_line,rl_replace_line, rl_redisplay, add_history, printf, malloc, free, write, access, open, read,close, fork, wait, waitpid, wait3, wait4, signal, sigaction, sigemptyset, sigaddset, kill, exit, getcwd, chdir, stat, lstat, fstat, unlink, execve, dup, dup2, pipe, opendir, readdir, closedir, strerror, perror, isatty, ttyname, ttyslot, ioctl, getenv, tcsetattr, tcgetattr, tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs```
+허용 함수: `readline, rl_clear_history, add_history, fork, execve, wait/waitpid, pipe, dup2, signal/sigaction, opendir/readdir/closedir, getenv, chdir, stat/lstat, unlink` 등 POSIX 저수준 함수 한정
 
-## Features
+- 명령어 검색 및 실행(PATH 기반, 절대/상대 경로 지원)
+- 환경변수(`$VAR`) 확장, 직전 명령의 종료 상태(`$?`) 확장
+- 작은따옴표(내부 메타문자 원본 유지)/큰따옴표(`$` 확장만 유지) 처리
+- 파이프(`|`)로 다중 명령어 연결
+- 리다이렉션(`<`, `<<` heredoc, `>`, `>>`)
+- `ctrl-C/D/\`가 bash와 동일하게 동작
+- 빌트인: `echo -n`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
 
-### Basics:
-- History of previous entered commands
-- Search and launch the right executable (based on the PATH variable, using a relative or an absolute path)
-- Environment variables ($ followed by a sequence of characters) expand to their values
-- Wildcards * in the current working directory
-- ctrl-C, ctrl-D and ctrl-\ behave like in bash
-- ```’``` (single quotes - prevent from interpreting meta-characters in quoted sequence)
-- ```"``` (double quotes - prevent from interpreting meta-characters in quoted sequence except for $)
-- ```$?``` expands to the last exit status
-- ```|``` connect cmds or groups with pipes; output of a cmd is connected to the input of the next cmd via a pipe
-- ```&&``` and ```||``` with parenthesis for priorities
+> 이 구현은 위 mandatory 범위(파이프·리다이렉션·따옴표·환경변수·빌트인)를 다룹니다. 논리 연산자(`&&`, `||`)와 괄호 우선순위, 와일드카드(`*`) 확장은 이 저장소에는 구현되어 있지 않습니다.
 
-### Builtins:
-- ```echo``` with option -n
-- ```cd``` (relative or absolute path, ```-``` for OLDPWD, without arg for HOME)
-- ```pwd``` without options
-- ```export``` without options
-- ```unset``` without options
-- ```env``` without options
-- ```exit [exit_status]``` without options
+## 기술스택
 
-### Redirections:
+`C` · Lexical/Syntax Analysis(자체 렉서·파서) · GNU Readline · Signal Handling · `termios` · Process Control(`fork`/`execve`/`waitpid`) · Redirection/Pipe(`dup2`)
 
-```[n]``` (optional) specifies the file descriptor, if not specified it is stdout/stdin
+## 기능
 
-- ```[n]< file``` Redirecting Input
-- ```[n]<< limiter``` Here Documents
-- ```[n]> file``` Redirecting Output
-- ```[n]>> file``` Appending Redirected Output
+- **파싱 엔진**: 입력 문자열을 토큰화하는 렉서와, 파이프·리다이렉션 우선순위를 반영해 실행 트리를 구성하는 파서
+- **빌트인 명령어**: `echo`, `cd`(`-`로 OLDPWD 이동, 무인자 시 HOME), `pwd`, `export`, `unset`, `env`, `exit`
+- **리다이렉션**: `<`, `<<`(heredoc), `>`, `>>`를 파일 디스크립터 번호 지정까지 포함해 처리
+- **파이프라인 실행**: 다중 파이프를 순회하며 각 명령어를 자식 프로세스로 fork, `dup2`로 표준입출력 연결
+- **시그널 처리**: 인터랙티브 모드/자식 실행 중/heredoc 입력 중 각각 다른 시그널 핸들러를 등록해 bash와 동일한 반응(Ctrl-C에 새 줄, Ctrl-D에 종료 등)을 재현
+- **환경변수 관리**: `export`/`unset` 시 자체 환경변수 리스트를 갱신하고, `execve` 호출 시 `envp` 배열로 변환
 
+## 문제해결 및 예방
 
-## Dependencies
-### Install readline with [brew](https://brew.sh/)
-```
-brew install readline
-```
+**환경변수가 비어있는 시스템에서의 세그폴트**
+`envp`가 비어있거나 특정 변수가 없는 실행 환경(예: 특정 경로에서 셸을 실행)에서 환경변수 리스트를 순회하는 로직이 `NULL` 체크 없이 인덱싱을 시도해 크래시가 발생했습니다. 환경변수 리스트를 만드는 초기화 함수에서 빈 리스트도 유효한 상태로 취급하도록 널 체크를 추가하고, 이후 이 케이스를 회귀 테스트에 포함시켰습니다.
 
-```
-brew link --force readline
-```
+**`export`에서 `=`가 여러 개 포함된 값 처리 오류**
+`export KEY=value=with=equals` 같이 값 자체에 `=`가 여러 개 포함된 입력에서, 첫 번째 `=`만 기준으로 자르지 않고 마지막 `=`를 기준으로 자르는 등 파싱이 일관되지 않아 값이 잘리는 버그가 있었습니다. `export`의 문법 규칙(최초 등장하는 `=`를 키/값 구분자로 삼는다)을 명확히 하고 그 기준으로 파싱 함수를 통일했습니다.
 
-Add the path to the lib
+**단일/다중 명령어 및 중첩 실행 시 시그널 전파 문제**
+자식 프로세스 중 하나가 시그널(Ctrl-C/Ctrl-\)을 받으면 부모 셸의 프롬프트 상태까지 영향을 받아 셸이 먹통이 되거나 잘못된 종료 상태를 출력하는 문제가 있었습니다. 특히 minishell 안에서 다시 minishell을 실행하는 중첩(nested) 상황에서 신호가 여러 레벨로 전파되는 케이스가 까다로웠습니다(커밋 "Fix sigint sigquit signal when one command or multi command ... and nested program"). 부모(인터랙티브 셸)와 자식(실행 중인 명령어) 각각에 대해 시그널 핸들러를 명확히 분리 등록하고, 자식 프로세스에서는 실행 직전에 핸들러를 기본 동작(`SIG_DFL`)으로 되돌려 신호 전파 범위를 격리했습니다.
 
-Replace ~/.zshrc with ~/.bashrc if you use bash instead of zsh
-```
-echo 'export C_INCLUDE_PATH="/usr/local/opt/readline/include:$C_INCLUDE_PATH"' >> ~/.zshrc
-```
-```
-echo 'export LIBRARY_PATH="/usr/local/opt/readline/lib:$LIBRARY_PATH"' >> ~/.zshrc
-```
-```
-source ~/.zshrc
-```
+**`cd`로 삭제된 디렉토리에 있을 때의 예외 처리**
+현재 작업 디렉토리가 외부에서 삭제된 상태에서 `cd`나 다른 명령어를 실행하면 `getcwd`가 실패하는데, 이 경우 bash와 동일하게 에러 메시지만 출력하고 셸이 죽지 않도록 예외 경로를 별도로 처리했습니다. bash의 실제 동작을 직접 재현해보며 엣지 케이스를 하나씩 맞춰나가는 방식으로 검증했습니다.
 
-### Install readline on 42 Macs
-
-Install Brew, <b>only if it is not already installed:</b>
-
-```
-rm -rf $HOME/.brew && git clone --depth=1 https://github.com/Homebrew/brew $HOME/.brew && echo 'export PATH=$HOME/.brew/bin:$PATH' >> $HOME/.zshrc && source $HOME/.zshrc && brew update
-```
-
-Install Readline library:
-```
-brew install readline
-```
-
-```
-brew link --force readline
-```
-
-```
-echo 'export C_INCLUDE_PATH="$HOME/.brew/include:$C_INCLUDE_PATH"' >> ~/.zshrc
-```
-
-```
-echo 'export LIBRARY_PATH="$HOME/.brew/lib:$LIBRARY_PATH"' >> ~/.zshrc
-```
-```
-source ~/.zshrc
-```
-
-> #### Sample restrictions:
-> - All variables have to be declared and aligned at the top of each function
-> - Each function can not have more then 25 lines
-> - Projects should be created with allowed std functions otherwise it is cheating
+**Here-doc 입력 중 인터럽트 처리**
+`<<` heredoc으로 입력을 받는 도중 Ctrl-C를 누르면 입력을 중단하고 프롬프트로 돌아가야 하는데, 초기 구현은 이 상황에서 시그널을 무시하거나 전체 프로그램이 종료되는 문제가 있었습니다. heredoc 전용 시그널 핸들러를 별도로 등록해 인터럽트 시 현재 입력만 취소하고 명령어 실행 자체는 진행하지 않도록 분리했습니다.v
